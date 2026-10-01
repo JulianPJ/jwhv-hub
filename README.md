@@ -181,6 +181,9 @@ Current detailed planners:
 - Spain (`data/live/visa-es.json`)
 - Portugal (`data/live/visa-pt.json`)
 - Sweden (`data/live/visa-se.json`)
+- Finland (`data/live/visa-fi.json`)
+- Austria (`data/live/visa-at.json`)
+- Poland (`data/live/visa-pl.json`)
 
 `data/live/visa-markets.json` tracks Japan's current Working Holiday partner countries/regions from MOFA and highlights EU/North American availability. The European Union is not treated as one visa market: eligibility and application rules are passport-country specific. The United States is shown as having no current Japan Working Holiday arrangement because it is not on MOFA's current partner list.
 
@@ -252,3 +255,14 @@ It shows:
 - direct links that open the Visa Planner with the selected passport market preselected.
 
 Coverage numbers are calculated from `visa-markets.json` at runtime, so they update automatically as new detailed rulesets are added.
+
+
+## Phase 13 EU market expansion wave 4
+
+Finland, Austria and Poland now have detailed planners, taking detailed passport-market coverage to 15 of Japan's 32 current Working Holiday partners.
+
+- **Finland:** 18–30, Finnish citizen resident in Finland, one lifetime Working Holiday visa apart from narrow unused-visa reissue cases, €4,200+ balance requirement, 200 visas per year, and current email pre-check / Embassy submission procedure.
+- **Austria:** 18–30, up to two one-year Working Holiday stays, 200 participants per year, Vienna-only application route, and at least one personal appearance. The Embassy requires adequate travel/return-ticket funds but does not publish one fixed numeric threshold, so the planner does not invent one.
+- **Poland:** 18–30, Polish citizen resident in Poland, one lifetime visa, Warsaw appointment required. The official guide expresses living/return-ticket funds partly as approximate USD-equivalent guidance; the planner preserves those source distinctions instead of converting them into a fabricated PLN threshold.
+
+Where an official source describes sufficient funds without one fixed numeric total, the rules engine deliberately leaves the financial pre-check as an item for manual official-source verification rather than falsely producing a pass/fail number.
