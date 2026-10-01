@@ -2,7 +2,7 @@ import fs from "node:fs";
 const out="_site";
 fs.rmSync(out,{recursive:true,force:true});
 fs.mkdirSync(out,{recursive:true});
-for(const file of ["index.html","jobs.html","housing.html","application.html","status.html","shortlist.html","styles.css","app.js",".nojekyll"]){
+for(const file of ["index.html","jobs.html","housing.html","application.html","status.html","shortlist.html","plan.html","styles.css","app.js",".nojekyll"]){
   fs.copyFileSync(file,`${out}/${file}`);
 }
 fs.mkdirSync(`${out}/data/live`,{recursive:true});
