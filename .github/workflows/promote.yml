@@ -1,0 +1,50 @@
+name: Promote candidate data
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Data scope to promote after validation
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - jobs
+          - housing
+          - visa
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Promote guarded candidate data
+        shell: bash
+        run: |
+          if [ "${{ inputs.scope }}" = "all" ]; then
+            node scripts/promote.mjs
+          else
+            node scripts/promote.mjs "${{ inputs.scope }}"
+          fi
+
+      - name: Validate promoted state
+        run: node scripts/validate.mjs
+
+      - name: Commit live data when changed
+        shell: bash
+        run: |
+          if git diff --quiet -- data/live; then
+            echo "No live-data changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live
+          git commit -m "Promote validated candidate data"
+          git push
