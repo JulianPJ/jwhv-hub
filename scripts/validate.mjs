@@ -195,6 +195,7 @@ for(const scope of ["live","candidate"]){
   validateFeed(`data/${scope}/housing.json`,"housing",scope);
   validateVisa(`data/${scope}/visa-uk.json`,scope,"GB");
   validateVisa(`data/${scope}/visa-au.json`,scope,"AU");
+  validateVisa(`data/${scope}/visa-de.json`,scope,"DE");
 }
 validateVisaMarkets("data/live/visa-markets.json");
 validateSources();
