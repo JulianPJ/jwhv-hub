@@ -227,13 +227,23 @@ async function initStatus(){
     ["Visa ruleset","UK → Japan",visa.verified_at]
   ].map(([label,value,date])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>Updated '+esc(date)+'</small></article>').join("");
 
-  const labels={jobs:"Jobs worker",housing:"Housing worker",visa:"Visa monitor",qa:"QA reviewer",site_health:"Site health"};
   const workers=state.workers||{};
-  $("#worker-status").innerHTML=Object.entries(labels).map(([key,label])=>{
-    const worker=workers[key]||{};
-    const last=worker.last_success||worker.last_run||"Not run yet";
-    return '<article class="status-card worker-card"><div class="status-card-row"><span>'+esc(label)+'</span><span class="health '+esc(worker.status||"not_started")+'">'+esc((worker.status||"not_started").replaceAll("_"," "))+'</span></div><strong>'+esc(last)+'</strong><small>'+esc(worker.summary||"No status reported.")+'</small></article>';
-  }).join("");
+  const severity={failed:3,warning:2,not_started:1,healthy:0};
+  const combine=(keys,label)=>{
+    const entries=keys.map(key=>workers[key]||{status:"not_started"});
+    const status=entries.reduce((worst,item)=>severity[item.status]>severity[worst]?item.status:worst,"healthy");
+    const dates=entries.map(item=>item.last_success||item.last_run).filter(Boolean).sort();
+    const last=dates.length?dates[dates.length-1]:"Not run yet";
+    const summary=entries.map(item=>item.summary).filter(Boolean).join(" ");
+    return {label,status,last,summary};
+  };
+  const taskCards=[
+    combine(["jobs","housing"],"Listings Research"),
+    combine(["qa","site_health"],"QA & Publish")
+  ];
+  $("#worker-status").innerHTML=taskCards.map(task=>
+    '<article class="status-card worker-card"><div class="status-card-row"><span>'+esc(task.label)+'</span><span class="health '+esc(task.status)+'">'+esc(task.status.replaceAll("_"," "))+'</span></div><strong>'+esc(task.last)+'</strong><small>'+esc(task.summary||"No status reported.")+'</small></article>'
+  ).join("");
 }
 
 document.addEventListener("DOMContentLoaded",async()=>{
