@@ -9,6 +9,8 @@ on:
       - "housing.html"
       - "application.html"
       - "status.html"
+      - "shortlist.html"
+      - "plan.html"
       - "styles.css"
       - "app.js"
       - ".nojekyll"
@@ -51,6 +53,9 @@ jobs:
 
       - name: Check browser JavaScript syntax
         run: node --check app.js
+
+      - name: Check local page links
+        run: node scripts/check-static-links.mjs
 
       - name: Check source health
         run: node scripts/check-source-health.mjs

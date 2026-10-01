@@ -19,3 +19,6 @@ jobs:
 
       - name: Check browser JavaScript syntax
         run: node --check app.js
+
+      - name: Check local page links
+        run: node scripts/check-static-links.mjs
