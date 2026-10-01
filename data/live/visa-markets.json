@@ -208,7 +208,7 @@
   ],
   "coverage_groups": [
     {
-      "id": "eu",
+      "id": "european-union",
       "label": "European Union",
       "summary": "Working Holiday eligibility is passport-country specific, not EU-wide.",
       "eligible_codes": [
@@ -244,18 +244,19 @@
       ]
     },
     {
-      "id": "australia",
-      "label": "Australia",
-      "summary": "Japan and Australia have a Working Holiday arrangement; a detailed planner is available.",
+      "id": "oceania",
+      "label": "Oceania",
+      "summary": "Australia and New Zealand both have current Japan Working Holiday arrangements.",
       "eligible_codes": [
-        "AU"
+        "AU",
+        "NZ"
       ],
       "unavailable_codes": []
     },
     {
       "id": "north-america",
       "label": "North America",
-      "summary": "Canada has a Japan Working Holiday arrangement. The United States is not listed among Japan's current partner countries/regions.",
+      "summary": "Canada has a current Japan Working Holiday arrangement; the United States does not.",
       "eligible_codes": [
         "CA"
       ],
