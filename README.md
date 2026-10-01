@@ -191,3 +191,20 @@ Notable country-specific behavior:
 - France is eligible in principle, but the planner surfaces current application availability separately from eligibility. Major metropolitan missions checked for 2026 report their Working Holiday intake/calendar closed, so the UI warns users rather than presenting the route as presently bookable.
 
 Application availability is not treated as the same thing as legal eligibility. A country can remain an eligible Working Holiday partner while a mission's quota/calendar is temporarily closed.
+
+
+## Phase 9 all-market entry guidance
+
+The passport selector now covers every partner/reference market stored in `visa-markets.json`, not only countries with a detailed ruleset.
+
+There are three presentation levels:
+1. **Detailed planner** — verified country-specific eligibility, funds, jurisdiction, document checklist and application status.
+2. **Eligible partner / status only** — MOFA confirms a Working Holiday arrangement, but JWHV Hub does not yet have enough country-specific evidence for an interactive planner.
+3. **No current Working Holiday arrangement** — the site states this explicitly instead of borrowing another country's rules.
+
+The United States is the first enriched non-partner guide. It explains that:
+- the U.S. is not on Japan's current Working Holiday partner list;
+- visa-free short stays for U.S. citizens do not permit paid activities; and
+- paid work or long-term stay generally requires an appropriate visa, commonly with a Certificate of Eligibility obtained through a sponsor in Japan.
+
+Selecting a status-only or non-partner market never falls back to the UK planner in Visa Planner or My Plan.
