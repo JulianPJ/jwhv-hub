@@ -102,9 +102,9 @@ function validateFeed(path,kind,scope){
   }
 }
 
-function validateVisa(path,scope){
+function validateVisa(path,scope,expectedMarket){
   const data=read(path);
-  if(data.market!=="GB"||data.destination!=="JP"||data.visa_type!=="working_holiday") fail(`${path}: unexpected market/destination/type`);
+  if(data.market!==expectedMarket||data.destination!=="JP"||data.visa_type!=="working_holiday") fail(`${path}: unexpected market/destination/type`);
   if(!isDate(data.verified_at)) fail(`${path}: invalid verified_at`);
   validateChangeControl(data,path,scope);
   for(const key of ["summary_facts","eligibility_rules","document_checklist","preparation_checklist","official_sources"]){
@@ -126,6 +126,22 @@ function validateVisa(path,scope){
   requireSourceIds(data.funds_rule?.source_ids,`${path} funds rule`);
   requireSourceIds(data.participation_rule?.source_ids,`${path} participation rule`);
   requireSourceIds(data.jurisdiction?.source_ids,`${path} jurisdiction`);
+}
+
+
+function validateVisaMarkets(path){
+  const data=read(path);
+  if(data.destination!=="JP") fail(`${path}: unexpected destination`);
+  if(!isDate(data.verified_at)) fail(`${path}: invalid verified_at`);
+  requireSourceIds(data.source_ids,`${path} market registry`);
+  if(!Array.isArray(data.partner_countries)||!data.partner_countries.length) fail(`${path}: partner_countries required`);
+  unique(data.partner_countries,"code",path+" partner_countries");
+  if(!data.detailed_planners||typeof data.detailed_planners!=="object") fail(`${path}: detailed_planners required`);
+  for(const [market,file] of Object.entries(data.detailed_planners)){
+    if(!market||!file||typeof file!=="string") fail(`${path}: invalid detailed planner mapping`);
+    if(!fs.existsSync("data/live/"+file)) fail(`${path}: missing live planner ${file}`);
+  }
+  if(!Array.isArray(data.coverage_groups)) fail(`${path}: coverage_groups must be an array`);
 }
 
 function validateSources(){
@@ -177,10 +193,12 @@ function validateWorkerState(){
 for(const scope of ["live","candidate"]){
   validateFeed(`data/${scope}/jobs.json`,"job",scope);
   validateFeed(`data/${scope}/housing.json`,"housing",scope);
-  validateVisa(`data/${scope}/visa-uk.json`,scope);
+  validateVisa(`data/${scope}/visa-uk.json`,scope,"GB");
+  validateVisa(`data/${scope}/visa-au.json`,scope,"AU");
 }
+validateVisaMarkets("data/live/visa-markets.json");
 validateSources();
 validateHealth();
 validateCandidates();
 validateWorkerState();
-console.log("✓ JWHV datasets, source policy, worker state and health state validated");
+console.log("✓ JWHV datasets, multi-market visa registry, source policy, worker state and health state validated");
