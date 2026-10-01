@@ -120,3 +120,46 @@ This is intentional: source failure should preserve last-known-good data instead
 `data/source-candidates.json` records sources considered for automation.
 
 Commercial job boards and housing portals are not approved merely because their pages are public. Prefer documented APIs/feeds, explicit partner/affiliate access, or direct sources with suitable reuse terms.
+
+
+## Phase 3 autonomous workers
+
+The repository now contains exact worker contracts under `automation/`.
+
+The intended daily flow is:
+
+```text
+01:00 Jobs research ─────┐
+02:00 Housing research ──┤
+03:00 Visa monitor ──────┤
+                         ▼
+04:00 QA reviewer → candidate status = approved/rejected
+                         │
+                         ▼
+05:15 UTC GitHub Action promotes approved candidates
+                         │
+                         ▼
+                    live data
+                         │
+                         ▼
+                    GitHub Pages
+                         │
+                         ▼
+06:00 Site-health check
+```
+
+Research workers cannot approve their own output. Jobs and housing use constrained direct-source discovery: the canonical URL must be the original employer or housing-provider page, not a third-party aggregator.
+
+Public automation/data freshness is visible at `/status.html`.
+
+### Scheduled-task prompts
+
+Each ChatGPT Scheduled Task can use a short launcher prompt such as:
+
+```
+Use the connected GitHub repository JulianPJ/jwhv-hub.
+Read automation/common-contract.md and automation/jobs-worker.md from main.
+Execute that worker contract completely for today's run.
+```
+
+Use the matching worker file for Housing, Visa, QA and Site Health.

@@ -212,12 +212,37 @@ async function initApplication(){
   });
 }
 
+
+async function initStatus(){
+  const [state,jobs,housing,visa]=await Promise.all([
+    loadJSON("data/worker-state.json"),
+    loadJSON("data/live/jobs.json"),
+    loadJSON("data/live/housing.json"),
+    loadJSON("data/live/visa-uk.json")
+  ]);
+  const summary=$("#status-summary");
+  summary.innerHTML=[
+    ["Live jobs",(jobs.items||[]).length,jobs.updated_at],
+    ["Live housing",(housing.items||[]).length,housing.updated_at],
+    ["Visa ruleset","UK → Japan",visa.verified_at]
+  ].map(([label,value,date])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>Updated '+esc(date)+'</small></article>').join("");
+
+  const labels={jobs:"Jobs worker",housing:"Housing worker",visa:"Visa monitor",qa:"QA reviewer",site_health:"Site health"};
+  const workers=state.workers||{};
+  $("#worker-status").innerHTML=Object.entries(labels).map(([key,label])=>{
+    const worker=workers[key]||{};
+    const last=worker.last_success||worker.last_run||"Not run yet";
+    return '<article class="status-card worker-card"><div class="status-card-row"><span>'+esc(label)+'</span><span class="health '+esc(worker.status||"not_started")+'">'+esc((worker.status||"not_started").replaceAll("_"," "))+'</span></div><strong>'+esc(last)+'</strong><small>'+esc(worker.summary||"No status reported.")+'</small></article>';
+  }).join("");
+}
+
 document.addEventListener("DOMContentLoaded",async()=>{
   try{
     const page=document.body.dataset.page;
     if(page==="jobs") await initJobs();
     if(page==="housing") await initHousing();
     if(page==="application") await initApplication();
+    if(page==="status") await initStatus();
   }catch(error){
     console.error(error);
     const message=document.createElement("div");

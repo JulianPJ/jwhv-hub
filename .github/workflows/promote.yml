@@ -1,18 +1,16 @@
-name: Promote candidate data
+name: Promote approved candidate data
 
 on:
+  schedule:
+    - cron: "15 5 * * *"
   workflow_dispatch:
     inputs:
       scope:
-        description: Data scope to promote after validation
+        description: Data scope to promote
         required: true
         default: all
         type: choice
-        options:
-          - all
-          - jobs
-          - housing
-          - visa
+        options: [all, jobs, housing, visa]
 
 permissions:
   contents: write
@@ -24,13 +22,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Promote guarded candidate data
+      - name: Promote QA-approved candidate data
         shell: bash
         run: |
-          if [ "${{ inputs.scope }}" = "all" ]; then
+          SCOPE="${{ github.event_name == 'workflow_dispatch' && inputs.scope || 'all' }}"
+          if [ "$SCOPE" = "all" ]; then
             node scripts/promote.mjs
           else
-            node scripts/promote.mjs "${{ inputs.scope }}"
+            node scripts/promote.mjs "$SCOPE"
           fi
 
       - name: Validate promoted state
@@ -40,11 +39,11 @@ jobs:
         shell: bash
         run: |
           if git diff --quiet -- data/live; then
-            echo "No live-data changes to commit."
+            echo "No approved live-data changes to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live
-          git commit -m "Promote validated candidate data"
+          git commit -m "Promote QA-approved candidate data"
           git push

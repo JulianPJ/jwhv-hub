@@ -56,8 +56,46 @@
       ]
     }
   ],
-  "job_sources": [],
-  "housing_sources": [],
+  "job_sources": [
+    {
+      "id": "direct-employer-public-listing",
+      "name": "Direct employer public job listing policy",
+      "url": "https://github.com/JulianPJ/jwhv-hub/blob/main/automation/source-policy.md",
+      "type": "policy",
+      "status": "approved",
+      "access_method": "web_search_discovery",
+      "allowed_for": [
+        "job"
+      ],
+      "constraints": [
+        "source_url must be an original employer or employer-authorised careers page",
+        "do not use a commercial job-board page as the canonical source",
+        "store concise factual metadata only; do not reproduce full descriptions",
+        "do not bypass login, robots controls, rate limits or technical access restrictions",
+        "ambiguous visa, language, salary or accommodation claims must remain unknown"
+      ]
+    }
+  ],
+  "housing_sources": [
+    {
+      "id": "direct-housing-provider-public-listing",
+      "name": "Direct housing provider public listing policy",
+      "url": "https://github.com/JulianPJ/jwhv-hub/blob/main/automation/source-policy.md",
+      "type": "policy",
+      "status": "approved",
+      "access_method": "web_search_discovery",
+      "allowed_for": [
+        "housing"
+      ],
+      "constraints": [
+        "source_url must be an original property operator/provider page",
+        "do not use a commercial aggregator page as the canonical source",
+        "store concise factual metadata only; do not reproduce full property descriptions or images",
+        "do not bypass login, robots controls, rate limits or technical access restrictions",
+        "availability, fees, guarantor requirements and foreigner eligibility must be explicit or remain unknown"
+      ]
+    }
+  ],
   "context_sources": [
     {
       "id": "mlit-real-estate-library",

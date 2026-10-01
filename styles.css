@@ -29,3 +29,13 @@ textarea{display:block;width:100%;margin-top:7px;padding:12px 13px;border:1px so
 .itinerary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:8px}
 @media(max-width:900px){.special-check-grid{grid-template-columns:1fr}.eligibility-form{grid-template-columns:1fr}}
 @media(max-width:600px){.itinerary-grid{grid-template-columns:1fr}}
+
+.status-summary,.status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.status-grid{margin-top:28px}
+.status-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.status-card>span,.status-card small{display:block;color:var(--muted);font-size:.8rem}
+.status-card strong{display:block;font-family:Georgia,serif;font-weight:500;font-size:1.7rem;margin:7px 0}
+.status-card-row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.health{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:.72rem;font-weight:800;background:#eeece5;text-transform:capitalize}
+.health.healthy{background:#e7f1ea;color:#315b4a}.health.warning{background:#f6efd9;color:#745d18}.health.failed{background:#f6e3e1;color:#8c2c26}
+@media(max-width:800px){.status-summary,.status-grid{grid-template-columns:1fr}}

@@ -1,1 +1,9 @@
-{"updated_at":"2026-10-01","items":[]}
+{
+  "updated_at": "2026-10-01",
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Empty Phase 3 baseline; research workers must set pending_review when changing the feed."
+  },
+  "items": []
+}
