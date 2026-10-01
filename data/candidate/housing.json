@@ -3,7 +3,7 @@
   "change_control": {
     "status": "approved",
     "reviewed_at": "2026-10-01",
-    "review_note": "Initial production seed manually verified against directly managed Oakhouse property pages on 2026-10-01."
+    "review_note": "Direct-provider re-verification: Iidabashi room 302 shows availability from 2026-11-30; Sasazuka 2F-22 and Premiere Ayase 208 are explicitly full/unavailable."
   },
   "items": [
     {
@@ -16,7 +16,7 @@
       "monthly_rent_jpy": 149000,
       "upfront_fee_display": "¥50,000 one-time contract fee",
       "minimum_stay": "Monthly available",
-      "available_from": "2026-12-01",
+      "available_from": "2026-11-30",
       "furnished": true,
       "guarantor_required": null,
       "foreigner_eligibility": "explicitly_accepted",
@@ -48,7 +48,7 @@
       "source_url": "https://www.oakhouse.jp/eng/house/21",
       "first_seen": "2026-10-01",
       "last_seen": "2026-10-01",
-      "status": "active"
+      "status": "expired"
     },
     {
       "id": "oakhouse-premiere-ayase-208",
@@ -70,7 +70,7 @@
       "source_url": "https://www.oakhouse.jp/eng/house/647",
       "first_seen": "2026-10-01",
       "last_seen": "2026-10-01",
-      "status": "active"
+      "status": "expired"
     }
   ]
 }
