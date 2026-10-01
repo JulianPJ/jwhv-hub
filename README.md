@@ -124,42 +124,26 @@ Commercial job boards and housing portals are not approved merely because their 
 
 ## Phase 3 autonomous workers
 
-The repository now contains exact worker contracts under `automation/`.
-
-The intended daily flow is:
+The repository contains exact worker contracts under `automation/`, but only **two ChatGPT Scheduled Tasks** are active for JWHV Hub.
 
 ```text
-01:00 Jobs research ─────┐
-02:00 Housing research ──┤
-03:00 Visa monitor ──────┤
-                         ▼
-04:00 QA reviewer → candidate status = approved/rejected
-                         │
-                         ▼
-05:15 UTC GitHub Action promotes approved candidates
-                         │
-                         ▼
-                    live data
-                         │
-                         ▼
-                    GitHub Pages
-                         │
-                         ▼
-06:00 Site-health check
+01:00 Listings Research
+      ├── jobs research
+      └── housing research
+              │
+              ▼
+04:00 QA & Publish
+      ├── independently review pending listing candidates
+      ├── approve/reject
+      ├── trigger deterministic GitHub promotion
+      └── verify the deployed site
+              │
+              ▼
+         GitHub Pages
 ```
 
-Research workers cannot approve their own output. Jobs and housing use constrained direct-source discovery: the canonical URL must be the original employer or housing-provider page, not a third-party aggregator.
+Visa monitoring is not scheduled. The visa planner continues to use the verified ruleset already stored in the repository, and official-source checks should be performed when that ruleset is intentionally updated.
+
+Research cannot approve its own output. Jobs and housing use constrained direct-source discovery: the canonical URL must be the original employer or housing-provider page, not a third-party aggregator.
 
 Public automation/data freshness is visible at `/status.html`.
-
-### Scheduled-task prompts
-
-Each ChatGPT Scheduled Task can use a short launcher prompt such as:
-
-```
-Use the connected GitHub repository JulianPJ/jwhv-hub.
-Read automation/common-contract.md and automation/jobs-worker.md from main.
-Execute that worker contract completely for today's run.
-```
-
-Use the matching worker file for Housing, Visa, QA and Site Health.
