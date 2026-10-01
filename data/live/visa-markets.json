@@ -6,7 +6,8 @@
   ],
   "detailed_planners": {
     "GB": "visa-uk.json",
-    "AU": "visa-au.json"
+    "AU": "visa-au.json",
+    "DE": "visa-de.json"
   },
   "partner_countries": [
     {
@@ -43,7 +44,7 @@
       "code": "DE",
       "name": "Germany",
       "region": "Europe",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "GB",
