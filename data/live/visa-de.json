@@ -126,7 +126,8 @@
     "bank_statement_months": null,
     "source_ids": [
       "de-embassy-working-holiday"
-    ]
+    ],
+    "input_label": "Funds shown in your bank statement (€)"
   },
   "participation_rule": {
     "max_total_participations": 2,
@@ -146,6 +147,23 @@
     "source_ids": [
       "de-embassy-working-holiday",
       "de-working-holiday-faq"
+    ],
+    "ui_label": "Application location",
+    "ui_help": "German passport holders do not need to reside in Germany, but the Working Holiday application itself must be made at a Japanese diplomatic mission in Germany.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I will apply at a Japanese mission in Germany",
+        "mission_label": "Japanese Embassy or Consulate-General in Germany",
+        "mission_detail": "German passport holders may apply even if they do not reside in Germany, but the Working Holiday application itself must be lodged at a Japanese diplomatic mission in Germany."
+      },
+      {
+        "value": "outside_country",
+        "label": "I plan to apply outside Germany",
+        "mission_label": "German Working Holiday application must be lodged in Germany",
+        "mission_detail": "German passport holders may live elsewhere, but the current official guidance says the Working Holiday visa can only be applied for at Japanese diplomatic missions in Germany.",
+        "issue": "The German Working Holiday visa can only be applied for at a Japanese embassy or consulate in Germany."
+      }
     ]
   },
   "document_checklist": [
