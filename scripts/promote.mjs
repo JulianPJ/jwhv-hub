@@ -55,8 +55,26 @@ function promoteVisaFile(file){
   console.log(`✓ promoted ${file}`);
 }
 
+function promoteVisaMarkets(){
+  const candidate=read("data/candidate/visa-markets.json");
+  if(candidate.change_control?.status!=="approved"){
+    console.log(`- skipped visa-markets.json: candidate status is ${candidate.change_control?.status||"missing"}`);
+    return;
+  }
+  for(const id of candidate.source_ids||[]){
+    const state=health.sources[id];
+    if(state&&["unhealthy","quarantined"].includes(state.status)){
+      throw new Error(`visa-markets.json: source ${id} is ${state.status}; promotion blocked`);
+    }
+  }
+  write("data/live/visa-markets.json",candidate);
+  promoted++;
+  console.log("✓ promoted visa-markets.json");
+}
+
 function promoteVisa(){
   for(const file of ["visa-uk.json","visa-au.json","visa-de.json"]) promoteVisaFile(file);
+  promoteVisaMarkets();
 }
 
 for(const scope of requested){
