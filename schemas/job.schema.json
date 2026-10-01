@@ -1,105 +1,152 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "JWHV job",
+  "title": "JWHV job feed",
   "type": "object",
   "required": [
-    "id",
-    "title",
-    "employer",
-    "source_id",
-    "source_name",
-    "source_url",
-    "first_seen",
-    "last_seen",
-    "status"
+    "updated_at",
+    "change_control",
+    "items"
   ],
   "properties": {
-    "id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "title": {
-      "type": "string",
-      "minLength": 1
-    },
-    "employer": {
-      "type": "string",
-      "minLength": 1
-    },
-    "prefecture": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "city": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "salary_display": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "japanese_level": {
-      "enum": [
-        "none",
-        "basic",
-        "conversational",
-        "business",
-        "native",
-        "unknown"
-      ]
-    },
-    "working_holiday": {
-      "enum": [
-        "explicitly_accepted",
-        "likely_compatible",
-        "unknown"
-      ]
-    },
-    "accommodation_provided": {
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "source_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "source_name": {
-      "type": "string",
-      "minLength": 1
-    },
-    "source_url": {
-      "type": "string",
-      "format": "uri"
-    },
-    "first_seen": {
+    "updated_at": {
       "type": "string",
       "format": "date"
     },
-    "last_seen": {
-      "type": "string",
-      "format": "date"
-    },
-    "expires_at": {
-      "type": [
-        "string",
-        "null"
+    "change_control": {
+      "type": "object",
+      "required": [
+        "status"
       ],
-      "format": "date"
+      "properties": {
+        "status": {
+          "enum": [
+            "approved",
+            "pending_review",
+            "rejected"
+          ]
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "review_note": {
+          "type": "string"
+        }
+      }
     },
-    "status": {
-      "enum": [
-        "active",
-        "stale",
-        "expired"
-      ]
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "employer",
+          "source_id",
+          "source_name",
+          "source_domain",
+          "source_url",
+          "first_seen",
+          "last_seen",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "employer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "prefecture": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "salary_display": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "japanese_level": {
+            "enum": [
+              "none",
+              "basic",
+              "conversational",
+              "business",
+              "native",
+              "unknown"
+            ]
+          },
+          "working_holiday": {
+            "enum": [
+              "explicitly_accepted",
+              "likely_compatible",
+              "unknown"
+            ]
+          },
+          "accommodation_provided": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_domain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "first_seen": {
+            "type": "string",
+            "format": "date"
+          },
+          "last_seen": {
+            "type": "string",
+            "format": "date"
+          },
+          "expires_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "stale",
+              "expired"
+            ]
+          }
+        }
+      }
     }
   }
 }
