@@ -197,6 +197,28 @@
       "allowed_for": [
         "visa"
       ]
+    },
+    {
+      "id": "us-embassy-travel-visa",
+      "name": "Embassy of Japan in the United States — Visa and Travel Information",
+      "url": "https://www.us.emb-japan.go.jp/itpr_en/travel_and_visa.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "us-embassy-coe",
+      "name": "Embassy of Japan in the United States — Visa for COE holders",
+      "url": "https://www.us.emb-japan.go.jp/itpr_en/visa-coe.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
     }
   ],
   "job_sources": [
