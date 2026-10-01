@@ -147,3 +147,19 @@ Visa monitoring is not scheduled. The visa planner continues to use the verified
 Research cannot approve its own output. Jobs and housing use constrained direct-source discovery: the canonical URL must be the original employer or housing-provider page, not a third-party aggregator.
 
 Public automation/data freshness is visible at `/status.html`.
+
+
+## Phase 6 move dashboard
+
+`plan.html` combines browser-local state into a single planning view:
+
+- target arrival date and countdown
+- visa-checklist completion
+- saved job/housing counts
+- context-aware next actions
+- planning milestones generated relative to arrival
+- local milestone completion
+- saved pay/rent snapshot
+- downloadable move-plan summary
+
+The milestones are organisational suggestions, not official visa deadlines. All plan state remains in browser `localStorage`.
