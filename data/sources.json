@@ -307,6 +307,94 @@
       "allowed_for": [
         "visa"
       ]
+    },
+    {
+      "id": "es-embassy-working-holiday",
+      "name": "Embassy of Japan in Spain — Working Holiday 2026",
+      "url": "https://www.es.emb-japan.go.jp/itpr_es/00_000378.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "es-working-holiday-checklist",
+      "name": "Embassy of Japan in Spain — Working Holiday 2026 document checklist",
+      "url": "https://www.es.emb-japan.go.jp/files/100950584.pdf",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_pdf",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "es-barcelona-working-holiday",
+      "name": "Consulate-General of Japan in Barcelona — Working Holiday",
+      "url": "https://www.barcelona.es.emb-japan.go.jp/itpr_ja/workingholiday.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "es-las-palmas-visa",
+      "name": "Consulate of Japan in Las Palmas — Visa information",
+      "url": "https://www.es.emb-japan.go.jp/itpr_es/00_000246.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "pt-embassy-working-holiday",
+      "name": "Embassy of Japan in Portugal — Working Holiday Visa",
+      "url": "https://www.pt.emb-japan.go.jp/itpr_ja/00_000236.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "pt-embassy-visa-current",
+      "name": "Embassy of Japan in Portugal — Visa for Japan",
+      "url": "https://www.pt.emb-japan.go.jp/itpr_ja/00_000242.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "se-embassy-working-holiday",
+      "name": "Embassy of Japan in Sweden — Working Holiday Visa",
+      "url": "https://www.se.emb-japan.go.jp/itpr_sv/visa_working_holiday.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "se-embassy-how-to-apply",
+      "name": "Embassy of Japan in Sweden — How to Apply for a Visa",
+      "url": "https://www.se.emb-japan.go.jp/itpr_sv/visa_how_to_apply.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
     }
   ],
   "job_sources": [
