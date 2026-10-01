@@ -226,25 +226,11 @@ async function initApplication(){
 
   const specialIds=["bank-funds","return-ticket","prior-visas","previous-extension","jurisdiction-area"];
   const area=$("#jurisdiction-area");
-  if(selected==="GB"){
-    $("#funds-label").textContent="Cleared funds shown in your UK bank statements (£)";
-    $("#bank-funds").placeholder=String(visa.funds_rule.no_ticket_minimum||2500);
-    $("#residence-label").textContent="UK residence area";
-    $("#residence-help").textContent="The Edinburgh jurisdiction includes Scotland plus specified northern council areas. The exact current list comes from the verified ruleset.";
-    area.innerHTML='<option value="">Choose…</option><option value="scotland">Scotland</option><option value="edinburgh_north">Listed North of England council area</option><option value="other_uk">Elsewhere in the UK</option><option value="outside_country">Outside the UK</option>';
-  }else if(selected==="AU"){
-    $("#funds-label").textContent="Funds shown in your Australian bank statements (A$)";
-    $("#bank-funds").placeholder=String(visa.funds_rule.with_return_ticket_minimum||2500);
-    $("#residence-label").textContent="Australian residence";
-    $("#residence-help").textContent="Australian Working Holiday applicants must currently live in Australia and should follow the Japanese mission responsible for their residence.";
-    area.innerHTML='<option value="">Choose…</option><option value="in_country">I currently live in Australia</option><option value="outside_country">I currently live outside Australia</option>';
-  }else if(selected==="DE"){
-    $("#funds-label").textContent="Funds shown in your bank statement (€)";
-    $("#bank-funds").placeholder=String(visa.funds_rule.with_return_ticket_minimum||2000);
-    $("#residence-label").textContent="Application location";
-    $("#residence-help").textContent="German passport holders do not need to reside in Germany, but the Working Holiday application itself must be made at a Japanese diplomatic mission in Germany.";
-    area.innerHTML='<option value="">Choose…</option><option value="in_country">I will apply at a Japanese mission in Germany</option><option value="outside_country">I plan to apply outside Germany</option>';
-  }
+  $("#funds-label").textContent=visa.funds_rule.input_label||("Funds shown in your bank statements ("+(visa.currency_symbol||visa.funds_rule.currency)+")");
+  $("#bank-funds").placeholder=String(visa.funds_rule.no_ticket_minimum||visa.funds_rule.with_return_ticket_minimum||"");
+  $("#residence-label").textContent=visa.jurisdiction.ui_label||"Application route";
+  $("#residence-help").textContent=visa.jurisdiction.ui_help||visa.jurisdiction.description||"Follow the current official mission instructions.";
+  area.innerHTML='<option value="">Choose…</option>'+(visa.jurisdiction.options||[]).map(option=>'<option value="'+esc(option.value)+'">'+esc(option.label)+'</option>').join("");
   $("#previous-extension-wrap").hidden=!visa.participation_rule.extension_counts_toward_total_years;
 
   for(const id of specialIds){
@@ -261,36 +247,9 @@ async function initApplication(){
   function saveEligibility(){writeLocal(eligibilityKey,collectEligibility())}
 
   function renderMission(){
-    const value=area.value;
-    let label="Answer the residence question",detail="Use the selected country ruleset to identify the correct application route.";
-    if(selected==="GB"){
-      if(value==="scotland"||value==="edinburgh_north"){
-        label=visa.jurisdiction.edinburgh_label;
-        detail="Edinburgh currently covers Scotland and these listed northern areas: "+visa.jurisdiction.edinburgh_regions.filter(v=>v!=="Scotland").join(", ")+".";
-      }else if(value==="other_uk"){
-        label=visa.jurisdiction.london_label;
-        detail="Applicants outside Edinburgh's listed UK area use the Embassy in London under the current guidance.";
-      }else if(value==="outside_country"){
-        label="UK application route may not apply";
-        detail="The UK route requires UK residence. Check the Japanese mission responsible for your country of nationality/residence.";
-      }
-    }else if(selected==="AU"){
-      if(value==="in_country"){
-        label=visa.jurisdiction.label;
-        detail=visa.jurisdiction.description;
-      }else if(value==="outside_country"){
-        label="Australian application route may not apply";
-        detail="Australian Working Holiday applicants must currently live in Australia and apply through the appropriate Japanese mission there.";
-      }
-    }else if(selected==="DE"){
-      if(value==="in_country"){
-        label=visa.jurisdiction.label;
-        detail=visa.jurisdiction.description;
-      }else if(value==="outside_country"){
-        label="German Working Holiday application must be lodged in Germany";
-        detail="German passport holders may live elsewhere, but the current official guidance says the Working Holiday visa can only be applied for at Japanese diplomatic missions in Germany.";
-      }
-    }
+    const option=(visa.jurisdiction.options||[]).find(item=>item.value===area.value);
+    const label=option?.mission_label||"Answer the application-route question";
+    const detail=option?.mission_detail||"Use the selected country ruleset to identify the correct application route.";
     $("#mission-card").innerHTML='<span class="small-label">YOUR MISSION</span><strong>'+esc(label)+'</strong><p class="muted">'+esc(detail)+'</p>';
   }
 
@@ -339,11 +298,9 @@ async function initApplication(){
       else if(extension==="yes") issues.push("A second year obtained by extending a first Working Holiday stay counts toward the current participation limit.");
     }
 
-    if(area.value==="") pending.push(selected==="DE"?"Application location":"Residence area");
-    if(area.value==="outside_country"){
-      if(selected==="DE") issues.push("The German Working Holiday visa can only be applied for at a Japanese embassy or consulate in Germany.");
-      else issues.push("The selected Working Holiday route requires the applicant to be currently resident in the country of nationality.");
-    }
+    if(area.value==="") pending.push(visa.jurisdiction.ui_label||"Application route");
+    const routeOption=(visa.jurisdiction.options||[]).find(item=>item.value===area.value);
+    if(routeOption?.issue) issues.push(routeOption.issue);
 
     const result=$("#eligibility-result");
     if(issues.length){
