@@ -171,6 +171,7 @@ The Japan-side jobs and housing inventory is shared across users. Visa guidance 
 Current detailed planners:
 - United Kingdom (`data/live/visa-uk.json`)
 - Australia (`data/live/visa-au.json`)
+- Germany (`data/live/visa-de.json`)
 
 `data/live/visa-markets.json` tracks Japan's current Working Holiday partner countries/regions from MOFA and highlights EU/North American availability. The European Union is not treated as one visa market: eligibility and application rules are passport-country specific. The United States is shown as having no current Japan Working Holiday arrangement because it is not on MOFA's current partner list.
 
