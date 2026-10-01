@@ -1,9 +1,105 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Visa planner · JWHV Hub</title><link rel="stylesheet" href="styles.css"></head>
-<body data-page="application"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">日</span><span>JWHV Hub</span></a><nav><a href="jobs.html">Jobs</a><a href="housing.html">Housing</a><a class="active" href="application.html">Visa planner</a></nav></header>
-<main><section class="page-intro"><p class="eyebrow">Application preparation</p><h1>Your Working Holiday preparation dashboard.</h1><p>Progress is stored only in this browser. This MVP does not accept passport scans, bank statements or other sensitive documents.</p></section>
-<section class="application-layout"><aside class="progress-card"><p class="small-label">PREPARATION</p><div class="progress-value"><span id="progress-number">0</span>%</div><div class="progress-track"><div id="progress-bar"></div></div><p id="progress-copy" class="muted">Complete the preparation steps below.</p><button id="reset-progress" class="button secondary compact" type="button">Reset local progress</button></aside>
-<div class="application-content"><section class="panel"><div class="panel-heading"><div><p class="eyebrow">Current ruleset</p><h2>UK → Japan</h2></div><span id="visa-verified" class="status-pill">Loading…</span></div><div id="visa-summary" class="visa-summary"></div></section>
-<section class="panel"><p class="eyebrow">Checklist</p><h2>Preparation steps</h2><div id="visa-checklist" class="checklist"></div></section>
-<section class="notice"><strong>Important</strong><p>This is an independent planning tool, not a government application service or immigration adviser. Always follow the current instructions issued by the Japanese mission responsible for your application.</p></section></div></section></main>
-<footer><p>No sensitive application documents are uploaded or stored by this MVP.</p></footer><script src="app.js" defer></script></body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Prepare a UK to Japan Working Holiday visa application with an eligibility pre-check, document checklist and local-only planning workspace.">
+<title>Visa planner · JWHV Hub</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="application">
+<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">日</span><span>JWHV Hub</span></a>
+<nav><a href="jobs.html">Jobs</a><a href="housing.html">Housing</a><a class="active" href="application.html">Visa planner</a></nav></header>
+<main>
+<section class="page-intro"><p class="eyebrow">Application preparation</p><h1>Your Working Holiday preparation dashboard.</h1>
+<p>Check the current baseline rules, identify your responsible Japanese mission, prepare the document pack and keep private planning notes. Everything you enter stays in this browser.</p></section>
+
+<section class="application-layout">
+<aside class="progress-card">
+  <p class="small-label">DOCUMENT PREPARATION</p>
+  <div class="progress-value"><span id="progress-number">0</span>%</div>
+  <div class="progress-track"><div id="progress-bar"></div></div>
+  <p id="progress-copy" class="muted">Complete the preparation steps below.</p>
+  <div id="mission-card" class="mission-card"><span class="small-label">YOUR MISSION</span><strong>Answer the location question</strong><p class="muted">We will route you to London or Edinburgh using the current jurisdiction guidance.</p></div>
+  <button id="reset-progress" class="button secondary compact" type="button">Reset local progress</button>
+</aside>
+
+<div class="application-content">
+  <section class="panel">
+    <div class="panel-heading">
+      <div><p class="eyebrow">Current ruleset</p><h2>UK → Japan</h2></div>
+      <span id="visa-verified" class="status-pill">Loading…</span>
+    </div>
+    <div id="visa-summary" class="visa-summary"></div>
+    <div id="official-source-links" class="listing-meta"></div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">Step 1</p><h2>Eligibility pre-check</h2>
+    <p class="muted">This is a rules-based planning check, not a visa decision. Official Japanese authorities make the actual determination.</p>
+    <form id="eligibility-form" class="eligibility-form"></form>
+    <div class="special-check-grid">
+      <div class="mini-panel">
+        <h3>Funds</h3>
+        <label>Cleared funds shown in your UK bank statements (£)
+          <input id="bank-funds" type="number" inputmode="numeric" min="0" step="50" placeholder="2500">
+        </label>
+        <label>Do you have evidence of a return/onward ticket?
+          <select id="return-ticket"><option value="">Choose…</option><option value="yes">Yes</option><option value="no">No</option></select>
+        </label>
+      </div>
+      <div class="mini-panel">
+        <h3>Previous participation</h3>
+        <label>How many Japanese Working Holiday visas have previously been issued to you?
+          <select id="prior-visas"><option value="">Choose…</option><option value="0">0</option><option value="1">1</option><option value="2">2 or more</option></select>
+        </label>
+        <label>Have you already extended a first Working Holiday stay for a second year?
+          <select id="previous-extension"><option value="">Choose…</option><option value="yes">Yes</option><option value="no">No</option></select>
+        </label>
+      </div>
+      <div class="mini-panel">
+        <h3>Where do you live?</h3>
+        <label>UK residence area
+          <select id="jurisdiction-area">
+            <option value="">Choose…</option>
+            <option value="scotland">Scotland</option>
+            <option value="edinburgh_north">Listed North of England council area</option>
+            <option value="other_uk">Elsewhere in the UK</option>
+            <option value="outside_uk">Outside the UK</option>
+          </select>
+        </label>
+        <p class="field-help">The Edinburgh jurisdiction includes Scotland plus specified northern council areas. The exact current list is shown from the verified ruleset.</p>
+      </div>
+    </div>
+    <div id="eligibility-result" class="eligibility-result neutral" aria-live="polite">
+      <strong>Complete the questions to run the pre-check.</strong>
+    </div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">Step 2</p><h2>Application document pack</h2>
+    <p class="muted">Mark documents as prepared; no files are uploaded. Each item is derived from the current official Working Holiday guidance.</p>
+    <div id="document-checklist" class="checklist"></div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">Step 3</p><h2>Final preparation</h2>
+    <div id="visa-checklist" class="checklist"></div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">Private workspace</p><h2>Plan your Statement of Purpose and itinerary</h2>
+    <p class="muted">These notes are saved only in local browser storage. They are not submitted anywhere.</p>
+    <div class="workspace-grid">
+      <label class="wide-label">Statement of Purpose notes
+        <textarea id="statement-notes" rows="10" placeholder="Why Japan? What do you hope to learn, experience or achieve? Keep this separate from the month-by-month itinerary."></textarea>
+      </label>
+      <div class="wide-label">
+        <span class="label-text">12-month itinerary notes</span>
+        <div id="itinerary-months" class="itinerary-grid"></div>
+      </div>
+    </div>
+    <div class="actions"><button id="download-plan" class="button secondary" type="button">Download my planning notes</button></div>
+  </section>
+
+  <section class="notice"><strong>Important</strong><p>This is an independent planning tool, not a government application service or immigration adviser. Requirements can change; always follow the current instructions issued by the Japanese mission responsible for your application.</p></section>
+</div>
+</section>
+</main>
+<footer><p>No sensitive application documents are uploaded or stored by this MVP.</p></footer>
+<script src="app.js" defer></script></body></html>
