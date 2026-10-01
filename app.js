@@ -192,15 +192,15 @@ async function initApplication(){
   $("#market-verified").textContent="MOFA list verified "+markets.verified_at;
   $("#visa-market-note").textContent=detailedCodes.length+" detailed country planners are currently available. Other passport countries remain visible from Japan's official Working Holiday partner list and can be added without changing the core planner code.";
 
-  const eu=markets.coverage_groups.find(group=>group.id==="eu");
-  const aus=markets.coverage_groups.find(group=>group.id==="australia");
-  const na=markets.coverage_groups.find(group=>group.id==="north-america");
   const names=codes=>codes.map(code=>countryNames.get(code)||code).join(", ");
-  $("#market-coverage").innerHTML=[
-    {title:aus.label,status:"Detailed planner available",body:names(aus.eligible_codes)},
-    {title:eu.label,status:eu.eligible_codes.length+" member states eligible · "+eu.eligible_codes.filter(code=>detailedCodes.includes(code)).length+" detailed planner(s)",body:names(eu.eligible_codes)+" · No current arrangement: "+names(eu.unavailable_codes)},
-    {title:na.label,status:"Country-specific",body:"Eligible: "+names(na.eligible_codes)+" · No current Japan Working Holiday arrangement: "+names(na.unavailable_codes)}
-  ].map(item=>'<article class="market-card"><span>'+esc(item.status)+'</span><strong>'+esc(item.title)+'</strong><p>'+esc(item.body)+'</p></article>').join("");
+  $("#market-coverage").innerHTML=(markets.coverage_groups||[]).map(group=>{
+    const eligible=group.eligible_codes||[];
+    const unavailable=group.unavailable_codes||[];
+    const detailed=eligible.filter(code=>detailedCodes.includes(code)).length;
+    const status=eligible.length+" eligible · "+detailed+" detailed planner"+(detailed===1?"":"s");
+    const body=(group.summary?group.summary+" ":"")+"Eligible: "+names(eligible)+(unavailable.length?" · No current arrangement: "+names(unavailable):"");
+    return '<article class="market-card"><span>'+esc(status)+'</span><strong>'+esc(group.label)+'</strong><p>'+esc(body)+'</p></article>';
+  }).join("");
 
   const ruleset=markets.detailed_planners[selected];
   const visa=await loadJSON("data/live/"+ruleset);
