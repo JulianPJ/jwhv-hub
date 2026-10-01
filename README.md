@@ -238,3 +238,17 @@ The shared visa schema now supports:
 Spain is the first market using both features. Current 2026 evidence is mixed by jurisdiction: Madrid reports its allocation exhausted, Barcelona's latest verified notice reported availability, and Las Palmas requires a direct quota re-check. The planner therefore changes the intake notice when the user selects their Spanish consular jurisdiction rather than applying one national status.
 
 Portugal uses the current official €7,000 / €8,000 funds rule depending on whether the return ticket has been acquired. Sweden uses SEK 20,000 with return/onward ticket evidence or SEK 41,000 without.
+
+
+## Phase 12 visa coverage dashboard
+
+The Status page now treats passport-market coverage as an operational metric rather than an implementation detail.
+
+It shows:
+- detailed planner count versus the full MOFA Working Holiday partner count;
+- the remaining eligible partner-market expansion queue;
+- tracked non-partner reference markets;
+- current country-level application status/alerts for every detailed ruleset; and
+- direct links that open the Visa Planner with the selected passport market preselected.
+
+Coverage numbers are calculated from `visa-markets.json` at runtime, so they update automatically as new detailed rulesets are added.
