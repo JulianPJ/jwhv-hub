@@ -5,6 +5,7 @@
   "required": [
     "id",
     "name",
+    "source_id",
     "source_name",
     "source_url",
     "first_seen",
@@ -67,6 +68,10 @@
         "explicitly_accepted",
         "unknown"
       ]
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
     },
     "source_name": {
       "type": "string",
