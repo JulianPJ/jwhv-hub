@@ -10,7 +10,10 @@
     "DE": "visa-de.json",
     "CA": "visa-ca.json",
     "NZ": "visa-nz.json",
-    "FR": "visa-fr.json"
+    "FR": "visa-fr.json",
+    "IE": "visa-ie.json",
+    "NL": "visa-nl.json",
+    "IT": "visa-it.json"
   },
   "partner_countries": [
     {
@@ -59,7 +62,7 @@
       "code": "IE",
       "name": "Ireland",
       "region": "Europe",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "DK",
@@ -167,7 +170,7 @@
       "code": "NL",
       "name": "Netherlands",
       "region": "Europe",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "UY",
@@ -203,7 +206,7 @@
       "code": "IT",
       "name": "Italy",
       "region": "Europe",
-      "detailed_planner": false
+      "detailed_planner": true
     }
   ],
   "coverage_groups": [
@@ -371,6 +374,6 @@
   "change_control": {
     "status": "approved",
     "reviewed_at": "2026-10-01",
-    "review_note": "Market registry retained; added official-source fallback guidance for U.S. passport holders, who do not have a current Japan Working Holiday arrangement."
+    "review_note": "MOFA partner registry retained; detailed planners now enabled for GB, AU, DE, CA, NZ, FR, IE, NL and IT using current official Japanese diplomatic sources."
   }
 }

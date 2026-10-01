@@ -175,6 +175,9 @@ Current detailed planners:
 - Canada (`data/live/visa-ca.json`)
 - New Zealand (`data/live/visa-nz.json`)
 - France (`data/live/visa-fr.json`)
+- Ireland (`data/live/visa-ie.json`)
+- Netherlands (`data/live/visa-nl.json`)
+- Italy (`data/live/visa-it.json`)
 
 `data/live/visa-markets.json` tracks Japan's current Working Holiday partner countries/regions from MOFA and highlights EU/North American availability. The European Union is not treated as one visa market: eligibility and application rules are passport-country specific. The United States is shown as having no current Japan Working Holiday arrangement because it is not on MOFA's current partner list.
 
@@ -208,3 +211,14 @@ The United States is the first enriched non-partner guide. It explains that:
 - paid work or long-term stay generally requires an appropriate visa, commonly with a Certificate of Eligibility obtained through a sponsor in Japan.
 
 Selecting a status-only or non-partner market never falls back to the UK planner in Visa Planner or My Plan.
+
+
+## Phase 10 EU market expansion wave 2
+
+Ireland, the Netherlands and Italy now have detailed country-specific planners.
+
+- **Ireland:** up to two separate Working Holiday stays; €1,600 with return/onward ticket evidence or €3,200 without; annual ceiling of 800 visas.
+- **Netherlands:** one lifetime Working Holiday visa; €1,800 with a return flight or €3,800 with a one-way flight; annual quota of 200. The Embassy's 24 September 2026 notice states that 2026 Working Holiday applications are closed.
+- **Italy:** programme operating since 1 April 2026; one lifetime Working Holiday visa; at least €1,800 initial living funds plus a return ticket, or roughly €3,800 without a return ticket. The planner routes northern residents to Milan and other Italian residents to Rome using their different current submission procedures.
+
+Capacity or calendar availability is modeled separately from legal eligibility. A market can remain an eligible partner while the current year's intake is closed or quota-limited.

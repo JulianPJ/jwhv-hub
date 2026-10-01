@@ -1,0 +1,321 @@
+{
+  "market": "IT",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Italy → Japan",
+  "currency_symbol": "€",
+  "application_status": {
+    "status": "limited",
+    "label": "Programme active; annual issuance limit applies",
+    "detail": "The Italy–Japan Working Holiday programme began on 1 April 2026. Official guidance says there is an annual issuance limit and applications cannot be accepted once it has been reached; check the responsible mission before relying on late-year availability."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Italy ruleset verified against the current Embassy of Japan in Italy and Consulate-General of Japan in Milan Working Holiday guidance."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Italian citizen resident in Italy at application",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Japanese Working Holiday visa",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "€1,800 initial living funds plus return ticket, or about €3,800 without a return ticket",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "label": "Programme start",
+      "value": "Operational since 1 April 2026",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-working-holiday-launch"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "italian_citizen",
+      "label": "Are you an Italian citizen?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Working Holiday route is for Italian citizens.",
+      "source_ids": [
+        "it-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "italy_resident",
+      "label": "Are you resident in Italy at the time of application?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Italian Working Holiday applicants must reside in Italy when applying.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Italian Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "it-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The main purpose must be a holiday; part-time work is incidental to financing the trip.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependants without their own eligible status accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "Dependants cannot accompany the principal applicant unless they independently hold an appropriate status.",
+      "source_ids": [
+        "it-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_character",
+      "label": "Can you truthfully meet the health, insurance and no-criminal-record requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Italian programme requires adequate health coverage, good health and no criminal record.",
+      "source_ids": [
+        "it-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "input_label": "Funds shown in your Italian bank statements (€)",
+    "with_return_ticket_minimum": 1800,
+    "no_ticket_minimum": 3800,
+    "bank_statement_months": 3,
+    "no_ticket_note": "Without a return ticket, official guidance requires about €2,000 sufficient to cover one plus at least €1,800 for initial living costs.",
+    "source_ids": [
+      "it-embassy-working-holiday",
+      "it-milan-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "it-embassy-working-holiday",
+      "it-milan-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "residential_jurisdiction",
+    "country": "Italy",
+    "label": "Japanese mission responsible for your Italian residence",
+    "description": "Italian residents apply through Rome or Milan according to consular jurisdiction. The procedures differ: Rome pre-screens documents by email and confirms an appointment; Milan currently accepts complete printed applications without an appointment.",
+    "source_ids": [
+      "it-embassy-working-holiday",
+      "it-milan-working-holiday"
+    ],
+    "ui_label": "Italian residential jurisdiction",
+    "ui_help": "Choose the Japanese mission responsible for the region where you live.",
+    "options": [
+      {
+        "value": "milan",
+        "label": "Emilia-Romagna, Friuli-Venezia Giulia, Liguria, Lombardia, Piemonte, Trentino-Alto Adige, Valle d'Aosta or Veneto",
+        "mission_label": "Consulate-General of Japan in Milan",
+        "mission_detail": "Milan handles these eight northern regions. Current Working Holiday guidance says no appointment is required; bring the complete printed application."
+      },
+      {
+        "value": "rome",
+        "label": "Elsewhere in Italy",
+        "mission_label": "Embassy of Japan in Italy — Rome",
+        "mission_detail": "The Embassy Working Holiday procedure instructs applicants to email the required documents first, wait for a response, then attend a confirmed appointment in Rome."
+      },
+      {
+        "value": "outside_country",
+        "label": "I am not resident in Italy",
+        "mission_label": "Italian Working Holiday route may not apply",
+        "mission_detail": "The current Working Holiday rules require Italian citizenship and residence in Italy at the time of application.",
+        "issue": "The Italy Working Holiday route requires the applicant to be an Italian citizen resident in Italy at the time of application."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Italian passport",
+      "description": "Passport needs at least two blank pages and validity extending at least three months beyond the planned stay.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Visa application form",
+      "description": "Complete the current official visa application form.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "photo",
+      "title": "Recent photograph",
+      "description": "Provide a photograph taken within the previous six months and attach it as instructed.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Curriculum Vitae",
+      "description": "Prepare the current Working Holiday CV form.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Outline of planned activities",
+      "description": "Complete the official outline of activities planned for the Working Holiday stay.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "Statement of intent",
+      "description": "Prepare the free-format statement explaining why you are applying for the Working Holiday visa.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Three months of bank statements",
+      "description": "Provide bank statements in the applicant's name for the previous three months and meet the applicable ticket/funds baseline.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "flight",
+      "title": "Return-flight booking if already reserved",
+      "description": "Provide the return-flight reservation if already booked; otherwise ensure sufficient additional funds for the return ticket.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "health-pledge",
+      "title": "National Health Insurance pledge or adequate coverage",
+      "description": "Provide the required National Health Insurance pledge or qualifying health-insurance evidence under the current instructions.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    },
+    {
+      "id": "privacy-consent",
+      "title": "Personal-data consent form",
+      "description": "Provide the required consent form for use of personal data.",
+      "source_ids": [
+        "it-embassy-working-holiday",
+        "it-milan-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "availability",
+      "title": "Check annual-cap availability",
+      "description": "The programme has an annual issuance limit; confirm availability with the mission responsible for your residence."
+    },
+    {
+      "id": "jurisdiction",
+      "title": "Confirm Rome vs Milan jurisdiction",
+      "description": "Milan covers the eight northern regions listed in the planner; other Italian residents should follow the Embassy in Rome procedure."
+    },
+    {
+      "id": "submission",
+      "title": "Follow your mission's submission method",
+      "description": "Rome uses email pre-screening plus a confirmed appointment; Milan currently accepts complete printed applications without an appointment."
+    },
+    {
+      "id": "entry-window",
+      "title": "Plan for the three-month visa validity window",
+      "description": "Current guidance says entry into Japan must occur within three months after the Working Holiday visa is issued."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final official-source check",
+      "description": "Re-check annual-cap status, documents and local submission instructions immediately before applying."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "it-embassy-working-holiday",
+      "name": "Embassy of Japan in Italy — Working Holiday Visa for Italian citizens",
+      "url": "https://www.it.emb-japan.go.jp/itpr_it/visto_italiani_vacanza-lavoro.html"
+    },
+    {
+      "id": "it-milan-working-holiday",
+      "name": "Consulate-General of Japan in Milan — Working Holiday Visa",
+      "url": "https://www.milano.it.emb-japan.go.jp/itpr_it/visti_vacanzalavoro.html"
+    },
+    {
+      "id": "it-working-holiday-launch",
+      "name": "Embassy of Japan in Italy — Working Holiday programme launch",
+      "url": "https://www.it.emb-japan.go.jp/itpr_it/20260401_working_holiday_visa_annuncio.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}

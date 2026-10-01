@@ -219,6 +219,94 @@
       "allowed_for": [
         "visa"
       ]
+    },
+    {
+      "id": "ie-embassy-working-holiday",
+      "name": "Embassy of Japan in Ireland — Working Holiday Scheme",
+      "url": "https://www.ie.emb-japan.go.jp/itpr_en/00_000070.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "ie-embassy-consular",
+      "name": "Embassy of Japan in Ireland — Consular Information",
+      "url": "https://www.ie.emb-japan.go.jp/itpr_en/about.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "nl-embassy-working-holiday",
+      "name": "Embassy of Japan in the Netherlands — Working Holiday Visa",
+      "url": "https://www.nl.emb-japan.go.jp/itpr_en/r_workingholidayvisa.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "nl-embassy-visa-current",
+      "name": "Embassy of Japan in the Netherlands — Current Visa and Travel Information",
+      "url": "https://www.nl.emb-japan.go.jp/itpr_en/e_consulate.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "nl-working-holiday-checklist",
+      "name": "Embassy of Japan in the Netherlands — Working Holiday document checklist",
+      "url": "https://www.nl.emb-japan.go.jp/files/100409984.pdf",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_pdf",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "it-embassy-working-holiday",
+      "name": "Embassy of Japan in Italy — Working Holiday Visa for Italian citizens",
+      "url": "https://www.it.emb-japan.go.jp/itpr_it/visto_italiani_vacanza-lavoro.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "it-milan-working-holiday",
+      "name": "Consulate-General of Japan in Milan — Working Holiday Visa",
+      "url": "https://www.milano.it.emb-japan.go.jp/itpr_it/visti_vacanzalavoro.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "it-working-holiday-launch",
+      "name": "Embassy of Japan in Italy — Working Holiday programme launch",
+      "url": "https://www.it.emb-japan.go.jp/itpr_it/20260401_working_holiday_visa_annuncio.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
     }
   ],
   "job_sources": [
