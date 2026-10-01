@@ -271,7 +271,59 @@
       "name": "United States",
       "region": "North America",
       "working_holiday_available": false,
-      "reason": "Not listed among Japan's 32 Working Holiday partner countries/regions as of 2026-04-01."
+      "reason": "The United States is not listed among Japan's current Working Holiday partner countries/regions as of 2026-04-01.",
+      "guide": {
+        "title": "United States → Japan",
+        "status": "no_working_holiday_arrangement",
+        "label": "No current Japan Working Holiday arrangement",
+        "detail": "U.S. passport holders do not currently have a Japan Working Holiday route. The official Japanese partner-country list does not include the United States.",
+        "facts": [
+          {
+            "label": "Short visits",
+            "value": "U.S. citizens can generally enter Japan for up to 90 days for tourism, business without paid activities, conferences or study without obtaining a visa in advance.",
+            "source_ids": [
+              "us-embassy-travel-visa"
+            ]
+          },
+          {
+            "label": "Paid work",
+            "value": "Paid activities require an appropriate work or long-term status rather than the visa-free short-stay route.",
+            "source_ids": [
+              "us-embassy-travel-visa",
+              "us-embassy-coe"
+            ]
+          },
+          {
+            "label": "Work / long-term route",
+            "value": "For many work, study or long-term categories, a sponsor in Japan applies for a Certificate of Eligibility before the visa application.",
+            "source_ids": [
+              "us-embassy-coe"
+            ]
+          }
+        ],
+        "next_steps": [
+          "If your main goal is paid employment, find an employer or other qualifying sponsor and check the appropriate work/long-term visa category.",
+          "Do not rely on visa-free short-stay entry for paid work.",
+          "Use the Japanese Embassy/Consulate responsible for your U.S. residence for the current visa procedure."
+        ],
+        "official_sources": [
+          {
+            "id": "mofa-working-holiday",
+            "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+            "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+          },
+          {
+            "id": "us-embassy-travel-visa",
+            "name": "Embassy of Japan in the U.S. — Visa and Travel Information",
+            "url": "https://www.us.emb-japan.go.jp/itpr_en/travel_and_visa.html"
+          },
+          {
+            "id": "us-embassy-coe",
+            "name": "Embassy of Japan in the U.S. — Visa for COE holders",
+            "url": "https://www.us.emb-japan.go.jp/itpr_en/visa-coe.html"
+          }
+        ]
+      }
     },
     {
       "code": "BE",
@@ -319,6 +371,6 @@
   "change_control": {
     "status": "approved",
     "reviewed_at": "2026-10-01",
-    "review_note": "MOFA partner registry retained; detailed planners now enabled for GB, AU, DE, CA, NZ and FR using current official Japanese diplomatic sources."
+    "review_note": "Market registry retained; added official-source fallback guidance for U.S. passport holders, who do not have a current Japan Working Holiday arrangement."
   }
 }
