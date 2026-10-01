@@ -129,9 +129,10 @@ function validateVisa(path,scope,expectedMarket){
 }
 
 
-function validateVisaMarkets(path){
+function validateVisaMarkets(path,scope){
   const data=read(path);
   if(data.destination!=="JP") fail(`${path}: unexpected destination`);
+  validateChangeControl(data,path,scope);
   if(!isDate(data.verified_at)) fail(`${path}: invalid verified_at`);
   requireSourceIds(data.source_ids,`${path} market registry`);
   if(!Array.isArray(data.partner_countries)||!data.partner_countries.length) fail(`${path}: partner_countries required`);
@@ -197,7 +198,8 @@ for(const scope of ["live","candidate"]){
   validateVisa(`data/${scope}/visa-au.json`,scope,"AU");
   validateVisa(`data/${scope}/visa-de.json`,scope,"DE");
 }
-validateVisaMarkets("data/live/visa-markets.json");
+validateVisaMarkets("data/live/visa-markets.json","live");
+validateVisaMarkets("data/candidate/visa-markets.json","candidate");
 validateSources();
 validateHealth();
 validateCandidates();
