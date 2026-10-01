@@ -232,15 +232,20 @@ async function initApplication(){
     $("#residence-label").textContent="UK residence area";
     $("#residence-help").textContent="The Edinburgh jurisdiction includes Scotland plus specified northern council areas. The exact current list comes from the verified ruleset.";
     area.innerHTML='<option value="">Choose…</option><option value="scotland">Scotland</option><option value="edinburgh_north">Listed North of England council area</option><option value="other_uk">Elsewhere in the UK</option><option value="outside_country">Outside the UK</option>';
-    $("#previous-extension-wrap").hidden=false;
-  }else{
+  }else if(selected==="AU"){
     $("#funds-label").textContent="Funds shown in your Australian bank statements (A$)";
     $("#bank-funds").placeholder=String(visa.funds_rule.with_return_ticket_minimum||2500);
     $("#residence-label").textContent="Australian residence";
     $("#residence-help").textContent="Australian Working Holiday applicants must currently live in Australia and should follow the Japanese mission responsible for their residence.";
     area.innerHTML='<option value="">Choose…</option><option value="in_country">I currently live in Australia</option><option value="outside_country">I currently live outside Australia</option>';
-    $("#previous-extension-wrap").hidden=true;
+  }else if(selected==="DE"){
+    $("#funds-label").textContent="Funds shown in your bank statement (€)";
+    $("#bank-funds").placeholder=String(visa.funds_rule.with_return_ticket_minimum||2000);
+    $("#residence-label").textContent="Application location";
+    $("#residence-help").textContent="German passport holders do not need to reside in Germany, but the Working Holiday application itself must be made at a Japanese diplomatic mission in Germany.";
+    area.innerHTML='<option value="">Choose…</option><option value="in_country">I will apply at a Japanese mission in Germany</option><option value="outside_country">I plan to apply outside Germany</option>';
   }
+  $("#previous-extension-wrap").hidden=!visa.participation_rule.extension_counts_toward_total_years;
 
   for(const id of specialIds){
     const el=$("#"+id);
@@ -269,13 +274,21 @@ async function initApplication(){
         label="UK application route may not apply";
         detail="The UK route requires UK residence. Check the Japanese mission responsible for your country of nationality/residence.";
       }
-    }else{
+    }else if(selected==="AU"){
       if(value==="in_country"){
         label=visa.jurisdiction.label;
         detail=visa.jurisdiction.description;
       }else if(value==="outside_country"){
         label="Australian application route may not apply";
         detail="Australian Working Holiday applicants must currently live in Australia and apply through the appropriate Japanese mission there.";
+      }
+    }else if(selected==="DE"){
+      if(value==="in_country"){
+        label=visa.jurisdiction.label;
+        detail=visa.jurisdiction.description;
+      }else if(value==="outside_country"){
+        label="German Working Holiday application must be lodged in Germany";
+        detail="German passport holders may live elsewhere, but the current official guidance says the Working Holiday visa can only be applied for at Japanese diplomatic missions in Germany.";
       }
     }
     $("#mission-card").innerHTML='<span class="small-label">YOUR MISSION</span><strong>'+esc(label)+'</strong><p class="muted">'+esc(detail)+'</p>';
@@ -311,8 +324,8 @@ async function initApplication(){
           issues.push("The entered funds are below the current baseline of "+symbol+withoutTicket+" without return/onward-ticket evidence.");
         }else if(!Number.isFinite(withoutTicket)){
           if(Number.isFinite(withTicket)&&funds<withTicket) issues.push("The entered funds are below the current baseline of "+symbol+withTicket+".");
-          pending.push("Additional return-flight funds: the official Australian guidance requires enough extra funds to purchase the return flight but does not state one fixed extra amount.");
         }
+        if(visa.funds_rule.no_ticket_note) pending.push(visa.funds_rule.no_ticket_note);
       }
     }
 
@@ -321,13 +334,16 @@ async function initApplication(){
     if(prior==="") pending.push("Previous Working Holiday participation");
     else if(Number(prior)>=visa.participation_rule.max_total_participations){
       issues.push("The selected programme's current participation limit would be exceeded by the previous visas entered.");
-    }else if(visa.participation_rule.max_total_participations>1&&prior==="1"){
+    }else if(visa.participation_rule.extension_counts_toward_total_years&&prior==="1"){
       if(extension==="") pending.push("Previous extension history");
       else if(extension==="yes") issues.push("A second year obtained by extending a first Working Holiday stay counts toward the current participation limit.");
     }
 
-    if(area.value==="") pending.push("Residence area");
-    if(area.value==="outside_country") issues.push("The selected Working Holiday route requires the applicant to be currently resident in the country of nationality.");
+    if(area.value==="") pending.push(selected==="DE"?"Application location":"Residence area");
+    if(area.value==="outside_country"){
+      if(selected==="DE") issues.push("The German Working Holiday visa can only be applied for at a Japanese embassy or consulate in Germany.");
+      else issues.push("The selected Working Holiday route requires the applicant to be currently resident in the country of nationality.");
+    }
 
     const result=$("#eligibility-result");
     if(issues.length){
