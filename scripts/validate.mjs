@@ -4,6 +4,7 @@ const read=p=>JSON.parse(fs.readFileSync(p,"utf8"));
 const fail=m=>{throw new Error(m)};
 const isDate=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||"");
 const isHttps=v=>{try{return new URL(v).protocol==="https:"}catch{return false}};
+const host=v=>{try{return new URL(v).hostname.toLowerCase().replace(/^www\./,"")}catch{return ""}};
 function unique(items,key,label){
   const seen=new Set();
   for(const item of items){
@@ -13,6 +14,7 @@ function unique(items,key,label){
     seen.add(value);
   }
 }
+
 const sources=read("data/sources.json");
 const sourceGroups={
   job:new Map((sources.job_sources||[]).map(s=>[s.id,s])),
@@ -25,17 +27,38 @@ function requireSourceIds(sourceIds,label){
   for(const id of sourceIds) if(!sourceGroups.visa.has(id)) fail(`${label}: unknown visa source_id ${id}`);
 }
 
-function validateFeed(path,kind){
+function validateChangeControl(data,path,scope){
+  const allowed=["approved","pending_review","rejected"];
+  if(!data.change_control||!allowed.includes(data.change_control.status)){
+    fail(`${path}: valid change_control.status required`);
+  }
+  if(scope==="live"&&data.change_control.status!=="approved"){
+    fail(`${path}: live data must have approved change_control`);
+  }
+}
+
+function validateFeed(path,kind,scope){
   const data=read(path);
   if(!isDate(data.updated_at)) fail(`${path}: updated_at must be YYYY-MM-DD`);
+  validateChangeControl(data,path,scope);
   if(!Array.isArray(data.items)) fail(`${path}: items must be an array`);
   unique(data.items,"id",path);
+
   for(const item of data.items){
     const required=kind==="job"
-      ?["id","title","employer","source_id","source_name","source_url","first_seen","last_seen","status"]
-      :["id","name","source_id","source_name","source_url","first_seen","last_seen","status"];
-    for(const field of required) if(item[field]===undefined||item[field]===null||item[field]==="") fail(`${path}: item ${item.id||"(unknown)"} missing ${field}`);
+      ?["id","title","employer","source_id","source_name","source_domain","source_url","first_seen","last_seen","status"]
+      :["id","name","source_id","source_name","source_domain","source_url","first_seen","last_seen","status"];
+    for(const field of required){
+      if(item[field]===undefined||item[field]===null||item[field]===""){
+        fail(`${path}: item ${item.id||"(unknown)"} missing ${field}`);
+      }
+    }
     if(!isHttps(item.source_url)) fail(`${path}: ${item.id} source_url must use https`);
+    const actualHost=host(item.source_url);
+    const declared=String(item.source_domain).toLowerCase().replace(/^www\./,"");
+    if(actualHost!==declared&&!actualHost.endsWith("."+declared)){
+      fail(`${path}: ${item.id} source_domain does not match source_url`);
+    }
     if(!isDate(item.first_seen)||!isDate(item.last_seen)) fail(`${path}: ${item.id} has invalid seen date`);
 
     const registered=sourceGroups[kind].get(item.source_id);
@@ -44,19 +67,23 @@ function validateFeed(path,kind){
     if(!registered.allowed_for?.includes(kind)) fail(`${path}: ${item.id} source ${item.source_id} is not allowed for ${kind}`);
 
     if(kind==="job"){
-      if(item.working_holiday&&![ "explicitly_accepted","likely_compatible","unknown" ].includes(item.working_holiday)) fail(`${path}: ${item.id} invalid working_holiday`);
-      if(item.japanese_level&&![ "none","basic","conversational","business","native","unknown" ].includes(item.japanese_level)) fail(`${path}: ${item.id} invalid japanese_level`);
+      if(item.working_holiday&&![ "explicitly_accepted","likely_compatible","unknown" ].includes(item.working_holiday)){
+        fail(`${path}: ${item.id} invalid working_holiday`);
+      }
+      if(item.japanese_level&&![ "none","basic","conversational","business","native","unknown" ].includes(item.japanese_level)){
+        fail(`${path}: ${item.id} invalid japanese_level`);
+      }
     }else if(item.foreigner_eligibility&&![ "explicitly_accepted","unknown" ].includes(item.foreigner_eligibility)){
       fail(`${path}: ${item.id} invalid foreigner_eligibility`);
     }
   }
 }
 
-function validateVisa(path){
+function validateVisa(path,scope){
   const data=read(path);
   if(data.market!=="GB"||data.destination!=="JP"||data.visa_type!=="working_holiday") fail(`${path}: unexpected market/destination/type`);
   if(!isDate(data.verified_at)) fail(`${path}: invalid verified_at`);
-  if(!data.change_control||!["approved","pending_review"].includes(data.change_control.status)) fail(`${path}: valid change_control.status required`);
+  validateChangeControl(data,path,scope);
   for(const key of ["summary_facts","eligibility_rules","document_checklist","preparation_checklist","official_sources"]){
     if(!Array.isArray(data[key])) fail(`${path}: ${key} must be an array`);
   }
@@ -88,7 +115,9 @@ function validateSources(){
       if(!Array.isArray(source.allowed_for)||!source.allowed_for.length) fail(`data/sources.json: ${source.id} missing allowed_for`);
     }
   }
-  if(sources.visa_sources.some(source=>source.type!=="official"||source.status!=="approved")) fail("data/sources.json: visa sources must be approved official sources");
+  if(sources.visa_sources.some(source=>source.type!=="official"||source.status!=="approved")){
+    fail("data/sources.json: visa sources must be approved official sources");
+  }
 }
 
 function validateHealth(){
@@ -110,12 +139,25 @@ function validateCandidates(){
   unique(data.candidates,"id","data/source-candidates.json");
 }
 
+function validateWorkerState(){
+  const state=read("data/worker-state.json");
+  if(!isDate(state.updated_at)) fail("data/worker-state.json: invalid updated_at");
+  const required=["jobs","housing","visa","qa","site_health"];
+  for(const worker of required){
+    if(!state.workers?.[worker]) fail(`data/worker-state.json: missing worker ${worker}`);
+    if(!["not_started","healthy","warning","failed"].includes(state.workers[worker].status)){
+      fail(`data/worker-state.json: invalid status for ${worker}`);
+    }
+  }
+}
+
 for(const scope of ["live","candidate"]){
-  validateFeed(`data/${scope}/jobs.json`,"job");
-  validateFeed(`data/${scope}/housing.json`,"housing");
-  validateVisa(`data/${scope}/visa-uk.json`);
+  validateFeed(`data/${scope}/jobs.json`,"job",scope);
+  validateFeed(`data/${scope}/housing.json`,"housing",scope);
+  validateVisa(`data/${scope}/visa-uk.json`,scope);
 }
 validateSources();
 validateHealth();
 validateCandidates();
-console.log("✓ JWHV datasets, source policy and health state validated");
+validateWorkerState();
+console.log("✓ JWHV datasets, source policy, worker state and health state validated");
