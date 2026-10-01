@@ -140,7 +140,8 @@ function validateVisaMarkets(path,scope){
   if(!data.detailed_planners||typeof data.detailed_planners!=="object") fail(`${path}: detailed_planners required`);
   for(const [market,file] of Object.entries(data.detailed_planners)){
     if(!market||!file||typeof file!=="string") fail(`${path}: invalid detailed planner mapping`);
-    if(!fs.existsSync("data/live/"+file)) fail(`${path}: missing live planner ${file}`);
+    const plannerPath=`data/${scope}/${file}`;
+    if(!fs.existsSync(plannerPath)) fail(`${path}: missing ${scope} planner ${file}`);
   }
   if(!Array.isArray(data.coverage_groups)) fail(`${path}: coverage_groups must be an array`);
 }
@@ -194,12 +195,13 @@ function validateWorkerState(){
 for(const scope of ["live","candidate"]){
   validateFeed(`data/${scope}/jobs.json`,"job",scope);
   validateFeed(`data/${scope}/housing.json`,"housing",scope);
-  validateVisa(`data/${scope}/visa-uk.json`,scope,"GB");
-  validateVisa(`data/${scope}/visa-au.json`,scope,"AU");
-  validateVisa(`data/${scope}/visa-de.json`,scope,"DE");
+  const registryPath=`data/${scope}/visa-markets.json`;
+  validateVisaMarkets(registryPath,scope);
+  const registry=read(registryPath);
+  for(const [market,file] of Object.entries(registry.detailed_planners||{})){
+    validateVisa(`data/${scope}/${file}`,scope,market);
+  }
 }
-validateVisaMarkets("data/live/visa-markets.json","live");
-validateVisaMarkets("data/candidate/visa-markets.json","candidate");
 validateSources();
 validateHealth();
 validateCandidates();
