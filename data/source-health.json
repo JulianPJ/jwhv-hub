@@ -203,6 +203,62 @@
       "last_checked": "2026-10-01",
       "last_success": "2026-10-01",
       "consecutive_failures": 0
+    },
+    "es-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "es-working-holiday-checklist": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "es-barcelona-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "es-las-palmas-visa": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "pt-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "pt-embassy-visa-current": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "se-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "se-embassy-how-to-apply": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
     }
   }
 }
