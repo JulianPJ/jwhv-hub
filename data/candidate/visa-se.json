@@ -1,0 +1,279 @@
+{
+  "market": "SE",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Sweden → Japan",
+  "currency_symbol": "SEK ",
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Sweden ruleset verified against the current 2026 Embassy Working Holiday instructions and current visa application guidance."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Swedish citizen resident in Sweden at application",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Working Holiday visa, except tightly limited unused-visa reissue cases",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "SEK 20,000 with return/onward ticket evidence; SEK 41,000 without",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Application route",
+      "value": "In person or registered mail to the Embassy of Japan in Sweden",
+      "source_ids": [
+        "se-embassy-working-holiday",
+        "se-embassy-how-to-apply"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "swedish_citizen",
+      "label": "Are you a Swedish citizen?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Working Holiday route is for Swedish citizens.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "sweden_resident",
+      "label": "Are you resident in Sweden when applying?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Swedish Working Holiday applicants must be resident in Sweden when applying.",
+      "source_ids": [
+        "se-embassy-working-holiday",
+        "se-embassy-how-to-apply"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Swedish Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Applicants whose primary purpose is employment cannot use the Swedish Working Holiday route.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependants without their own valid Japanese status accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "Dependants must independently hold a Working Holiday or other valid Japanese status.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_insurance",
+      "label": "Can you truthfully meet the good-health and medical-insurance requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Swedish programme requires good health and adequate medical insurance.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "SEK",
+    "currency_symbol": "SEK ",
+    "input_label": "Cleared funds shown in your Swedish bank statements (SEK)",
+    "ticket_label": "Return/onward ticket evidence",
+    "ticket_options": [
+      {
+        "value": "return_or_onward",
+        "label": "Return/onward ticket or receipt",
+        "minimum": 20000
+      },
+      {
+        "value": "none",
+        "label": "No return/onward ticket evidence",
+        "minimum": 41000
+      }
+    ],
+    "with_return_ticket_minimum": 20000,
+    "no_ticket_minimum": 41000,
+    "bank_statement_months": 3,
+    "source_ids": [
+      "se-embassy-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "se-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_residence",
+    "country": "Sweden",
+    "label": "Embassy of Japan in Sweden — Stockholm",
+    "description": "Applicants must be in Sweden at application. Working Holiday documents may be submitted in person or by registered mail to the Embassy.",
+    "source_ids": [
+      "se-embassy-working-holiday",
+      "se-embassy-how-to-apply"
+    ],
+    "ui_label": "Swedish residence",
+    "ui_help": "Swedish applicants must be resident/in Sweden at application and use the Embassy in Stockholm.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I am resident and currently in Sweden",
+        "mission_label": "Embassy of Japan in Sweden — Stockholm",
+        "mission_detail": "Submit the complete application in person or by registered mail. The Working Holiday page says to apply at least three weeks before anticipated departure."
+      },
+      {
+        "value": "outside_country",
+        "label": "I am not currently in Sweden",
+        "mission_label": "Swedish application route may not apply",
+        "mission_detail": "Current Embassy guidance says the applicant must be in Sweden at the time of application.",
+        "issue": "The Swedish Working Holiday application requires the applicant to be in Sweden at the time of application."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Swedish passport",
+      "description": "Original Swedish passport with at least two blank visa pages.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed and hand-signed visa application form",
+      "description": "Fill the current form digitally and sign it by hand.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "photo",
+      "title": "Recent 35×45mm photograph",
+      "description": "Provide a current photograph taken within the previous six months and meeting the Embassy specification.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Curriculum Vitae",
+      "description": "Prepare Form 1 in Japanese or English.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Outline of intended stay and activities",
+      "description": "Prepare Form 2 in Japanese or English.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "A4 reason for applying",
+      "description": "Prepare the typed Working Holiday motivation statement in Japanese or English.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Three months of bank statements",
+      "description": "Show SEK 41,000 clear funds without return/onward ticket evidence, or SEK 20,000 plus the ticket/receipt.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "insurance",
+      "title": "National Health Insurance pledge or overseas travel insurance",
+      "description": "Provide the permitted health-insurance pledge or original overseas travel insurance valid for the stay.",
+      "source_ids": [
+        "se-embassy-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "lead-time",
+      "title": "Apply at least three weeks before departure",
+      "description": "The Working Holiday page says short-notice applications are not accepted."
+    },
+    {
+      "id": "submission",
+      "title": "Choose in-person or registered-mail submission",
+      "description": "Follow the current Embassy mailing/personal-delivery instructions and account for passport handling time."
+    },
+    {
+      "id": "funds",
+      "title": "Match funds to ticket evidence",
+      "description": "The current threshold is SEK 20,000 with return/onward evidence or SEK 41,000 without."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final official-source check",
+      "description": "Recheck the Embassy Working Holiday and visa application pages before sending or delivering the application."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "se-embassy-working-holiday",
+      "name": "Embassy of Japan in Sweden — Working Holiday Visa",
+      "url": "https://www.se.emb-japan.go.jp/itpr_sv/visa_working_holiday.html"
+    },
+    {
+      "id": "se-embassy-how-to-apply",
+      "name": "Embassy of Japan in Sweden — How to Apply for a Visa",
+      "url": "https://www.se.emb-japan.go.jp/itpr_sv/visa_how_to_apply.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}
