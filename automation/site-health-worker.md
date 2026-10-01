@@ -17,9 +17,11 @@ Check:
 2. Jobs page loads and can read `data/live/jobs.json`.
 3. Housing page loads and can read `data/live/housing.json`.
 4. Visa planner loads and can read `data/live/visa-uk.json`.
-5. Relative navigation is not broken.
-6. GitHub validation/publish workflows are not repeatedly failing.
-7. Worker state is not stale or repeatedly failed.
+5. My plan loads and can combine browser-local planning state with the live jobs, housing and visa datasets.
+6. Shortlist loads and can read both live listing datasets without a server-side account.
+7. Relative navigation between all public pages is not broken.
+8. GitHub validation/publish workflows are not repeatedly failing.
+9. Worker state is not stale or repeatedly failed.
 
 Rules:
 - Never alter substantive visa, job or housing facts.
