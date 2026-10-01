@@ -2,9 +2,22 @@
   "visa_sources": [
     {
       "id": "uk-embassy-visa-general",
-      "name": "Embassy of Japan in the UK — Visa information",
+      "name": "Embassy of Japan in the UK — Visa: General Information",
       "url": "https://www.uk.emb-japan.go.jp/itpr_en/index_000025.html",
       "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "uk-embassy-working-holiday-checklist",
+      "name": "Embassy of Japan in the UK — Working Holiday Visa checklist",
+      "url": "https://www.uk.emb-japan.go.jp/files/100644760.pdf",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_pdf",
       "allowed_for": [
         "visa"
       ]
@@ -14,20 +27,48 @@
       "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
       "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/",
       "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
       "allowed_for": [
         "visa"
       ]
     },
     {
       "id": "edinburgh-visa-general",
-      "name": "Consulate-General of Japan in Edinburgh — Visa information",
+      "name": "Consulate-General of Japan in Edinburgh — Visa Information",
       "url": "https://www.edinburgh.uk.emb-japan.go.jp/itpr_ja/00_000205.html",
       "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "edinburgh-working-holiday",
+      "name": "Consulate-General of Japan in Edinburgh — Working Holiday Visa",
+      "url": "https://www.edinburgh.uk.emb-japan.go.jp/itpr_ja/00_000198.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
       "allowed_for": [
         "visa"
       ]
     }
   ],
   "job_sources": [],
-  "housing_sources": []
+  "housing_sources": [],
+  "context_sources": [
+    {
+      "id": "mlit-real-estate-library",
+      "name": "MLIT Real Estate Information Library API",
+      "url": "https://www.reinfolib.mlit.go.jp/help/apiManual",
+      "type": "official",
+      "status": "approved_for_context",
+      "access_method": "public_api",
+      "allowed_for": [
+        "housing_context"
+      ]
+    }
+  ]
 }
