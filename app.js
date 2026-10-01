@@ -180,9 +180,18 @@ async function initApplication(){
   ]);
   const marketSelect=$("#visa-market");
   const detailedCodes=Object.keys(markets.detailed_planners||{});
-  marketSelect.innerHTML=detailedCodes.map(code=>'<option value="'+esc(code)+'">'+esc(countryNames.get(code)||code)+'</option>').join("");
+  const partnerByCode=new Map((markets.partner_countries||[]).map(item=>[item.code,item]));
+  const referenceByCode=new Map((markets.reference_countries||[]).map(item=>[item.code,item]));
+  const allMarkets=[
+    ...(markets.partner_countries||[]).map(item=>({...item,working_holiday_available:true})),
+    ...(markets.reference_countries||[]).map(item=>({...item,working_holiday_available:false}))
+  ].sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+  marketSelect.innerHTML=allMarkets.map(item=>{
+    const suffix=detailedCodes.includes(item.code)?"detailed planner":(item.working_holiday_available?"WH partner":"no current WH arrangement");
+    return '<option value="'+esc(item.code)+'">'+esc(item.name+" — "+suffix)+'</option>';
+  }).join("");
   let selected=getVisaMarket();
-  if(!detailedCodes.includes(selected)) selected="GB";
+  if(!allMarkets.some(item=>item.code===selected)) selected="GB";
   marketSelect.value=selected;
   marketSelect.addEventListener("change",()=>{
     writeLocal(VISA_MARKET_KEY,{market:marketSelect.value});
@@ -190,7 +199,7 @@ async function initApplication(){
   });
 
   $("#market-verified").textContent="MOFA list verified "+markets.verified_at;
-  $("#visa-market-note").textContent=detailedCodes.length+" detailed country planners are currently available. Other passport countries remain visible from Japan's official Working Holiday partner list and can be added without changing the core planner code.";
+  $("#visa-market-note").textContent=detailedCodes.length+" detailed country planners are available. Every partner and reference market in the registry can now be selected; unsupported countries receive a status-only view instead of guessed application rules.";
 
   const names=codes=>codes.map(code=>countryNames.get(code)||code).join(", ");
   $("#market-coverage").innerHTML=(markets.coverage_groups||[]).map(group=>{
@@ -203,6 +212,40 @@ async function initApplication(){
   }).join("");
 
   const ruleset=markets.detailed_planners[selected];
+  const marketStatus=$("#market-status-detail");
+  const detailedPlanner=$("#detailed-planner");
+  if(!ruleset){
+    detailedPlanner.hidden=true;
+    marketStatus.hidden=false;
+    const partner=partnerByCode.get(selected);
+    const reference=referenceByCode.get(selected);
+    const marketName=countryNames.get(selected)||selected;
+    if(partner){
+      marketStatus.innerHTML=
+        '<p class="eyebrow">Working Holiday status</p>'+
+        '<h2>'+esc(marketName+" → Japan")+'</h2>'+
+        '<div class="route-status open"><strong>Current Working Holiday partner</strong><p>Japan currently lists '+esc(marketName)+' as a Working Holiday partner, but JWHV Hub does not yet have a country-specific application ruleset for this passport market. Use the official MOFA programme page and your local Japanese mission rather than applying another country\'s rules.</p></div>'+
+        '<div class="listing-meta"><a class="tag" href="https://www.mofa.go.jp/j_info/visit/w_holiday/" target="_blank" rel="noopener noreferrer">MOFA Working Holiday Programmes ↗</a></div>';
+    }else if(reference?.guide){
+      const guide=reference.guide;
+      marketStatus.innerHTML=
+        '<p class="eyebrow">Working Holiday status</p>'+
+        '<h2>'+esc(guide.title||marketName+" → Japan")+'</h2>'+
+        '<div class="route-status warning"><strong>'+esc(guide.label)+'</strong><p>'+esc(guide.detail||reference.reason||"")+'</p></div>'+
+        '<div class="visa-summary">'+(guide.facts||[]).map(fact=>'<div class="fact"><span>'+esc(fact.label)+'</span><strong>'+esc(fact.value)+'</strong></div>').join("")+'</div>'+
+        ((guide.next_steps||[]).length?'<div class="market-next-steps"><h3>What to do instead</h3><ol>'+(guide.next_steps||[]).map(step=>'<li>'+esc(step)+'</li>').join("")+'</ol></div>':"")+
+        '<div class="listing-meta">'+(guide.official_sources||[]).map(source=>'<a class="tag" href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">'+esc(source.name)+" ↗</a>").join("")+'</div>';
+    }else{
+      marketStatus.innerHTML=
+        '<p class="eyebrow">Working Holiday status</p>'+
+        '<h2>'+esc(marketName+" → Japan")+'</h2>'+
+        '<div class="route-status warning"><strong>No current Japan Working Holiday arrangement</strong><p>'+esc(reference?.reason||"This passport market is not in Japan's current Working Holiday partner list.")+'</p></div>'+
+        '<div class="listing-meta"><a class="tag" href="https://www.mofa.go.jp/j_info/visit/w_holiday/" target="_blank" rel="noopener noreferrer">MOFA Working Holiday Programmes ↗</a></div>';
+    }
+    return;
+  }
+  detailedPlanner.hidden=false;
+  marketStatus.hidden=true;
   const visa=await loadJSON("data/live/"+ruleset);
   const marketName=countryNames.get(selected)||selected;
   $("#visa-route-title").textContent=(visa.market_label||marketName+" → Japan");
