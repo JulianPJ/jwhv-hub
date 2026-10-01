@@ -127,22 +127,36 @@ function validateVisa(path,scope,expectedMarket){
   requireSourceIds(data.participation_rule?.source_ids,`${path} participation rule`);
   requireSourceIds(data.jurisdiction?.source_ids,`${path} jurisdiction`);
   if(!data.funds_rule?.input_label) fail(`${path}: funds_rule.input_label required`);
+  const validateStatus=(status,label)=>{
+    if(!status) return;
+    if(!["open","closed","limited","warning"].includes(status.status)) fail(`${label}: invalid application_status.status`);
+    if(!status.label) fail(`${label}: application_status.label required`);
+  };
+  const validateFunds=(rule,label)=>{
+    if(!rule) return;
+    for(const key of ["with_return_ticket_minimum","no_ticket_minimum"]){
+      const value=rule[key];
+      if(value!=null&&(!Number.isFinite(value)||value<0)) fail(`${label}: invalid ${key}`);
+    }
+    if(rule.ticket_options){
+      if(!Array.isArray(rule.ticket_options)||!rule.ticket_options.length) fail(`${label}: ticket_options must be a non-empty array`);
+      unique(rule.ticket_options,"value",label+" ticket_options");
+      for(const ticket of rule.ticket_options){
+        if(!ticket.label) fail(`${label}: ticket option ${ticket.value} missing label`);
+        if(ticket.minimum!=null&&(!Number.isFinite(ticket.minimum)||ticket.minimum<0)) fail(`${label}: ticket option ${ticket.value} invalid minimum`);
+      }
+    }
+  };
+  validateFunds(data.funds_rule,`${path} funds_rule`);
   if(!Array.isArray(data.jurisdiction?.options)||!data.jurisdiction.options.length) fail(`${path}: jurisdiction.options required`);
   unique(data.jurisdiction.options,"value",path+" jurisdiction options");
   for(const option of data.jurisdiction.options){
     if(!option.label) fail(`${path}: jurisdiction option ${option.value} missing label`);
     if(!option.mission_label||!option.mission_detail) fail(`${path}: jurisdiction option ${option.value} missing mission copy`);
-    if(option.funds_rule){
-      for(const key of ["with_return_ticket_minimum","no_ticket_minimum"]){
-        const value=option.funds_rule[key];
-        if(value!=null&&(!Number.isFinite(value)||value<0)) fail(`${path}: jurisdiction option ${option.value} invalid ${key}`);
-      }
-    }
+    validateFunds(option.funds_rule,`${path} jurisdiction option ${option.value} funds_rule`);
+    validateStatus(option.application_status,`${path} jurisdiction option ${option.value}`);
   }
-  if(data.application_status){
-    if(!["open","closed","limited","warning"].includes(data.application_status.status)) fail(`${path}: invalid application_status.status`);
-    if(!data.application_status.label) fail(`${path}: application_status.label required`);
-  }
+  validateStatus(data.application_status,path);
 }
 
 
