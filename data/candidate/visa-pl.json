@@ -1,0 +1,311 @@
+{
+  "market": "PL",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Poland → Japan",
+  "currency_symbol": "USD ",
+  "application_status": {
+    "status": "limited",
+    "label": "Annual issuance limit applies",
+    "detail": "The official programme guide states that the number of Working Holiday visas issued each year is limited and acceptance closes after the annual maximum is reached. The Embassy's current consular page also requires a visa appointment."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Poland ruleset verified against the Embassy's July 2025 current programme page, current 2026 consular appointment page and official Working Holiday programme guide."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "pl-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Polish citizen resident in Poland when applying",
+      "source_ids": [
+        "pl-embassy-working-holiday",
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Japanese Working Holiday visa",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "label": "Initial funds guidance",
+      "value": "Approx. US$2,000 equivalent for the initial stay; return-ticket purchasing funds are additional when needed",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "label": "Application route",
+      "value": "Embassy of Japan in Warsaw; visa appointment required",
+      "source_ids": [
+        "pl-embassy-consular",
+        "pl-working-holiday-guide"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "polish_citizen",
+      "label": "Are you a Polish citizen with a valid Polish passport?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Working Holiday route is for Polish citizens.",
+      "source_ids": [
+        "pl-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "poland_resident",
+      "label": "Do you reside in Poland when applying?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Polish Working Holiday applicants must reside in Poland when applying.",
+      "source_ids": [
+        "pl-embassy-working-holiday",
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Polish Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "pl-embassy-working-holiday",
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Polish Working Holiday programme is not intended for applicants whose main purpose is work or study.",
+      "source_ids": [
+        "pl-embassy-working-holiday",
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will a dependent person accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "A dependent person may not accompany the participant unless independently eligible for their own status.",
+      "source_ids": [
+        "pl-embassy-working-holiday",
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "good_health",
+      "label": "Can you truthfully meet the good-health requirement and obtain appropriate health insurance?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Polish programme requires good health and willingness to obtain appropriate health insurance.",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "USD",
+    "currency_symbol": "USD ",
+    "input_label": "Approximate USD-equivalent funds available for the Polish application",
+    "ticket_label": "Flight / return-ticket position",
+    "ticket_options": [
+      {
+        "value": "round_trip",
+        "label": "Round-trip ticket or confirmed round-trip reservation",
+        "minimum": 2000
+      },
+      {
+        "value": "one_way",
+        "label": "One-way booking; return ticket still needs to be funded",
+        "minimum": null,
+        "guidance_note": "The official Q&A requires at least the equivalent of US$2,200 specifically for purchasing the return ticket, plus separate living funds for the stay (the guide describes initial living funds as approximately US$2,000 equivalent)."
+      },
+      {
+        "value": "no_ticket",
+        "label": "No confirmed round-trip booking",
+        "minimum": null,
+        "guidance_note": "The Embassy requires evidence of enough funds for the initial stay and for return travel; the guide does not state one combined fixed total for this case."
+      }
+    ],
+    "with_return_ticket_minimum": 2000,
+    "no_ticket_minimum": null,
+    "bank_statement_months": 3,
+    "guidance_note": "The official guide expresses financial requirements as approximate USD-equivalent amounts rather than a PLN fixed threshold.",
+    "source_ids": [
+      "pl-working-holiday-guide"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "pl-working-holiday-guide"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_residence",
+    "country": "Poland",
+    "label": "Embassy of Japan in Poland — Warsaw",
+    "description": "Polish Working Holiday applications are handled by the Embassy in Warsaw. The current 2026 consular page says a visa appointment is required.",
+    "source_ids": [
+      "pl-embassy-consular",
+      "pl-working-holiday-guide"
+    ],
+    "ui_label": "Polish residence",
+    "ui_help": "Polish applicants must reside in Poland and book the required visa appointment with the Embassy in Warsaw.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I am a Polish citizen residing in Poland",
+        "mission_label": "Embassy of Japan in Poland — Warsaw",
+        "mission_detail": "Book a visa appointment under the current Embassy consular procedure and prepare the Working Holiday forms in English or Japanese."
+      },
+      {
+        "value": "outside_country",
+        "label": "I do not currently reside in Poland",
+        "mission_label": "Polish Working Holiday route may not apply",
+        "mission_detail": "The current programme requires the applicant to reside in Poland when applying.",
+        "issue": "The Poland Working Holiday route requires the applicant to be a Polish citizen resident in Poland at the time of application."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Polish passport",
+      "description": "The official programme guide states the passport should be valid for at least one year.",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Visa application form and recent photo",
+      "description": "Complete the current visa form and provide the required recent photograph.",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "One-page reason for applying",
+      "description": "Prepare the A4 explanation of why you are applying for the Working Holiday visa.",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "flight",
+      "title": "Round-trip ticket / reservation or return-ticket funds",
+      "description": "Provide the round-trip ticket/reservation, or sufficient additional funds to purchase the return ticket as described by the official guide.",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Three months of bank statements",
+      "description": "Provide the previous three months of bank statements and meet the official travel/initial-living funds guidance.",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "pledge",
+      "title": "National Health Insurance pledge",
+      "description": "Submit the current pledge to join Japan's National Health Insurance after establishing residence.",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Curriculum Vitae",
+      "description": "Complete the current Working Holiday CV form in English or Japanese.",
+      "source_ids": [
+        "pl-embassy-working-holiday",
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Outline of intended stay",
+      "description": "Complete the current proposed-stay form in English or Japanese.",
+      "source_ids": [
+        "pl-embassy-working-holiday",
+        "pl-working-holiday-guide"
+      ]
+    },
+    {
+      "id": "insurance",
+      "title": "Travel insurance where already purchased",
+      "description": "The guide requests travel-insurance evidence when the applicant has already obtained a policy.",
+      "source_ids": [
+        "pl-working-holiday-guide"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "appointment",
+      "title": "Book the Warsaw visa appointment",
+      "description": "The Embassy's current 2026 consular page says a visa appointment is required."
+    },
+    {
+      "id": "annual-limit",
+      "title": "Check current annual intake capacity",
+      "description": "The programme guide says application acceptance closes once the annual maximum is reached."
+    },
+    {
+      "id": "funds",
+      "title": "Separate return-ticket funds from living funds where required",
+      "description": "The official guide distinguishes initial living funds from money reserved to buy a return ticket."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final Embassy check",
+      "description": "Recheck appointment availability, current programme page and required forms before applying."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "pl-embassy-working-holiday",
+      "name": "Embassy of Japan in Poland — Working Holiday programme overview",
+      "url": "https://www.pl.emb-japan.go.jp/itpr_ja/11_000001_00453.html"
+    },
+    {
+      "id": "pl-working-holiday-guide",
+      "name": "Embassy of Japan in Poland — Working Holiday programme guide",
+      "url": "https://www.pl.emb-japan.go.jp/files/100872065.pdf"
+    },
+    {
+      "id": "pl-embassy-consular",
+      "name": "Embassy of Japan in Poland — Consular / Visa information",
+      "url": "https://www.pl.emb-japan.go.jp/itpr_pl/konsulat.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}
