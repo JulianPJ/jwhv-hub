@@ -32,6 +32,22 @@
       "url": null,
       "decision": "individual_review_required",
       "reason": "Do not scrape or republish inventory by default. Approve providers individually when a documented feed/API/partner route or suitable permission is available."
+    },
+    {
+      "id": "direct-employer-public-listing",
+      "category": "jobs",
+      "name": "Direct employer public job listing policy",
+      "url": "https://github.com/JulianPJ/jwhv-hub/blob/main/automation/source-policy.md",
+      "decision": "approved_as_discovery_policy",
+      "reason": "Permits concise metadata from original employer/employer-authorised pages discovered through ordinary web search. Commercial aggregators remain non-canonical unless separately approved."
+    },
+    {
+      "id": "direct-housing-provider-public-listing",
+      "category": "housing",
+      "name": "Direct housing provider public listing policy",
+      "url": "https://github.com/JulianPJ/jwhv-hub/blob/main/automation/source-policy.md",
+      "decision": "approved_as_discovery_policy",
+      "reason": "Permits concise metadata from original property operator/provider pages discovered through ordinary web search. Commercial aggregators remain non-canonical unless separately approved."
     }
   ]
 }
