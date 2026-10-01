@@ -9,6 +9,10 @@ fs.mkdirSync(`${out}/data/live`,{recursive:true});
 for(const file of ["jobs.json","housing.json","visa-uk.json"]){
   fs.copyFileSync(`data/live/${file}`,`${out}/data/live/${file}`);
 }
+fs.mkdirSync(`${out}/data/candidate`,{recursive:true});
+for(const file of ["jobs.json","housing.json"]){
+  fs.copyFileSync(`data/candidate/${file}`,`${out}/data/candidate/${file}`);
+}
 fs.mkdirSync(`${out}/data`,{recursive:true});
 fs.copyFileSync("data/worker-state.json",`${out}/data/worker-state.json`);
 console.log("✓ Static site built in _site/");
