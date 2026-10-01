@@ -350,7 +350,6 @@ async function initApplication(){
         }else if(!Number.isFinite(withoutTicket)){
           if(Number.isFinite(withTicket)&&funds<withTicket) issues.push("The entered funds are below the current baseline of "+symbol+withTicket+".");
         }
-        if(fundsRule.no_ticket_note) pending.push(fundsRule.no_ticket_note);
       }
       if(!Number.isFinite(withTicket)&&!Number.isFinite(withoutTicket)&&fundsRule.guidance_note){
         pending.push(fundsRule.guidance_note);
