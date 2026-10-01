@@ -6,7 +6,7 @@ for(const file of ["index.html","jobs.html","housing.html","application.html","s
   fs.copyFileSync(file,`${out}/${file}`);
 }
 fs.mkdirSync(`${out}/data/live`,{recursive:true});
-for(const file of ["jobs.json","housing.json","visa-uk.json","visa-au.json","visa-markets.json"]){
+for(const file of ["jobs.json","housing.json","visa-uk.json","visa-au.json","visa-de.json","visa-markets.json"]){
   fs.copyFileSync(`data/live/${file}`,`${out}/data/live/${file}`);
 }
 fs.mkdirSync(`${out}/data/candidate`,{recursive:true});
