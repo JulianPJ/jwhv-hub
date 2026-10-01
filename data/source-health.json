@@ -63,6 +63,76 @@
       "last_checked": "2026-10-01",
       "last_success": "2026-10-01",
       "consecutive_failures": 0
+    },
+    "ca-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "ca-ottawa-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "ca-toronto-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "ca-vancouver-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "nz-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "nz-auckland-visa": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "fr-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "fr-strasbourg-visa": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "fr-lyon-visa": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "fr-marseille-visa": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
     }
   }
 }
