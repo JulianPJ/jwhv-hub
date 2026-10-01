@@ -32,6 +32,7 @@ on:
       - "styles.css"
       - "app.js"
       - "data/live/**"
+      - "data/candidate/**"
       - "data/worker-state.json"
       - "scripts/build.mjs"
       - ".github/workflows/pages.yml"
