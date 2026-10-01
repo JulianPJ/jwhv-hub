@@ -1,28 +1,228 @@
 const $=s=>document.querySelector(s);
-async function loadJSON(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error("Unable to load "+path);return r.json()}
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-const tag=t=>'<span class="tag">'+esc(t)+'</span>';
+
+async function loadJSON(path){
+  const response=await fetch(path,{cache:"no-store"});
+  if(!response.ok) throw new Error("Unable to load "+path);
+  return response.json();
+}
+function esc(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+const tag=text=>'<span class="tag">'+esc(text)+'</span>';
 const empty=(title,body)=>'<div class="empty-state"><strong>'+esc(title)+'</strong><p>'+esc(body)+'</p></div>';
+function readLocal(key,fallback={}){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
+function writeLocal(key,value){localStorage.setItem(key,JSON.stringify(value))}
 
 async function initJobs(){
- const d=await loadJSON("data/live/jobs.json"),items=d.items||[],search=$("#job-search"),lang=$("#job-language"),wh=$("#job-wh"),list=$("#job-list"),count=$("#job-count");
- function render(){const q=search.value.trim().toLowerCase();const f=items.filter(i=>[i.title,i.employer,i.city,i.prefecture].join(" ").toLowerCase().includes(q)&&(!lang.value||i.japanese_level===lang.value)&&(!wh.value||i.working_holiday===wh.value));count.textContent=f.length+" "+(f.length===1?"listing":"listings");
- list.innerHTML=f.length?f.map(i=>'<article class="listing-card"><div><h2>'+esc(i.title)+'</h2><div class="muted">'+esc(i.employer)+" · "+esc([i.city,i.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(i.salary_display?tag(i.salary_display):"")+(i.japanese_level?tag("Japanese: "+i.japanese_level):"")+(i.working_holiday?tag("WH: "+i.working_holiday.replaceAll("_"," ")):"")+(i.accommodation_provided===true?tag("Accommodation provided"):"")+'</div></div><a class="source-link" href="'+esc(i.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a></article>').join(""):empty(items.length?"No matching jobs":"Job feed ready",items.length?"Try changing the filters.":"Verified listings will appear once approved sources are connected.")}
- [search,lang,wh].forEach(e=>e.addEventListener("input",render));render()
+  const data=await loadJSON("data/live/jobs.json"),items=data.items||[];
+  const search=$("#job-search"),language=$("#job-language"),wh=$("#job-wh"),list=$("#job-list"),count=$("#job-count");
+  function render(){
+    const q=search.value.trim().toLowerCase();
+    const filtered=items.filter(item=>[item.title,item.employer,item.city,item.prefecture].join(" ").toLowerCase().includes(q)
+      &&(!language.value||item.japanese_level===language.value)
+      &&(!wh.value||item.working_holiday===wh.value));
+    count.textContent=filtered.length+" "+(filtered.length===1?"listing":"listings");
+    list.innerHTML=filtered.length?filtered.map(item=>'<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(item.salary_display?tag(item.salary_display):"")+(item.japanese_level?tag("Japanese: "+item.japanese_level):"")+(item.working_holiday?tag("WH: "+item.working_holiday.replaceAll("_"," ")):"")+(item.accommodation_provided===true?tag("Accommodation provided"):"")+'</div></div><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a></article>').join("")
+      :empty(items.length?"No matching jobs":"Job feed ready",items.length?"Try changing the filters.":"Verified listings will appear once approved sources are connected.");
+  }
+  [search,language,wh].forEach(el=>el.addEventListener("input",render));
+  render();
 }
+
 async function initHousing(){
- const d=await loadJSON("data/live/housing.json"),items=d.items||[],search=$("#housing-search"),furn=$("#housing-furnished"),foreign=$("#housing-foreigner"),list=$("#housing-list"),count=$("#housing-count");
- function render(){const q=search.value.trim().toLowerCase();const f=items.filter(i=>[i.name,i.city,i.prefecture,i.nearest_station].join(" ").toLowerCase().includes(q)&&(!furn.value||String(i.furnished)===furn.value)&&(!foreign.value||i.foreigner_eligibility===foreign.value));count.textContent=f.length+" "+(f.length===1?"property":"properties");
- list.innerHTML=f.length?f.map(i=>'<article class="listing-card"><div><h2>'+esc(i.name)+'</h2><div class="muted">'+esc([i.city,i.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(i.monthly_rent_display?tag(i.monthly_rent_display):"")+(i.furnished===true?tag("Furnished"):"")+(i.minimum_stay?tag("Min stay: "+i.minimum_stay):"")+(i.foreigner_eligibility?tag(i.foreigner_eligibility.replaceAll("_"," ")):"")+'</div></div><a class="source-link" href="'+esc(i.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a></article>').join(""):empty(items.length?"No matching housing":"Housing feed ready",items.length?"Try changing the filters.":"Approved housing sources can now be connected without changing the frontend.")}
- [search,furn,foreign].forEach(e=>e.addEventListener("input",render));render()
+  const data=await loadJSON("data/live/housing.json"),items=data.items||[];
+  const search=$("#housing-search"),furnished=$("#housing-furnished"),foreigner=$("#housing-foreigner"),list=$("#housing-list"),count=$("#housing-count");
+  function render(){
+    const q=search.value.trim().toLowerCase();
+    const filtered=items.filter(item=>[item.name,item.city,item.prefecture,item.nearest_station].join(" ").toLowerCase().includes(q)
+      &&(!furnished.value||String(item.furnished)===furnished.value)
+      &&(!foreigner.value||item.foreigner_eligibility===foreigner.value));
+    count.textContent=filtered.length+" "+(filtered.length===1?"property":"properties");
+    list.innerHTML=filtered.length?filtered.map(item=>'<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(item.monthly_rent_display?tag(item.monthly_rent_display):"")+(item.furnished===true?tag("Furnished"):"")+(item.minimum_stay?tag("Min stay: "+item.minimum_stay):"")+(item.foreigner_eligibility?tag(item.foreigner_eligibility.replaceAll("_"," ")):"")+'</div></div><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a></article>').join("")
+      :empty(items.length?"No matching housing":"Housing feed ready",items.length?"Try changing the filters.":"Approved housing sources can now be connected without changing the frontend.");
+  }
+  [search,furnished,foreigner].forEach(el=>el.addEventListener("input",render));
+  render();
 }
+
 async function initApplication(){
- const visa=await loadJSON("data/live/visa-uk.json");$("#visa-verified").textContent="Verified "+visa.verified_at;
- const summary=$("#visa-summary");summary.innerHTML=(visa.summary_facts||[]).map(f=>'<div class="fact"><span>'+esc(f.label)+'</span><strong>'+esc(f.value)+'</strong></div>').join("");
- if(visa.official_sources?.length){const links=document.createElement("div");links.className="listing-meta";links.innerHTML=visa.official_sources.map(s=>'<a class="tag" href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.name)+" ↗</a>").join("");summary.after(links)}
- const list=$("#visa-checklist"),key="jwhv-hub:visa-progress:v1",saved=JSON.parse(localStorage.getItem(key)||"{}");
- list.innerHTML=(visa.preparation_checklist||[]).map(i=>'<label class="check-item"><input type="checkbox" data-check-id="'+esc(i.id)+'" '+(saved[i.id]?"checked":"")+'><span><strong>'+esc(i.title)+'</strong><p>'+esc(i.description)+'</p></span></label>').join("");
- function update(){const boxes=[...list.querySelectorAll('input[type="checkbox"]')],state=Object.fromEntries(boxes.map(b=>[b.dataset.checkId,b.checked]));localStorage.setItem(key,JSON.stringify(state));const done=boxes.filter(b=>b.checked).length,pct=boxes.length?Math.round(done/boxes.length*100):0;$("#progress-number").textContent=pct;$("#progress-bar").style.width=pct+"%";$("#progress-copy").textContent=pct===100?"Preparation checklist complete. Re-check official requirements before applying.":done+" of "+boxes.length+" preparation steps complete."}
- list.addEventListener("change",update);$("#reset-progress").addEventListener("click",()=>{localStorage.removeItem(key);list.querySelectorAll('input[type="checkbox"]').forEach(b=>b.checked=false);update()});update()
+  const visa=await loadJSON("data/live/visa-uk.json");
+  $("#visa-verified").textContent="Verified "+visa.verified_at;
+  $("#visa-summary").innerHTML=(visa.summary_facts||[]).map(fact=>'<div class="fact"><span>'+esc(fact.label)+'</span><strong>'+esc(fact.value)+'</strong></div>').join("");
+  $("#official-source-links").innerHTML=(visa.official_sources||[]).map(source=>'<a class="tag" href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">'+esc(source.name)+" ↗</a>").join("");
+
+  const eligibilityKey="jwhv-hub:eligibility:v1";
+  const eligibilitySaved=readLocal(eligibilityKey,{});
+  const eligibilityForm=$("#eligibility-form");
+
+  function booleanQuestion(rule,value){
+    return '<label>'+esc(rule.label)+'<select data-rule-id="'+esc(rule.id)+'"><option value="">Choose…</option><option value="yes" '+(value==="yes"?"selected":"")+'>Yes</option><option value="no" '+(value==="no"?"selected":"")+'>No</option></select></label>';
+  }
+  function numberQuestion(rule,value){
+    return '<label>'+esc(rule.label)+'<input data-rule-id="'+esc(rule.id)+'" type="number" min="0" step="1" value="'+esc(value??"")+'" placeholder="'+esc(rule.min??"")+'"></label>';
+  }
+  eligibilityForm.innerHTML=(visa.eligibility_rules||[]).map(rule=>{
+    const value=eligibilitySaved[rule.id]??"";
+    return rule.type==="boolean"?booleanQuestion(rule,value):numberQuestion(rule,value);
+  }).join("");
+
+  const specialIds=["bank-funds","return-ticket","prior-visas","previous-extension","jurisdiction-area"];
+  for(const id of specialIds){
+    const el=$("#"+id);
+    if(el&&eligibilitySaved[id]!==undefined) el.value=eligibilitySaved[id];
+  }
+
+  function collectEligibility(){
+    const state={};
+    eligibilityForm.querySelectorAll("[data-rule-id]").forEach(el=>state[el.dataset.ruleId]=el.value);
+    for(const id of specialIds){const el=$("#"+id);if(el)state[id]=el.value}
+    return state;
+  }
+  function saveEligibility(){writeLocal(eligibilityKey,collectEligibility())}
+
+  function missionForArea(area){
+    if(area==="scotland"||area==="edinburgh_north") return visa.jurisdiction.edinburgh_label;
+    if(area==="other_uk") return visa.jurisdiction.london_label;
+    if(area==="outside_uk") return "UK application route may not apply";
+    return "Answer the location question";
+  }
+
+  function renderMission(){
+    const area=$("#jurisdiction-area").value;
+    let detail="We will route you to London or Edinburgh using the current jurisdiction guidance.";
+    if(area==="scotland"||area==="edinburgh_north"){
+      detail="Edinburgh currently covers Scotland and these listed northern areas: "+visa.jurisdiction.edinburgh_regions.filter(v=>v!=="Scotland").join(", ")+".";
+    }else if(area==="other_uk"){
+      detail="Based on the current jurisdiction split, applicants outside Edinburgh's listed area use the Embassy in London.";
+    }else if(area==="outside_uk"){
+      detail="The UK route requires UK residence. Check the Japanese mission responsible for your country of residence.";
+    }
+    $("#mission-card").innerHTML='<span class="small-label">YOUR MISSION</span><strong>'+esc(missionForArea(area))+'</strong><p class="muted">'+esc(detail)+'</p>';
+  }
+
+  function evaluateEligibility(){
+    const issues=[],pending=[];
+    for(const rule of visa.eligibility_rules||[]){
+      const el=eligibilityForm.querySelector('[data-rule-id="'+rule.id+'"]');
+      const value=el?.value??"";
+      if(value===""){pending.push(rule.label);continue}
+      if(rule.type==="boolean"){
+        if((value==="yes")!==rule.expected) issues.push(rule.fail_message);
+      }else{
+        const actual=Number(value);
+        if(!Number.isFinite(actual)||actual<rule.min||actual>rule.max) issues.push(rule.fail_message);
+      }
+    }
+
+    const fundsRaw=$("#bank-funds").value;
+    const ticket=$("#return-ticket").value;
+    if(fundsRaw==="") pending.push("Proof-of-funds amount");
+    else{
+      const funds=Number(fundsRaw);
+      const enoughWithout=funds>=visa.funds_rule.no_ticket_minimum;
+      const enoughWith=funds>=visa.funds_rule.with_return_ticket_minimum&&ticket==="yes";
+      if(!enoughWithout&&!enoughWith){
+        if(ticket==="") pending.push("Return/onward ticket evidence");
+        else issues.push("The entered funds are below the current baseline: £"+visa.funds_rule.no_ticket_minimum+", or £"+visa.funds_rule.with_return_ticket_minimum+" with return/onward-ticket evidence.");
+      }
+    }
+
+    const prior=$("#prior-visas").value;
+    const extension=$("#previous-extension").value;
+    if(prior==="") pending.push("Previous Working Holiday participation");
+    else if(Number(prior)>=visa.participation_rule.max_total_participations) issues.push("The current UK programme permits a maximum of two participations / two years in total.");
+    else if(prior==="1"){
+      if(extension==="") pending.push("Previous extension history");
+      else if(extension==="yes") issues.push("A second year obtained by extending a first Working Holiday stay counts toward the current two-year participation limit.");
+    }
+
+    const area=$("#jurisdiction-area").value;
+    if(area==="") pending.push("UK residence area");
+    if(area==="outside_uk") issues.push("This UK route is intended for applicants resident in the United Kingdom.");
+
+    const result=$("#eligibility-result");
+    if(issues.length){
+      result.className="eligibility-result fail";
+      result.innerHTML="<strong>This pre-check found "+issues.length+" issue"+(issues.length===1?"":"s")+".</strong><ul>"+issues.map(issue=>"<li>"+esc(issue)+"</li>").join("")+"</ul><p>Check the official source before deciding whether or how to apply.</p>";
+    }else if(pending.length){
+      result.className="eligibility-result neutral";
+      result.innerHTML="<strong>No conflict found in the answers provided so far.</strong><p>Complete "+pending.length+" remaining field"+(pending.length===1?"":"s")+" for a fuller pre-check.</p>";
+    }else{
+      result.className="eligibility-result pass";
+      result.innerHTML="<strong>Your answers match the baseline rules in the currently verified ruleset.</strong><p>This is not an approval or guarantee. Re-check the official guidance before applying.</p>";
+    }
+    renderMission();
+    saveEligibility();
+  }
+
+  eligibilityForm.addEventListener("input",evaluateEligibility);
+  for(const id of specialIds) $("#"+id)?.addEventListener("input",evaluateEligibility);
+  evaluateEligibility();
+
+  const progressKey="jwhv-hub:visa-progress:v2";
+  const savedProgress=readLocal(progressKey,{});
+  function checklistMarkup(items,prefix){
+    return items.map(item=>'<label class="check-item"><input type="checkbox" data-check-id="'+esc(prefix+item.id)+'" '+(savedProgress[prefix+item.id]?"checked":"")+'><span><strong>'+esc(item.title)+'</strong><p>'+esc(item.description)+'</p></span></label>').join("");
+  }
+  $("#document-checklist").innerHTML=checklistMarkup(visa.document_checklist||[],"doc:");
+  $("#visa-checklist").innerHTML=checklistMarkup(visa.preparation_checklist||[],"prep:");
+
+  function updateProgress(){
+    const boxes=[...document.querySelectorAll("[data-check-id]")];
+    const state=Object.fromEntries(boxes.map(box=>[box.dataset.checkId,box.checked]));
+    writeLocal(progressKey,state);
+    const complete=boxes.filter(box=>box.checked).length;
+    const pct=boxes.length?Math.round(complete/boxes.length*100):0;
+    $("#progress-number").textContent=pct;
+    $("#progress-bar").style.width=pct+"%";
+    $("#progress-copy").textContent=pct===100?"Preparation checklist complete. Re-check official requirements before applying.":complete+" of "+boxes.length+" preparation steps complete.";
+  }
+  document.querySelectorAll("[data-check-id]").forEach(box=>box.addEventListener("change",updateProgress));
+  $("#reset-progress").addEventListener("click",()=>{
+    localStorage.removeItem(progressKey);
+    document.querySelectorAll("[data-check-id]").forEach(box=>box.checked=false);
+    updateProgress();
+  });
+  updateProgress();
+
+  const workspaceKey="jwhv-hub:workspace:v1";
+  const workspace=readLocal(workspaceKey,{statement:"",months:{}});
+  $("#statement-notes").value=workspace.statement||"";
+  $("#itinerary-months").innerHTML=Array.from({length:12},(_,index)=>{
+    const month=index+1;
+    return '<label>Month '+month+'<textarea data-month="'+month+'" rows="4" placeholder="Location, activities, travel plans…">'+esc(workspace.months?.[month]||"")+'</textarea></label>';
+  }).join("");
+
+  function saveWorkspace(){
+    const months={};
+    document.querySelectorAll("[data-month]").forEach(el=>months[el.dataset.month]=el.value);
+    writeLocal(workspaceKey,{statement:$("#statement-notes").value,months});
+  }
+  $("#statement-notes").addEventListener("input",saveWorkspace);
+  $("#itinerary-months").addEventListener("input",saveWorkspace);
+
+  $("#download-plan").addEventListener("click",()=>{
+    saveWorkspace();
+    const data=readLocal(workspaceKey,{statement:"",months:{}});
+    const lines=["Japan Working Holiday planning notes","","Statement of Purpose notes","--------------------------",data.statement||"(blank)","","12-month itinerary notes","------------------------"];
+    for(let month=1;month<=12;month++) lines.push("Month "+month+": "+(data.months?.[month]||"(blank)"));
+    lines.push("","","Generated locally by JWHV Hub. Reformat these notes into the current official documents/forms before applying.");
+    const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");a.href=url;a.download="japan-working-holiday-planning-notes.txt";a.click();
+    URL.revokeObjectURL(url);
+  });
 }
-document.addEventListener("DOMContentLoaded",async()=>{try{const p=document.body.dataset.page;if(p==="jobs")await initJobs();if(p==="housing")await initHousing();if(p==="application")await initApplication()}catch(e){console.error(e);const m=document.createElement("div");m.className="notice";m.innerHTML="<strong>Data unavailable</strong><p>The dashboard could not load its live data. Please try again later.</p>";document.querySelector("main")?.prepend(m)}});
+
+document.addEventListener("DOMContentLoaded",async()=>{
+  try{
+    const page=document.body.dataset.page;
+    if(page==="jobs") await initJobs();
+    if(page==="housing") await initHousing();
+    if(page==="application") await initApplication();
+  }catch(error){
+    console.error(error);
+    const message=document.createElement("div");
+    message.className="notice";
+    message.innerHTML="<strong>Data unavailable</strong><p>The dashboard could not load its live data. Please try again later.</p>";
+    document.querySelector("main")?.prepend(message);
+  }
+});
