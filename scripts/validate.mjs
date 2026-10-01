@@ -154,13 +154,40 @@ function validateVisaMarkets(path,scope){
   requireSourceIds(data.source_ids,`${path} market registry`);
   if(!Array.isArray(data.partner_countries)||!data.partner_countries.length) fail(`${path}: partner_countries required`);
   unique(data.partner_countries,"code",path+" partner_countries");
+  if(!Array.isArray(data.reference_countries)) fail(`${path}: reference_countries must be an array`);
+  unique(data.reference_countries,"code",path+" reference_countries");
+  const partnerCodes=new Set(data.partner_countries.map(item=>item.code));
+  const referenceCodes=new Set(data.reference_countries.map(item=>item.code));
+  for(const code of partnerCodes) if(referenceCodes.has(code)) fail(`${path}: market ${code} appears as partner and reference`);
   if(!data.detailed_planners||typeof data.detailed_planners!=="object") fail(`${path}: detailed_planners required`);
   for(const [market,file] of Object.entries(data.detailed_planners)){
     if(!market||!file||typeof file!=="string") fail(`${path}: invalid detailed planner mapping`);
+    if(!partnerCodes.has(market)) fail(`${path}: detailed planner ${market} is not a partner market`);
+    const partner=data.partner_countries.find(item=>item.code===market);
+    if(partner?.detailed_planner!==true) fail(`${path}: partner ${market} must set detailed_planner true`);
     const plannerPath=`data/${scope}/${file}`;
     if(!fs.existsSync(plannerPath)) fail(`${path}: missing ${scope} planner ${file}`);
   }
+  for(const partner of data.partner_countries){
+    const mapped=Boolean(data.detailed_planners[partner.code]);
+    if(Boolean(partner.detailed_planner)!==mapped) fail(`${path}: detailed_planner flag mismatch for ${partner.code}`);
+  }
+  for(const reference of data.reference_countries){
+    if(reference.guide){
+      if(!reference.guide.label||!reference.guide.status) fail(`${path}: guide metadata required for ${reference.code}`);
+      if(!Array.isArray(reference.guide.official_sources)||!reference.guide.official_sources.length) fail(`${path}: guide official_sources required for ${reference.code}`);
+      for(const source of reference.guide.official_sources){
+        if(!isHttps(source.url)) fail(`${path}: guide source must use https for ${reference.code}`);
+        if(!sourceGroups.visa.has(source.id)) fail(`${path}: guide source ${source.id} missing from registry`);
+      }
+      for(const fact of reference.guide.facts||[]) requireSourceIds(fact.source_ids,`${path} guide fact ${reference.code} ${fact.label}`);
+    }
+  }
   if(!Array.isArray(data.coverage_groups)) fail(`${path}: coverage_groups must be an array`);
+  const knownCodes=new Set([...partnerCodes,...referenceCodes]);
+  for(const group of data.coverage_groups){
+    for(const code of [...(group.eligible_codes||[]),...(group.unavailable_codes||[])]) if(!knownCodes.has(code)) fail(`${path}: coverage group ${group.id} uses unknown market ${code}`);
+  }
 }
 
 function validateSources(){
