@@ -1,0 +1,269 @@
+{
+  "market": "IE",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Ireland → Japan",
+  "currency_symbol": "€",
+  "application_status": {
+    "status": "limited",
+    "label": "Annual cap applies",
+    "detail": "Japan may issue up to 800 Working Holiday visas to Irish applicants per year. Acceptance closes once that number has been reached, so check current Embassy availability before applying."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Ireland ruleset verified against the current Embassy of Japan in Ireland Working Holiday and consular guidance."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Irish citizen resident in Ireland at application",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "Up to two separate one-year Working Holiday stays",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "€1,600 with return/onward ticket evidence; €3,200 without",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Annual cap",
+      "value": "Up to 800 visas per year",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "irish_citizen",
+      "label": "Are you an Irish citizen?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Working Holiday route is for Irish citizens.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "ireland_resident",
+      "label": "Are you resident in Ireland at the time of application?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Irish Working Holiday applicants must be resident in Ireland when applying.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Irish Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Working Holiday route is for a holiday in Japan; work is incidental rather than the sole purpose.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependants without their own eligible status accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "Dependants cannot accompany the applicant unless they independently hold an appropriate status.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_character",
+      "label": "Can you truthfully meet the good-health and no-criminal-record requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The programme requires good health and no criminal record.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "input_label": "Clear funds available for your Irish application (€)",
+    "with_return_ticket_minimum": 1600,
+    "no_ticket_minimum": 3200,
+    "bank_statement_months": null,
+    "source_ids": [
+      "ie-embassy-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 2,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "ie-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_residence",
+    "country": "Ireland",
+    "label": "Embassy of Japan in Ireland — Dublin",
+    "description": "Working Holiday applications are made in person to the Embassy of Japan in Ireland. Current Consular Section guidance says visits should be booked in advance.",
+    "source_ids": [
+      "ie-embassy-working-holiday",
+      "ie-embassy-consular"
+    ],
+    "ui_label": "Irish residence",
+    "ui_help": "Irish applicants must be resident in Ireland and apply through the Embassy in Dublin.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I am resident in Ireland",
+        "mission_label": "Embassy of Japan in Ireland — Dublin",
+        "mission_detail": "Apply in person at the Embassy of Japan in Ireland. Check the Consular Section's current appointment instructions before attending."
+      },
+      {
+        "value": "outside_country",
+        "label": "I am not resident in Ireland",
+        "mission_label": "Irish Working Holiday route may not apply",
+        "mission_detail": "The current programme requires Irish applicants to be resident in Ireland at the time of application.",
+        "issue": "The Irish Working Holiday route requires the applicant to be resident in Ireland at the time of application."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Irish passport",
+      "description": "Submit a valid Irish passport with the Working Holiday application.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed visa application form",
+      "description": "Complete the current official visa application form.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "photo",
+      "title": "Recent passport photograph",
+      "description": "Provide the current required photograph, approximately 35mm × 45mm and taken within the previous six months.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Curriculum Vitae",
+      "description": "Prepare the current Working Holiday CV form / requested CV information.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Outline of intended stay and activities",
+      "description": "Prepare a realistic outline of the intended length of stay and activities in Japan.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "Written reason for applying",
+      "description": "Prepare the typed A4 reason for requesting a Working Holiday visa.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Ticket and proof of funds",
+      "description": "Show a return/onward ticket plus at least €1,600 clear funds, or at least €3,200 clear funds without the ticket evidence.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "insurance",
+      "title": "Overseas travel insurance",
+      "description": "Provide a copy of an overseas travel insurance policy valid during the stay in Japan.",
+      "source_ids": [
+        "ie-embassy-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "availability",
+      "title": "Check annual-cap availability",
+      "description": "Up to 800 visas may be issued per year; acceptance closes when the cap is reached."
+    },
+    {
+      "id": "appointment",
+      "title": "Confirm current Consular Section appointment procedure",
+      "description": "Working Holiday applications are made in person; verify the Embassy's current visit/appointment instructions."
+    },
+    {
+      "id": "participation",
+      "title": "Check previous participation history",
+      "description": "The programme now permits up to two separate Working Holiday stays in a lifetime."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final official-source check",
+      "description": "Re-check the Embassy Working Holiday page immediately before preparing and lodging the application."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "ie-embassy-working-holiday",
+      "name": "Embassy of Japan in Ireland — Working Holiday Scheme",
+      "url": "https://www.ie.emb-japan.go.jp/itpr_en/00_000070.html"
+    },
+    {
+      "id": "ie-embassy-consular",
+      "name": "Embassy of Japan in Ireland — Consular information",
+      "url": "https://www.ie.emb-japan.go.jp/itpr_en/about.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}
