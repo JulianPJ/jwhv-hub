@@ -1,4 +1,4 @@
-name: Validate and deploy Pages
+name: Validate and publish Pages
 
 on:
   push:
@@ -8,9 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
@@ -32,26 +30,17 @@ jobs:
       - name: Build static site
         run: node scripts/build.mjs
 
-      - name: Configure Pages
+      - name: Publish static output to gh-pages
         if: github.event_name != 'pull_request'
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Upload Pages artifact
-        if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: _site
-
-  deploy:
-    if: github.event_name != 'pull_request'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp -R _site /tmp/jwhv-site
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan pages-publish
+          git rm -rf .
+          cp -R /tmp/jwhv-site/. .
+          git add .
+          git commit -m "Publish site from ${GITHUB_SHA}"
+          git push --force origin HEAD:gh-pages
