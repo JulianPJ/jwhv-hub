@@ -190,7 +190,7 @@ async function initApplication(){
   });
 
   $("#market-verified").textContent="MOFA list verified "+markets.verified_at;
-  $("#visa-market-note").textContent="Detailed interactive planners are currently available for the UK, Australia and Germany. Other passport countries are shown from Japan's official Working Holiday partner list and will gain country-specific planners incrementally.";
+  $("#visa-market-note").textContent=detailedCodes.length+" detailed country planners are currently available. Other passport countries remain visible from Japan's official Working Holiday partner list and can be added without changing the core planner code.";
 
   const eu=markets.coverage_groups.find(group=>group.id==="eu");
   const aus=markets.coverage_groups.find(group=>group.id==="australia");
@@ -198,7 +198,7 @@ async function initApplication(){
   const names=codes=>codes.map(code=>countryNames.get(code)||code).join(", ");
   $("#market-coverage").innerHTML=[
     {title:aus.label,status:"Detailed planner available",body:names(aus.eligible_codes)},
-    {title:eu.label,status:eu.eligible_codes.length+" member states eligible · Germany planner live",body:names(eu.eligible_codes)+" · No current arrangement: "+names(eu.unavailable_codes)},
+    {title:eu.label,status:eu.eligible_codes.length+" member states eligible · "+eu.eligible_codes.filter(code=>detailedCodes.includes(code)).length+" detailed planner(s)",body:names(eu.eligible_codes)+" · No current arrangement: "+names(eu.unavailable_codes)},
     {title:na.label,status:"Country-specific",body:"Eligible: "+names(na.eligible_codes)+" · No current Japan Working Holiday arrangement: "+names(na.unavailable_codes)}
   ].map(item=>'<article class="market-card"><span>'+esc(item.status)+'</span><strong>'+esc(item.title)+'</strong><p>'+esc(item.body)+'</p></article>').join("");
 
@@ -207,6 +207,13 @@ async function initApplication(){
   const marketName=countryNames.get(selected)||selected;
   $("#visa-route-title").textContent=(visa.market_label||marketName+" → Japan");
   $("#visa-verified").textContent="Verified "+visa.verified_at;
+  const routeNotice=$("#visa-route-notice");
+  if(visa.application_status){
+    const noticeClass=visa.application_status.status==="open"?"route-status open":"route-status warning";
+    routeNotice.innerHTML='<div class="'+noticeClass+'"><strong>'+esc(visa.application_status.label)+'</strong><p>'+esc(visa.application_status.detail||"")+'</p></div>';
+  }else{
+    routeNotice.innerHTML="";
+  }
   $("#visa-summary").innerHTML=(visa.summary_facts||[]).map(fact=>'<div class="fact"><span>'+esc(fact.label)+'</span><strong>'+esc(fact.value)+'</strong></div>').join("");
   $("#official-source-links").innerHTML=(visa.official_sources||[]).map(source=>'<a class="tag" href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">'+esc(source.name)+" ↗</a>").join("");
 
@@ -248,8 +255,21 @@ async function initApplication(){
   }
   function saveEligibility(){writeLocal(eligibilityKey,collectEligibility())}
 
+  function currentRouteOption(){
+    return (visa.jurisdiction.options||[]).find(item=>item.value===area.value);
+  }
+  function currentFundsRule(){
+    const route=currentRouteOption();
+    return route?.funds_rule?{...visa.funds_rule,...route.funds_rule}:visa.funds_rule;
+  }
+  function syncFundsUI(){
+    const rule=currentFundsRule();
+    $("#funds-label").textContent=rule.input_label||visa.funds_rule.input_label||("Funds shown in your bank statements ("+(visa.currency_symbol||rule.currency||visa.funds_rule.currency)+")");
+    $("#bank-funds").placeholder=String(rule.no_ticket_minimum||rule.with_return_ticket_minimum||"");
+  }
+
   function renderMission(){
-    const option=(visa.jurisdiction.options||[]).find(item=>item.value===area.value);
+    const option=currentRouteOption();
     const label=option?.mission_label||"Answer the application-route question";
     const detail=option?.mission_detail||"Use the selected country ruleset to identify the correct application route.";
     $("#mission-card").innerHTML='<span class="small-label">YOUR MISSION</span><strong>'+esc(label)+'</strong><p class="muted">'+esc(detail)+'</p>';
