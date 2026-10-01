@@ -3,7 +3,7 @@
   "change_control": {
     "status": "approved",
     "reviewed_at": "2026-10-01",
-    "review_note": "Corrected Iidabashi room 302 availability to 2026-11-30 after re-verifying the direct Oakhouse page."
+    "review_note": "Applied verified direct-provider findings: Iidabashi room 302 availability corrected to 2026-11-30; Sasazuka 2F-22 and Premiere Ayase 208 marked expired because the provider now shows them full/unavailable."
   },
   "items": [
     {
@@ -48,7 +48,7 @@
       "source_url": "https://www.oakhouse.jp/eng/house/21",
       "first_seen": "2026-10-01",
       "last_seen": "2026-10-01",
-      "status": "active"
+      "status": "expired"
     },
     {
       "id": "oakhouse-premiere-ayase-208",
@@ -70,7 +70,7 @@
       "source_url": "https://www.oakhouse.jp/eng/house/647",
       "first_seen": "2026-10-01",
       "last_seen": "2026-10-01",
-      "status": "active"
+      "status": "expired"
     }
   ]
 }
