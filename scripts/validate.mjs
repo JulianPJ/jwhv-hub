@@ -126,6 +126,13 @@ function validateVisa(path,scope,expectedMarket){
   requireSourceIds(data.funds_rule?.source_ids,`${path} funds rule`);
   requireSourceIds(data.participation_rule?.source_ids,`${path} participation rule`);
   requireSourceIds(data.jurisdiction?.source_ids,`${path} jurisdiction`);
+  if(!data.funds_rule?.input_label) fail(`${path}: funds_rule.input_label required`);
+  if(!Array.isArray(data.jurisdiction?.options)||!data.jurisdiction.options.length) fail(`${path}: jurisdiction.options required`);
+  unique(data.jurisdiction.options,"value",path+" jurisdiction options");
+  for(const option of data.jurisdiction.options){
+    if(!option.label) fail(`${path}: jurisdiction option ${option.value} missing label`);
+    if(!option.mission_label||!option.mission_detail) fail(`${path}: jurisdiction option ${option.value} missing mission copy`);
+  }
 }
 
 
