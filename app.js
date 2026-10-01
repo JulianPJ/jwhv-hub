@@ -13,14 +13,16 @@ function writeLocal(key,value){localStorage.setItem(key,JSON.stringify(value))}
 const SHORTLIST_KEY="jwhv-hub:shortlist:v1";
 const MOVE_PLAN_KEY="jwhv-hub:move-plan:v1";
 const VISA_PROGRESS_KEY="jwhv-hub:visa-progress:v2";
+const VISA_MARKET_KEY="jwhv-hub:visa-market:v1";
+function getVisaMarket(){return readLocal(VISA_MARKET_KEY,{market:"GB"}).market||"GB"}
 function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
 function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
 function parseLocalDate(value){return value?new Date(value+"T12:00:00"):null}
 function isoDate(date){return date.toISOString().slice(0,10)}
 function shiftDays(value,days){const d=parseLocalDate(value);if(!d)return null;d.setDate(d.getDate()+days);return d}
 function daysBetween(a,b){return Math.ceil((b-a)/86400000)}
-function visaProgressSummary(visa){
-  const saved=readLocal(VISA_PROGRESS_KEY,{});
+function visaProgressSummary(visa,market="GB"){
+  const saved=readLocal(VISA_PROGRESS_KEY+":"+market,{});
   const ids=[
     ...(visa.document_checklist||[]).map(item=>"doc:"+item.id),
     ...(visa.preparation_checklist||[]).map(item=>"prep:"+item.id)
@@ -170,12 +172,44 @@ async function initHousing(){
 }
 
 async function initApplication(){
-  const visa=await loadJSON("data/live/visa-uk.json");
+  const markets=await loadJSON("data/live/visa-markets.json");
+  const countryNames=new Map([
+    ...(markets.partner_countries||[]).map(item=>[item.code,item.name]),
+    ...(markets.reference_countries||[]).map(item=>[item.code,item.name])
+  ]);
+  const marketSelect=$("#visa-market");
+  const detailedCodes=Object.keys(markets.detailed_planners||{});
+  marketSelect.innerHTML=detailedCodes.map(code=>'<option value="'+esc(code)+'">'+esc(countryNames.get(code)||code)+'</option>').join("");
+  let selected=getVisaMarket();
+  if(!detailedCodes.includes(selected)) selected="GB";
+  marketSelect.value=selected;
+  marketSelect.addEventListener("change",()=>{
+    writeLocal(VISA_MARKET_KEY,{market:marketSelect.value});
+    location.reload();
+  });
+
+  $("#market-verified").textContent="MOFA list verified "+markets.verified_at;
+  $("#visa-market-note").textContent="Detailed interactive planners are currently available for the UK and Australia. Other passport countries are shown from Japan's official Working Holiday partner list and will gain country-specific planners incrementally.";
+
+  const eu=markets.coverage_groups.find(group=>group.id==="eu");
+  const aus=markets.coverage_groups.find(group=>group.id==="australia");
+  const na=markets.coverage_groups.find(group=>group.id==="north-america");
+  const names=codes=>codes.map(code=>countryNames.get(code)||code).join(", ");
+  $("#market-coverage").innerHTML=[
+    {title:aus.label,status:"Detailed planner available",body:names(aus.eligible_codes)},
+    {title:eu.label,status:eu.eligible_codes.length+" member states eligible",body:names(eu.eligible_codes)+" · No current arrangement: "+names(eu.unavailable_codes)},
+    {title:na.label,status:"Country-specific",body:"Eligible: "+names(na.eligible_codes)+" · No current Japan Working Holiday arrangement: "+names(na.unavailable_codes)}
+  ].map(item=>'<article class="market-card"><span>'+esc(item.status)+'</span><strong>'+esc(item.title)+'</strong><p>'+esc(item.body)+'</p></article>').join("");
+
+  const ruleset=markets.detailed_planners[selected];
+  const visa=await loadJSON("data/live/"+ruleset);
+  const marketName=countryNames.get(selected)||selected;
+  $("#visa-route-title").textContent=(visa.market_label||marketName+" → Japan");
   $("#visa-verified").textContent="Verified "+visa.verified_at;
   $("#visa-summary").innerHTML=(visa.summary_facts||[]).map(fact=>'<div class="fact"><span>'+esc(fact.label)+'</span><strong>'+esc(fact.value)+'</strong></div>').join("");
   $("#official-source-links").innerHTML=(visa.official_sources||[]).map(source=>'<a class="tag" href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">'+esc(source.name)+" ↗</a>").join("");
 
-  const eligibilityKey="jwhv-hub:eligibility:v1";
+  const eligibilityKey="jwhv-hub:eligibility:v2:"+selected;
   const eligibilitySaved=readLocal(eligibilityKey,{});
   const eligibilityForm=$("#eligibility-form");
 
@@ -191,6 +225,23 @@ async function initApplication(){
   }).join("");
 
   const specialIds=["bank-funds","return-ticket","prior-visas","previous-extension","jurisdiction-area"];
+  const area=$("#jurisdiction-area");
+  if(selected==="GB"){
+    $("#funds-label").textContent="Cleared funds shown in your UK bank statements (£)";
+    $("#bank-funds").placeholder=String(visa.funds_rule.no_ticket_minimum||2500);
+    $("#residence-label").textContent="UK residence area";
+    $("#residence-help").textContent="The Edinburgh jurisdiction includes Scotland plus specified northern council areas. The exact current list comes from the verified ruleset.";
+    area.innerHTML='<option value="">Choose…</option><option value="scotland">Scotland</option><option value="edinburgh_north">Listed North of England council area</option><option value="other_uk">Elsewhere in the UK</option><option value="outside_country">Outside the UK</option>';
+    $("#previous-extension-wrap").hidden=false;
+  }else{
+    $("#funds-label").textContent="Funds shown in your Australian bank statements (A$)";
+    $("#bank-funds").placeholder=String(visa.funds_rule.with_return_ticket_minimum||2500);
+    $("#residence-label").textContent="Australian residence";
+    $("#residence-help").textContent="Australian Working Holiday applicants must currently live in Australia and should follow the Japanese mission responsible for their residence.";
+    area.innerHTML='<option value="">Choose…</option><option value="in_country">I currently live in Australia</option><option value="outside_country">I currently live outside Australia</option>';
+    $("#previous-extension-wrap").hidden=true;
+  }
+
   for(const id of specialIds){
     const el=$("#"+id);
     if(el&&eligibilitySaved[id]!==undefined) el.value=eligibilitySaved[id];
@@ -204,24 +255,30 @@ async function initApplication(){
   }
   function saveEligibility(){writeLocal(eligibilityKey,collectEligibility())}
 
-  function missionForArea(area){
-    if(area==="scotland"||area==="edinburgh_north") return visa.jurisdiction.edinburgh_label;
-    if(area==="other_uk") return visa.jurisdiction.london_label;
-    if(area==="outside_uk") return "UK application route may not apply";
-    return "Answer the location question";
-  }
-
   function renderMission(){
-    const area=$("#jurisdiction-area").value;
-    let detail="We will route you to London or Edinburgh using the current jurisdiction guidance.";
-    if(area==="scotland"||area==="edinburgh_north"){
-      detail="Edinburgh currently covers Scotland and these listed northern areas: "+visa.jurisdiction.edinburgh_regions.filter(v=>v!=="Scotland").join(", ")+".";
-    }else if(area==="other_uk"){
-      detail="Based on the current jurisdiction split, applicants outside Edinburgh's listed area use the Embassy in London.";
-    }else if(area==="outside_uk"){
-      detail="The UK route requires UK residence. Check the Japanese mission responsible for your country of residence.";
+    const value=area.value;
+    let label="Answer the residence question",detail="Use the selected country ruleset to identify the correct application route.";
+    if(selected==="GB"){
+      if(value==="scotland"||value==="edinburgh_north"){
+        label=visa.jurisdiction.edinburgh_label;
+        detail="Edinburgh currently covers Scotland and these listed northern areas: "+visa.jurisdiction.edinburgh_regions.filter(v=>v!=="Scotland").join(", ")+".";
+      }else if(value==="other_uk"){
+        label=visa.jurisdiction.london_label;
+        detail="Applicants outside Edinburgh's listed UK area use the Embassy in London under the current guidance.";
+      }else if(value==="outside_country"){
+        label="UK application route may not apply";
+        detail="The UK route requires UK residence. Check the Japanese mission responsible for your country of nationality/residence.";
+      }
+    }else{
+      if(value==="in_country"){
+        label=visa.jurisdiction.label;
+        detail=visa.jurisdiction.description;
+      }else if(value==="outside_country"){
+        label="Australian application route may not apply";
+        detail="Australian Working Holiday applicants must currently live in Australia and apply through the appropriate Japanese mission there.";
+      }
     }
-    $("#mission-card").innerHTML='<span class="small-label">YOUR MISSION</span><strong>'+esc(missionForArea(area))+'</strong><p class="muted">'+esc(detail)+'</p>';
+    $("#mission-card").innerHTML='<span class="small-label">YOUR MISSION</span><strong>'+esc(label)+'</strong><p class="muted">'+esc(detail)+'</p>';
   }
 
   function evaluateEligibility(){
@@ -240,29 +297,37 @@ async function initApplication(){
 
     const fundsRaw=$("#bank-funds").value;
     const ticket=$("#return-ticket").value;
+    const symbol=visa.funds_rule.currency_symbol||(visa.funds_rule.currency==="GBP"?"£":visa.funds_rule.currency+" ");
     if(fundsRaw==="") pending.push("Proof-of-funds amount");
     else{
       const funds=Number(fundsRaw);
-      const enoughWithout=funds>=visa.funds_rule.no_ticket_minimum;
-      const enoughWith=funds>=visa.funds_rule.with_return_ticket_minimum&&ticket==="yes";
-      if(!enoughWithout&&!enoughWith){
-        if(ticket==="") pending.push("Return/onward ticket evidence");
-        else issues.push("The entered funds are below the current baseline: £"+visa.funds_rule.no_ticket_minimum+", or £"+visa.funds_rule.with_return_ticket_minimum+" with return/onward-ticket evidence.");
+      const withTicket=visa.funds_rule.with_return_ticket_minimum;
+      const withoutTicket=visa.funds_rule.no_ticket_minimum;
+      if(ticket==="") pending.push("Return/onward ticket evidence");
+      else if(ticket==="yes"&&Number.isFinite(withTicket)&&funds<withTicket){
+        issues.push("The entered funds are below the current baseline of "+symbol+withTicket+" when return/onward-ticket evidence is provided.");
+      }else if(ticket==="no"){
+        if(Number.isFinite(withoutTicket)&&funds<withoutTicket){
+          issues.push("The entered funds are below the current baseline of "+symbol+withoutTicket+" without return/onward-ticket evidence.");
+        }else if(!Number.isFinite(withoutTicket)){
+          if(Number.isFinite(withTicket)&&funds<withTicket) issues.push("The entered funds are below the current baseline of "+symbol+withTicket+".");
+          pending.push("Additional return-flight funds: the official Australian guidance requires enough extra funds to purchase the return flight but does not state one fixed extra amount.");
+        }
       }
     }
 
     const prior=$("#prior-visas").value;
     const extension=$("#previous-extension").value;
     if(prior==="") pending.push("Previous Working Holiday participation");
-    else if(Number(prior)>=visa.participation_rule.max_total_participations) issues.push("The current UK programme permits a maximum of two participations / two years in total.");
-    else if(prior==="1"){
+    else if(Number(prior)>=visa.participation_rule.max_total_participations){
+      issues.push("The selected programme's current participation limit would be exceeded by the previous visas entered.");
+    }else if(visa.participation_rule.max_total_participations>1&&prior==="1"){
       if(extension==="") pending.push("Previous extension history");
-      else if(extension==="yes") issues.push("A second year obtained by extending a first Working Holiday stay counts toward the current two-year participation limit.");
+      else if(extension==="yes") issues.push("A second year obtained by extending a first Working Holiday stay counts toward the current participation limit.");
     }
 
-    const area=$("#jurisdiction-area").value;
-    if(area==="") pending.push("UK residence area");
-    if(area==="outside_uk") issues.push("This UK route is intended for applicants resident in the United Kingdom.");
+    if(area.value==="") pending.push("Residence area");
+    if(area.value==="outside_country") issues.push("The selected Working Holiday route requires the applicant to be currently resident in the country of nationality.");
 
     const result=$("#eligibility-result");
     if(issues.length){
@@ -270,7 +335,7 @@ async function initApplication(){
       result.innerHTML="<strong>This pre-check found "+issues.length+" issue"+(issues.length===1?"":"s")+".</strong><ul>"+issues.map(issue=>"<li>"+esc(issue)+"</li>").join("")+"</ul><p>Check the official source before deciding whether or how to apply.</p>";
     }else if(pending.length){
       result.className="eligibility-result neutral";
-      result.innerHTML="<strong>No conflict found in the answers provided so far.</strong><p>Complete "+pending.length+" remaining field"+(pending.length===1?"":"s")+" for a fuller pre-check.</p>";
+      result.innerHTML="<strong>No conflict found in the answers provided so far.</strong><p>Complete or independently verify "+pending.length+" remaining item"+(pending.length===1?"":"s")+" for a fuller pre-check.</p>";
     }else{
       result.className="eligibility-result pass";
       result.innerHTML="<strong>Your answers match the baseline rules in the currently verified ruleset.</strong><p>This is not an approval or guarantee. Re-check the official guidance before applying.</p>";
@@ -283,7 +348,7 @@ async function initApplication(){
   for(const id of specialIds) $("#"+id)?.addEventListener("input",evaluateEligibility);
   evaluateEligibility();
 
-  const progressKey="jwhv-hub:visa-progress:v2";
+  const progressKey=VISA_PROGRESS_KEY+":"+selected;
   const savedProgress=readLocal(progressKey,{});
   function checklistMarkup(items,prefix){
     return items.map(item=>'<label class="check-item"><input type="checkbox" data-check-id="'+esc(prefix+item.id)+'" '+(savedProgress[prefix+item.id]?"checked":"")+'><span><strong>'+esc(item.title)+'</strong><p>'+esc(item.description)+'</p></span></label>').join("");
@@ -309,7 +374,7 @@ async function initApplication(){
   });
   updateProgress();
 
-  const workspaceKey="jwhv-hub:workspace:v1";
+  const workspaceKey="jwhv-hub:workspace:v2:"+selected;
   const workspace=readLocal(workspaceKey,{statement:"",months:{}});
   $("#statement-notes").value=workspace.statement||"";
   $("#itinerary-months").innerHTML=Array.from({length:12},(_,index)=>{
@@ -328,18 +393,15 @@ async function initApplication(){
   $("#download-plan").addEventListener("click",()=>{
     saveWorkspace();
     const data=readLocal(workspaceKey,{statement:"",months:{}});
-    const lines=["Japan Working Holiday planning notes","","Statement of Purpose notes","--------------------------",data.statement||"(blank)","","12-month itinerary notes","------------------------"];
+    const lines=["Japan Working Holiday planning notes — "+marketName,"","Statement of Purpose notes","--------------------------",data.statement||"(blank)","","12-month itinerary notes","------------------------"];
     for(let month=1;month<=12;month++) lines.push("Month "+month+": "+(data.months?.[month]||"(blank)"));
     lines.push("","","Generated locally by JWHV Hub. Reformat these notes into the current official documents/forms before applying.");
     const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
     const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");a.href=url;a.download="japan-working-holiday-planning-notes.txt";a.click();
+    const a=document.createElement("a");a.href=url;a.download="japan-working-holiday-planning-notes-"+selected.toLowerCase()+".txt";a.click();
     URL.revokeObjectURL(url);
   });
 }
-
-
-
 
 function planMilestones(targetArrival){
   if(!targetArrival) return [];
@@ -357,16 +419,19 @@ function planMilestones(targetArrival){
 }
 
 async function initPlan(){
+  const markets=await loadJSON("data/live/visa-markets.json");
+  const market=getVisaMarket();
+  const ruleset=markets.detailed_planners?.[market]||"visa-uk.json";
   const [jobsFeed,housingFeed,visa]=await Promise.all([
     loadVisibleFeed("jobs"),
     loadVisibleFeed("housing"),
-    loadJSON("data/live/visa-uk.json")
+    loadJSON("data/live/"+ruleset)
   ]);
   const plan=getMovePlan();
   const shortlist=getShortlist();
   const savedJobs=jobsFeed.items.filter(item=>shortlist.jobs.includes(item.id));
   const savedHousing=housingFeed.items.filter(item=>shortlist.housing.includes(item.id));
-  const visaState=visaProgressSummary(visa);
+  const visaState=visaProgressSummary(visa,market);
   const arrival=$("#target-arrival");
   arrival.value=plan.targetArrival||"";
 
@@ -522,17 +587,17 @@ async function initShortlist(){
 }
 
 async function initStatus(){
-  const [state,jobsFeed,housingFeed,visa]=await Promise.all([
+  const [state,jobsFeed,housingFeed,markets]=await Promise.all([
     loadJSON("data/worker-state.json"),
     loadVisibleFeed("jobs"),
     loadVisibleFeed("housing"),
-    loadJSON("data/live/visa-uk.json")
+    loadJSON("data/live/visa-markets.json")
   ]);
   const summary=$("#status-summary");
   summary.innerHTML=[
     ["Jobs",jobsFeed.items.length,jobsFeed.liveCount+" live · "+jobsFeed.pendingCount+" pending"],
     ["Housing",housingFeed.items.length,housingFeed.liveCount+" live · "+housingFeed.pendingCount+" pending"],
-    ["Visa ruleset","UK → Japan","Verified "+visa.verified_at]
+    ["Visa coverage",(markets.partner_countries||[]).length+" partner markets",Object.keys(markets.detailed_planners||{}).length+" detailed planners · verified "+markets.verified_at]
   ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
 
   const workers=state.workers||{};
