@@ -189,7 +189,7 @@ async function initApplication(){
   });
 
   $("#market-verified").textContent="MOFA list verified "+markets.verified_at;
-  $("#visa-market-note").textContent="Detailed interactive planners are currently available for the UK and Australia. Other passport countries are shown from Japan's official Working Holiday partner list and will gain country-specific planners incrementally.";
+  $("#visa-market-note").textContent="Detailed interactive planners are currently available for the UK, Australia and Germany. Other passport countries are shown from Japan's official Working Holiday partner list and will gain country-specific planners incrementally.";
 
   const eu=markets.coverage_groups.find(group=>group.id==="eu");
   const aus=markets.coverage_groups.find(group=>group.id==="australia");
@@ -197,7 +197,7 @@ async function initApplication(){
   const names=codes=>codes.map(code=>countryNames.get(code)||code).join(", ");
   $("#market-coverage").innerHTML=[
     {title:aus.label,status:"Detailed planner available",body:names(aus.eligible_codes)},
-    {title:eu.label,status:eu.eligible_codes.length+" member states eligible",body:names(eu.eligible_codes)+" · No current arrangement: "+names(eu.unavailable_codes)},
+    {title:eu.label,status:eu.eligible_codes.length+" member states eligible · Germany planner live",body:names(eu.eligible_codes)+" · No current arrangement: "+names(eu.unavailable_codes)},
     {title:na.label,status:"Country-specific",body:"Eligible: "+names(na.eligible_codes)+" · No current Japan Working Holiday arrangement: "+names(na.unavailable_codes)}
   ].map(item=>'<article class="market-card"><span>'+esc(item.status)+'</span><strong>'+esc(item.title)+'</strong><p>'+esc(item.body)+'</p></article>').join("");
 
