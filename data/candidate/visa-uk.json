@@ -133,7 +133,8 @@
     "source_ids": [
       "uk-embassy-working-holiday-checklist",
       "edinburgh-working-holiday"
-    ]
+    ],
+    "input_label": "Cleared funds shown in your UK bank statements (£)"
   },
   "participation_rule": {
     "max_total_participations": 2,
@@ -166,6 +167,35 @@
     "source_ids": [
       "uk-embassy-visa-general",
       "edinburgh-visa-general"
+    ],
+    "ui_label": "UK residence area",
+    "ui_help": "The Edinburgh jurisdiction includes Scotland plus specified northern council areas. The exact current list comes from the verified ruleset.",
+    "options": [
+      {
+        "value": "scotland",
+        "label": "Scotland",
+        "mission_label": "Consulate-General of Japan in Edinburgh",
+        "mission_detail": "Edinburgh covers Scotland plus the listed northern council areas."
+      },
+      {
+        "value": "edinburgh_north",
+        "label": "Listed North of England council area",
+        "mission_label": "Consulate-General of Japan in Edinburgh",
+        "mission_detail": "Edinburgh currently covers these listed northern areas: County Durham, Cumberland, Darlington, Gateshead, Hartlepool, Middlesbrough, Newcastle upon Tyne, North Tyneside, Northumberland, Redcar and Cleveland, South Tyneside, Stockton-on-Tees, Sunderland, Westmorland and Furness."
+      },
+      {
+        "value": "other_uk",
+        "label": "Elsewhere in the UK",
+        "mission_label": "Embassy of Japan in the UK (London)",
+        "mission_detail": "Applicants outside Edinburgh's listed UK area use the Embassy in London under the current guidance."
+      },
+      {
+        "value": "outside_country",
+        "label": "Outside the UK",
+        "mission_label": "UK application route may not apply",
+        "mission_detail": "The UK route requires UK residence. Check the Japanese mission responsible for your country of nationality/residence.",
+        "issue": "The UK Working Holiday route requires the applicant to be currently resident in the United Kingdom."
+      }
     ]
   },
   "document_checklist": [

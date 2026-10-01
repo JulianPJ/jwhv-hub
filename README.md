@@ -1,12 +1,12 @@
 # Japan Working Holiday Hub
 
-A static, data-driven dashboard for people planning a UK → Japan Working Holiday.
+A static, data-driven dashboard for people planning a Working Holiday in Japan, with country-specific visa guidance and shared Japan-wide jobs/housing.
 
 ## MVP scope
 
 - Job opportunities
 - Housing opportunities
-- Working Holiday application preparation
+- Country-specific Working Holiday application preparation (UK and Australia detailed; global partner-country registry)
 - Browser-only progress storage
 - GitHub-backed candidate/live data workflow
 - Automated validation and GitHub Pages deployment
@@ -18,7 +18,7 @@ AI workers
    │
    ├── data/candidate/jobs.json
    ├── data/candidate/housing.json
-   └── data/candidate/visa-uk.json
+   └── data/candidate/visa-*.json
                 │
                 ▼
           validation / QA
@@ -30,7 +30,7 @@ AI workers
           GitHub Pages
 ```
 
-The frontend reads only `data/live/`. Automated research workers should write to `data/candidate/` first.
+The frontend reads approved visa rules from `data/live/`. Jobs and housing intentionally combine approved live records with active pending direct-source candidates, clearly labelled as pending review. Automated research should still write candidates first.
 
 ## Local preview
 
@@ -73,7 +73,7 @@ After the scaffold PR is merged:
 
 Visa sources are restricted to the official source registry in `data/sources.json`.
 
-Job and housing source lists are intentionally empty until each source has been reviewed for reliability and appropriate automated/republication use.
+Jobs and housing use approved direct-source policies: canonical links must point to original employers/providers or clearly employer-authorised careers pages. Commercial aggregators are discovery-only.
 
 ## Important
 
@@ -82,11 +82,11 @@ This project is an independent planning tool, not a government service or immigr
 
 ## Phase 2 application assistance
 
-The visa planner now includes:
+The visa planner now supports a passport-market selector and includes:
 
 - rules-based eligibility pre-check
-- UK residence / London vs Edinburgh jurisdiction routing
-- proof-of-funds and prior-participation checks
+- country-specific application routing (UK London/Edinburgh and Australia residence-based routing)
+- country-specific proof-of-funds and prior-participation checks
 - official-source-backed document checklist
 - browser-only Statement of Purpose notes
 - browser-only 12-month itinerary workspace
@@ -142,7 +142,7 @@ The repository contains exact worker contracts under `automation/`, but only **t
          GitHub Pages
 ```
 
-Visa monitoring is not scheduled. The visa planner continues to use the verified ruleset already stored in the repository, and official-source checks should be performed when that ruleset is intentionally updated.
+Visa monitoring is not currently scheduled. The planner uses verified market-specific rulesets stored in the repository plus a MOFA-backed registry of all current Working Holiday partner countries/regions. Official-source checks are required whenever a market ruleset is added or changed.
 
 Research cannot approve its own output. Jobs and housing use constrained direct-source discovery: the canonical URL must be the original employer or housing-provider page, not a third-party aggregator.
 
@@ -163,3 +163,16 @@ Public automation/data freshness is visible at `/status.html`.
 - downloadable move-plan summary
 
 The milestones are organisational suggestions, not official visa deadlines. All plan state remains in browser `localStorage`.
+
+## Phase 7 multi-market visa architecture
+
+The Japan-side jobs and housing inventory is shared across users. Visa guidance is selected by passport market.
+
+Current detailed planners:
+- United Kingdom (`data/live/visa-uk.json`)
+- Australia (`data/live/visa-au.json`)
+- Germany (`data/live/visa-de.json`)
+
+`data/live/visa-markets.json` tracks Japan's current Working Holiday partner countries/regions from MOFA and highlights EU/North American availability. The European Union is not treated as one visa market: eligibility and application rules are passport-country specific. The United States is shown as having no current Japan Working Holiday arrangement because it is not on MOFA's current partner list.
+
+Browser-local eligibility, checklist and planning state is namespaced by selected market so one country's answers do not contaminate another country's planner.

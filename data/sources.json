@@ -54,6 +54,39 @@
       "allowed_for": [
         "visa"
       ]
+    },
+    {
+      "id": "au-embassy-working-holiday",
+      "name": "Embassy of Japan in Australia — Working Holiday Visa",
+      "url": "https://www.au.emb-japan.go.jp/itpr_en/visa_workingholiday_en.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "de-embassy-working-holiday",
+      "name": "Embassy of Japan in Germany — Working Holiday Visa",
+      "url": "https://www.de.emb-japan.go.jp/itpr_de/konsular_VisaWH_EN.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "de-working-holiday-faq",
+      "name": "Embassy of Japan in Germany — Working Holiday FAQ",
+      "url": "https://www.de.emb-japan.go.jp/files/100809960.pdf",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_pdf",
+      "allowed_for": [
+        "visa"
+      ]
     }
   ],
   "job_sources": [

@@ -6,8 +6,8 @@ JWHV Hub uses two scheduled ChatGPT tasks plus deterministic GitHub Actions.
 
 All ChatGPT task times are in Europe/London:
 
-- 01:00 — **Listings Research**: runs both the jobs and housing research contracts
-- 04:00 — **QA & Publish**: independently reviews pending job/housing candidates, triggers deterministic promotion for approved listing data, then checks the deployed site
+- Hourly at :18 — **Listings Research**: read-only broad jobs/housing discovery and source-family sweeps
+- Hourly at :18 — **QA & Site Audit**: read-only candidate/live audit, source verification, deployment/site-health checks and expansion research
 
 GitHub Actions remains responsible for deterministic validation, candidate promotion and GitHub Pages publication.
 
@@ -15,9 +15,7 @@ The visa planner remains part of the product, but there is no daily visa-monitor
 
 ## Write boundaries
 
-The Listings Research task may write only to candidate listing data, source-health state, worker state, and incident issues. It never writes directly to `data/live/` and never approves its own research.
-
-The QA & Publish task may approve/reject job and housing candidate data, trigger the deterministic promotion workflow, verify deployment, and perform low-risk site-health fixes. It does not alter visa rules.
+The two ChatGPT Scheduled Tasks currently run in READ-ONLY MODE because unattended GitHub mutations were blocked by the execution safety layer. They research and audit; deterministic GitHub-native workflows remain the correct path for routine writes, validation, promotion and deployment.
 
 GitHub Actions remains the routine candidate-to-live publishing path.
 
