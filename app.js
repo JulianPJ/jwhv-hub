@@ -467,17 +467,19 @@ function planMilestones(targetArrival){
 async function initPlan(){
   const markets=await loadJSON("data/live/visa-markets.json");
   const market=getVisaMarket();
-  const ruleset=markets.detailed_planners?.[market]||"visa-uk.json";
-  const [jobsFeed,housingFeed,visa]=await Promise.all([
+  const ruleset=markets.detailed_planners?.[market]||null;
+  const [jobsFeed,housingFeed]=await Promise.all([
     loadVisibleFeed("jobs"),
-    loadVisibleFeed("housing"),
-    loadJSON("data/live/"+ruleset)
+    loadVisibleFeed("housing")
   ]);
+  const visa=ruleset?await loadJSON("data/live/"+ruleset):null;
+  const marketEntry=[...(markets.partner_countries||[]),...(markets.reference_countries||[])].find(item=>item.code===market);
+  const marketName=marketEntry?.name||market;
   const plan=getMovePlan();
   const shortlist=getShortlist();
   const savedJobs=jobsFeed.items.filter(item=>shortlist.jobs.includes(item.id));
   const savedHousing=housingFeed.items.filter(item=>shortlist.housing.includes(item.id));
-  const visaState=visaProgressSummary(visa,market);
+  const visaState=visa?visaProgressSummary(visa,market):{complete:0,total:0,pct:0};
   const arrival=$("#target-arrival");
   arrival.value=plan.targetArrival||"";
 
@@ -497,19 +499,23 @@ async function initPlan(){
       $("#plan-countdown-copy").textContent="Your planning milestones will be calculated relative to the date you choose.";
     }
 
+    const visaMetric=visa
+      ?["Visa preparation",visaState.pct+"%",visaState.complete+" of "+visaState.total+" local checklist items · "+marketName]
+      :["Visa route","Status only",marketName+" does not currently have a detailed JWHV Hub planner"];
     $("#plan-metrics").innerHTML=[
-      ["Visa preparation",visaState.pct+"%",visaState.complete+" of "+visaState.total+" local checklist items"],
+      visaMetric,
       ["Saved jobs",savedJobs.length,savedJobs.length?"Options worth revisiting":"Save roles from the Jobs page"],
       ["Saved housing",savedHousing.length,savedHousing.length?"Options worth revisiting":"Save places from the Housing page"]
     ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
 
     const actions=[];
     if(!target) actions.push({title:"Set a target arrival date",body:"This unlocks your planning timeline and countdown.",href:"#target-arrival"});
-    if(visaState.pct<100) actions.push({title:"Continue visa preparation",body:visaState.complete+" of "+visaState.total+" local checklist items are complete.",href:"application.html"});
+    if(visa&&visaState.pct<100) actions.push({title:"Continue visa preparation",body:visaState.complete+" of "+visaState.total+" local checklist items are complete for "+marketName+".",href:"application.html"});
+    if(!visa) actions.push({title:"Review your passport-market guidance",body:"JWHV Hub has status information for "+marketName+" but not a detailed country-specific checklist. Do not use another country's visa rules.",href:"application.html"});
     if(!savedJobs.length) actions.push({title:"Save some job options",body:"Use direct-employer listings to build a shortlist before comparing dates and locations.",href:"jobs.html"});
     if(!savedHousing.length) actions.push({title:"Save some housing options",body:"Add furnished monthly options so you can compare cost and availability.",href:"housing.html"});
     if(savedJobs.length&&savedHousing.length) actions.push({title:"Review your shortlist together",body:"Compare start dates, locations, rent and staff-housing options before narrowing down.",href:"shortlist.html"});
-    if(targetDate&&daysBetween(today,targetDate)<=45&&visaState.pct<100) actions.unshift({title:"Prioritise unfinished application preparation",body:"Your target arrival is relatively close and your local checklist is not complete. Check the official application instructions before relying on this date.",href:"application.html"});
+    if(visa&&targetDate&&daysBetween(today,targetDate)<=45&&visaState.pct<100) actions.unshift({title:"Prioritise unfinished application preparation",body:"Your target arrival is relatively close and your local checklist is not complete. Check the official application instructions before relying on this date.",href:"application.html"});
     if(!actions.length) actions.push({title:"Re-check your sources",body:"Your local plan is well populated. Re-open the official visa guidance and each saved employer/provider page before committing.",href:"shortlist.html"});
 
     $("#next-actions").innerHTML=actions.slice(0,4).map((item,index)=>
@@ -567,7 +573,8 @@ async function initPlan(){
       "Japan Working Holiday move plan",
       "",
       "Target arrival: "+(state.targetArrival||"(not set)"),
-      "Visa preparation: "+visaState.pct+"% ("+visaState.complete+"/"+visaState.total+")",
+      "Passport market: "+marketName,
+      "Visa preparation: "+(visa?(visaState.pct+"% ("+visaState.complete+"/"+visaState.total+")"):"No detailed planner available"),
       "Saved jobs: "+savedJobs.length,
       "Saved housing: "+savedHousing.length,
       "",
