@@ -73,7 +73,8 @@ function promoteVisaMarkets(){
 }
 
 function promoteVisa(){
-  for(const file of ["visa-uk.json","visa-au.json","visa-de.json"]) promoteVisaFile(file);
+  const candidateRegistry=read("data/candidate/visa-markets.json");
+  for(const file of new Set(Object.values(candidateRegistry.detailed_planners||{}))) promoteVisaFile(file);
   promoteVisaMarkets();
 }
 
