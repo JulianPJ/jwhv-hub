@@ -14,13 +14,14 @@ Jobs review:
 - Review every newly added or materially changed record.
 - Confirm the canonical link is a direct employer/employer-authorised page.
 - Confirm source domain matches the URL.
-- Confirm salary, language, accommodation and Working Holiday claims are directly supported.
+- Confirm salary display and numeric pay range, start/end dates, language, accommodation status and Working Holiday claims are directly supported.
+- Confirm numeric pay matches the human-readable pay text and that `accommodation_status` distinguishes provided vs subsidised housing correctly.
 - Downgrade unsupported claims to `unknown` or reject the candidate run.
 - Compare record counts with live data. A drop >30% from a live feed of 10+ records requires investigation and should not be approved merely because links failed.
 
 Housing review:
 - Confirm the canonical link is an original provider/operator page.
-- Confirm rent, furnished status, minimum stay, foreigner eligibility and guarantor claims are source-backed.
+- Confirm displayed rent, numeric monthly rent, availability date, upfront fees, furnished status, minimum stay, foreigner eligibility and guarantor claims are source-backed.
 - Do not accept aggregator-only canonical records.
 - Treat large inventory drops as anomalies.
 

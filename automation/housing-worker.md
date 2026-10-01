@@ -16,6 +16,7 @@ Discovery rules:
 - `source_domain` must match the canonical page's domain.
 - Prefer furnished share houses, monthly rentals, guest houses, coliving and other short/medium-term accommodation suitable for stays of roughly 1–12 months.
 - Never infer `foreigner_eligibility`, guarantor requirements, furnished status, minimum stay, fees, availability or rent when the provider does not state them.
+- When explicitly stated, record `monthly_rent_jpy` as the total recurring monthly amount used for sorting, `available_from` as YYYY-MM-DD, and a concise `upfront_fee_display` for mandatory one-time fees.
 - Use `foreigner_eligibility: "explicitly_accepted"` only when the provider explicitly supports foreign/international residents or Working Holiday/long-stay foreign customers. Otherwise use `unknown`.
 
 Run procedure:

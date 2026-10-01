@@ -12,34 +12,81 @@ function readLocal(key,fallback={}){try{return JSON.parse(localStorage.getItem(k
 function writeLocal(key,value){localStorage.setItem(key,JSON.stringify(value))}
 
 async function initJobs(){
-  const data=await loadJSON("data/live/jobs.json"),items=data.items||[];
-  const search=$("#job-search"),language=$("#job-language"),wh=$("#job-wh"),list=$("#job-list"),count=$("#job-count");
+  const data=await loadJSON("data/live/jobs.json"),items=(data.items||[]).filter(item=>item.status==="active");
+  const search=$("#job-search"),language=$("#job-language"),wh=$("#job-wh"),housing=$("#job-housing"),sort=$("#job-sort"),list=$("#job-list"),count=$("#job-count");
+  const japaneseLabel={none:"Japanese not required",basic:"Japanese: basic",conversational:"Japanese: conversational",business:"Japanese: business",native:"Japanese: native",unknown:"Japanese not stated"};
+  const whLabel={explicitly_accepted:"Working Holiday explicitly accepted",likely_compatible:"Working Holiday likely compatible",unknown:"Working Holiday not stated"};
+  const accommodationLabel={provided:"Staff housing provided",subsidized:"Subsidised staff housing",not_stated:"Staff housing not stated"};
+
   function render(){
     const q=search.value.trim().toLowerCase();
-    const filtered=items.filter(item=>[item.title,item.employer,item.city,item.prefecture].join(" ").toLowerCase().includes(q)
-      &&(!language.value||item.japanese_level===language.value)
-      &&(!wh.value||item.working_holiday===wh.value));
-    count.textContent=filtered.length+" "+(filtered.length===1?"listing":"listings");
-    list.innerHTML=filtered.length?filtered.map(item=>'<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(item.salary_display?tag(item.salary_display):"")+(item.japanese_level?tag("Japanese: "+item.japanese_level):"")+(item.working_holiday?tag("WH: "+item.working_holiday.replaceAll("_"," ")):"")+(item.accommodation_provided===true?tag("Accommodation provided"):"")+'</div></div><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a></article>').join("")
-      :empty(items.length?"No matching jobs":"Job feed ready",items.length?"Try changing the filters.":"Verified listings will appear once approved sources are connected.");
+    let filtered=items.filter(item=>{
+      const haystack=[item.title,item.employer,item.city,item.prefecture].join(" ").toLowerCase();
+      const accommodation=item.accommodation_status||(item.accommodation_provided===true?"provided":"not_stated");
+      return (!q||haystack.includes(q))
+        &&(!language.value||item.japanese_level===language.value)
+        &&(!wh.value||item.working_holiday===wh.value)
+        &&(!housing.value||accommodation===housing.value);
+    });
+
+    filtered=[...filtered].sort((a,b)=>{
+      if(sort.value==="pay_desc") return (b.salary_max_jpy??-1)-(a.salary_max_jpy??-1);
+      if(sort.value==="pay_asc") return (a.salary_min_jpy??Number.MAX_SAFE_INTEGER)-(b.salary_min_jpy??Number.MAX_SAFE_INTEGER);
+      if(sort.value==="start") return String(a.start_date||"9999-12-31").localeCompare(String(b.start_date||"9999-12-31"));
+      return String(b.last_seen||"").localeCompare(String(a.last_seen||""));
+    });
+
+    count.textContent=filtered.length+" "+(filtered.length===1?"listing":"listings")+" · feed verified "+data.updated_at;
+    list.innerHTML=filtered.length?filtered.map(item=>{
+      const accommodation=item.accommodation_status||(item.accommodation_provided===true?"provided":"not_stated");
+      const details=[
+        item.salary_display?tag(item.salary_display):"",
+        item.start_date?tag("Starts "+item.start_date):"",
+        item.japanese_level?tag(japaneseLabel[item.japanese_level]||item.japanese_level):"",
+        item.working_holiday?tag(whLabel[item.working_holiday]||item.working_holiday):"",
+        tag(accommodationLabel[accommodation]||accommodation)
+      ].join("");
+      return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div>'+(item.accommodation_note?'<p class="listing-note">'+esc(item.accommodation_note)+'</p>':"")+'<p class="listing-verified">Verified from employer source '+esc(item.last_seen)+'</p></div><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></article>';
+    }).join(""):empty(items.length?"No matching jobs":"No verified jobs yet",items.length?"Try changing the filters.":"The research worker has not published a verified direct-employer listing yet.");
   }
-  [search,language,wh].forEach(el=>el.addEventListener("input",render));
+  [search,language,wh,housing,sort].forEach(el=>el.addEventListener("input",render));
   render();
 }
 
 async function initHousing(){
-  const data=await loadJSON("data/live/housing.json"),items=data.items||[];
-  const search=$("#housing-search"),furnished=$("#housing-furnished"),foreigner=$("#housing-foreigner"),list=$("#housing-list"),count=$("#housing-count");
+  const data=await loadJSON("data/live/housing.json"),items=(data.items||[]).filter(item=>item.status==="active");
+  const search=$("#housing-search"),maxRent=$("#housing-max-rent"),furnished=$("#housing-furnished"),foreigner=$("#housing-foreigner"),sort=$("#housing-sort"),list=$("#housing-list"),count=$("#housing-count");
   function render(){
     const q=search.value.trim().toLowerCase();
-    const filtered=items.filter(item=>[item.name,item.city,item.prefecture,item.nearest_station].join(" ").toLowerCase().includes(q)
-      &&(!furnished.value||String(item.furnished)===furnished.value)
-      &&(!foreigner.value||item.foreigner_eligibility===foreigner.value));
-    count.textContent=filtered.length+" "+(filtered.length===1?"property":"properties");
-    list.innerHTML=filtered.length?filtered.map(item=>'<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(item.monthly_rent_display?tag(item.monthly_rent_display):"")+(item.furnished===true?tag("Furnished"):"")+(item.minimum_stay?tag("Min stay: "+item.minimum_stay):"")+(item.foreigner_eligibility?tag(item.foreigner_eligibility.replaceAll("_"," ")):"")+'</div></div><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a></article>').join("")
-      :empty(items.length?"No matching housing":"Housing feed ready",items.length?"Try changing the filters.":"Approved housing sources can now be connected without changing the frontend.");
+    let filtered=items.filter(item=>{
+      const haystack=[item.name,item.city,item.prefecture,item.nearest_station,item.source_name].join(" ").toLowerCase();
+      const withinBudget=!maxRent.value||Number(item.monthly_rent_jpy||Infinity)<=Number(maxRent.value);
+      return (!q||haystack.includes(q))
+        &&withinBudget
+        &&(!furnished.value||String(item.furnished)===furnished.value)
+        &&(!foreigner.value||item.foreigner_eligibility===foreigner.value);
+    });
+
+    filtered=[...filtered].sort((a,b)=>{
+      if(sort.value==="rent_asc") return (a.monthly_rent_jpy??Number.MAX_SAFE_INTEGER)-(b.monthly_rent_jpy??Number.MAX_SAFE_INTEGER);
+      if(sort.value==="rent_desc") return (b.monthly_rent_jpy??-1)-(a.monthly_rent_jpy??-1);
+      if(sort.value==="recent") return String(b.last_seen||"").localeCompare(String(a.last_seen||""));
+      return String(a.available_from||"9999-12-31").localeCompare(String(b.available_from||"9999-12-31"));
+    });
+
+    count.textContent=filtered.length+" "+(filtered.length===1?"option":"options")+" · feed verified "+data.updated_at;
+    list.innerHTML=filtered.length?filtered.map(item=>{
+      const details=[
+        item.monthly_rent_display?tag(item.monthly_rent_display):"",
+        item.available_from?tag("Available "+item.available_from):"",
+        item.furnished===true?tag("Furnished"):"",
+        item.minimum_stay?tag(item.minimum_stay):"",
+        item.foreigner_eligibility==="explicitly_accepted"?tag("Foreign residents accepted"):tag("Eligibility not stated")
+      ].join("");
+      return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div>'+(item.upfront_fee_display?'<p class="listing-note">'+esc(item.upfront_fee_display)+'</p>':"")+'<p class="listing-verified">Verified from '+esc(item.source_name)+" "+esc(item.last_seen)+'</p></div><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></article>';
+    }).join(""):empty(items.length?"No matching housing":"No verified housing yet",items.length?"Try changing the filters.":"The research worker has not published a verified direct-provider option yet.");
   }
-  [search,furnished,foreigner].forEach(el=>el.addEventListener("input",render));
+  [search,maxRent,furnished,foreigner,sort].forEach(el=>el.addEventListener("input",render));
   render();
 }
 

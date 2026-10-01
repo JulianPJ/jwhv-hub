@@ -3,7 +3,74 @@
   "change_control": {
     "status": "approved",
     "reviewed_at": "2026-10-01",
-    "review_note": "Empty Phase 3 baseline."
+    "review_note": "Initial production seed manually verified against directly managed Oakhouse property pages on 2026-10-01."
   },
-  "items": []
+  "items": [
+    {
+      "id": "oakhouse-appartement-iidabashi-302",
+      "name": "APPARTEMENT IIDABASHI — Room 302",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "nearest_station": null,
+      "monthly_rent_display": "¥149,000/month incl. maintenance",
+      "monthly_rent_jpy": 149000,
+      "upfront_fee_display": "¥50,000 one-time contract fee",
+      "minimum_stay": "Monthly available",
+      "available_from": "2026-12-01",
+      "furnished": true,
+      "guarantor_required": null,
+      "foreigner_eligibility": "explicitly_accepted",
+      "source_id": "direct-housing-provider-public-listing",
+      "source_name": "Oakhouse",
+      "source_domain": "oakhouse.jp",
+      "source_url": "https://www.oakhouse.jp/eng/house/1150",
+      "first_seen": "2026-10-01",
+      "last_seen": "2026-10-01",
+      "status": "active"
+    },
+    {
+      "id": "oakhouse-sasazuka-2f22",
+      "name": "OAKHOUSE SASAZUKA — Room 2F-22",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "nearest_station": "Sasazuka area",
+      "monthly_rent_display": "¥84,000/month incl. maintenance",
+      "monthly_rent_jpy": 84000,
+      "upfront_fee_display": "¥50,000 one-time contract fee",
+      "minimum_stay": "Monthly available",
+      "available_from": "2026-11-04",
+      "furnished": true,
+      "guarantor_required": null,
+      "foreigner_eligibility": "explicitly_accepted",
+      "source_id": "direct-housing-provider-public-listing",
+      "source_name": "Oakhouse",
+      "source_domain": "oakhouse.jp",
+      "source_url": "https://www.oakhouse.jp/eng/house/21",
+      "first_seen": "2026-10-01",
+      "last_seen": "2026-10-01",
+      "status": "active"
+    },
+    {
+      "id": "oakhouse-premiere-ayase-208",
+      "name": "PREMIERE AYASE — Room 208",
+      "prefecture": "Tokyo",
+      "city": "Adachi",
+      "nearest_station": "Ayase area",
+      "monthly_rent_display": "¥82,000/month incl. maintenance",
+      "monthly_rent_jpy": 82000,
+      "upfront_fee_display": "¥50,000 one-time contract fee",
+      "minimum_stay": "Monthly available",
+      "available_from": "2026-10-07",
+      "furnished": true,
+      "guarantor_required": null,
+      "foreigner_eligibility": "explicitly_accepted",
+      "source_id": "direct-housing-provider-public-listing",
+      "source_name": "Oakhouse",
+      "source_domain": "oakhouse.jp",
+      "source_url": "https://www.oakhouse.jp/eng/house/647",
+      "first_seen": "2026-10-01",
+      "last_seen": "2026-10-01",
+      "status": "active"
+    }
+  ]
 }

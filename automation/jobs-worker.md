@@ -19,7 +19,9 @@ Discovery rules:
 - Do not imply the job is Working-Holiday-compatible merely because it is in Japan.
 - Use `working_holiday: "explicitly_accepted"` only when the source explicitly mentions Working Holiday status/visa or equivalent acceptance. Otherwise use `unknown`.
 - Only set a Japanese-language level when the source states it clearly. Otherwise use `unknown`.
-- Only set accommodation provided when explicitly stated.
+- Record numeric pay when explicitly stated: `salary_min_jpy`, `salary_max_jpy`, and `salary_unit`.
+- Record `start_date` / `end_date` only when explicitly stated.
+- Use `accommodation_status: "provided"` only for free/included staff housing, `"subsidized"` for explicitly subsidised staff housing, otherwise `"not_stated"`. Preserve a short factual `accommodation_note` when useful.
 
 Run procedure:
 1. Read live jobs, candidate jobs, source policy and worker state.

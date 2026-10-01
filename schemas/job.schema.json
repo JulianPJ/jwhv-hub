@@ -144,6 +144,56 @@
               "stale",
               "expired"
             ]
+          },
+          "salary_min_jpy": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "salary_max_jpy": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "salary_unit": {
+            "enum": [
+              "hour",
+              "day",
+              "month",
+              "year",
+              "unknown"
+            ]
+          },
+          "start_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "end_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "accommodation_status": {
+            "enum": [
+              "provided",
+              "subsidized",
+              "not_stated"
+            ]
+          },
+          "accommodation_note": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       }
