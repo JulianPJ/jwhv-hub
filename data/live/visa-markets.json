@@ -311,5 +311,10 @@
       "region": "European Union",
       "working_holiday_available": false
     }
-  ]
+  ],
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Global Working Holiday partner-country registry verified against MOFA's 1 April 2026 programme list; detailed planners currently enabled for GB, AU and DE."
+  }
 }
