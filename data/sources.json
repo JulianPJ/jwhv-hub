@@ -395,6 +395,72 @@
       "allowed_for": [
         "visa"
       ]
+    },
+    {
+      "id": "fi-embassy-working-holiday",
+      "name": "Embassy of Japan in Finland — Visa for Working Holiday",
+      "url": "https://www.fi.emb-japan.go.jp/itpr_ja/11_000001_00544.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "fi-embassy-how-to-apply",
+      "name": "Embassy of Japan in Finland — How to Apply",
+      "url": "https://www.fi.emb-japan.go.jp/itpr_fi/11_000001_00365.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "at-embassy-working-holiday",
+      "name": "Embassy of Japan in Austria — Working Holiday Programme",
+      "url": "https://www.at.emb-japan.go.jp/itpr_de/WorkingHoliday.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "pl-embassy-working-holiday",
+      "name": "Embassy of Japan in Poland — Working Holiday programme overview",
+      "url": "https://www.pl.emb-japan.go.jp/itpr_ja/11_000001_00453.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "pl-working-holiday-guide",
+      "name": "Embassy of Japan in Poland — Working Holiday programme guide",
+      "url": "https://www.pl.emb-japan.go.jp/files/100872065.pdf",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_pdf",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "pl-embassy-consular",
+      "name": "Embassy of Japan in Poland — Consular / Visa information",
+      "url": "https://www.pl.emb-japan.go.jp/itpr_pl/konsulat.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
     }
   ],
   "job_sources": [

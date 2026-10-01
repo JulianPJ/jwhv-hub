@@ -259,6 +259,48 @@
       "last_checked": "2026-10-01",
       "last_success": "2026-10-01",
       "consecutive_failures": 0
+    },
+    "fi-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "fi-embassy-how-to-apply": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "at-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "pl-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "pl-working-holiday-guide": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "pl-embassy-consular": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
     }
   }
 }

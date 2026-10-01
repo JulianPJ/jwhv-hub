@@ -1,0 +1,269 @@
+{
+  "market": "AT",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Austria → Japan",
+  "currency_symbol": "€",
+  "application_status": {
+    "status": "limited",
+    "label": "Annual cap of 200 participants",
+    "detail": "The Embassy states that up to 200 Austrian citizens may participate per year and applications stop once the issuance limit is reached. Recheck current capacity before applying."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Austria ruleset verified against the Embassy's current 18 May 2026 Working Holiday guidance."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at each application",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "Up to two one-year Working Holiday stays in a lifetime",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Stay length",
+      "value": "Up to 12 months from entry",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Annual cap",
+      "value": "200 Austrian participants per year",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Application route",
+      "value": "Embassy of Japan in Vienna only; applicant must appear personally at least once",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "austrian_citizen",
+      "label": "Are you an Austrian citizen with an Austrian passport?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Working Holiday route is for Austrian citizens.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Austrian Working Holiday age range is 18–30 inclusive at each application.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Austrian Working Holiday programme is not intended for applicants whose main purpose is employment.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will a partner or dependent child accompany you under your Working Holiday route?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "Current Austrian guidance says applicants must not be accompanied by partners or children.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health",
+      "label": "Can you truthfully meet the good-health requirement?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The programme requires applicants to be in good health.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "input_label": "Available travel and initial-living funds (€)",
+    "ticket_label": "Return-ticket position",
+    "ticket_options": [
+      {
+        "value": "return_ticket",
+        "label": "I have a return ticket",
+        "minimum": null,
+        "guidance_note": "The Embassy requires adequate funds for the stay but does not publish a fixed numeric minimum on the current Working Holiday page."
+      },
+      {
+        "value": "need_return_ticket_funds",
+        "label": "I need funds to purchase the return ticket",
+        "minimum": null,
+        "guidance_note": "The Embassy requires sufficient funds to purchase the return ticket plus adequate funds for the stay; no fixed numeric minimum is published on the current Working Holiday page."
+      }
+    ],
+    "with_return_ticket_minimum": null,
+    "no_ticket_minimum": null,
+    "bank_statement_months": null,
+    "guidance_note": "The current Austrian Working Holiday page requires adequate funds but does not publish a fixed numeric threshold.",
+    "source_ids": [
+      "at-embassy-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 2,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "at-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_application",
+    "country": "Austria",
+    "label": "Embassy of Japan in Austria — Vienna",
+    "description": "Austrian citizens must apply for this Working Holiday visa at the Japanese Embassy in Vienna and cannot use another Japanese embassy. The applicant must appear at the Consular Section at least once.",
+    "source_ids": [
+      "at-embassy-working-holiday"
+    ],
+    "ui_label": "Application location",
+    "ui_help": "The Austrian Working Holiday visa must be handled through the Embassy in Vienna.",
+    "options": [
+      {
+        "value": "vienna",
+        "label": "I will apply through the Embassy of Japan in Vienna",
+        "mission_label": "Embassy of Japan in Austria — Vienna",
+        "mission_detail": "Documents can initially be submitted personally, by post or through an authorised person, but the applicant must personally appear at least once during the process."
+      },
+      {
+        "value": "elsewhere",
+        "label": "I plan to apply at another Japanese mission",
+        "mission_label": "Use the Embassy of Japan in Vienna",
+        "mission_detail": "The current Austrian Working Holiday page says Austrian citizens must apply in Vienna and cannot apply at another Japanese embassy.",
+        "issue": "The Austrian Working Holiday visa must be applied for through the Japanese Embassy in Vienna."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Austrian passport",
+      "description": "Provide the valid Austrian passport proving Austrian citizenship.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed and signed application form",
+      "description": "Prepare the current Working Holiday application form.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "photo",
+      "title": "Recent 35×45mm photo",
+      "description": "Provide a passport photo taken within the previous six months.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Curriculum Vitae",
+      "description": "Prepare the current Working Holiday CV form.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Overview of planned activities",
+      "description": "Complete the current planned-activities form.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "A4 written reason for applying",
+      "description": "Prepare the Working Holiday motivation statement in English, German or Japanese; it must not be handwritten.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Evidence of sufficient funds",
+      "description": "Provide evidence that you can finance the Japan stay and, where needed, purchase the return ticket. Credit cards and overdraft facilities do not count as sufficient funds.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "insurance",
+      "title": "Pledge or overseas travel insurance",
+      "description": "Provide the current pledge form or a copy of overseas travel insurance.",
+      "source_ids": [
+        "at-embassy-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "cap",
+      "title": "Check the 200-person annual capacity",
+      "description": "Applications stop after the annual issuance limit is reached."
+    },
+    {
+      "id": "vienna",
+      "title": "Plan for at least one personal Embassy visit",
+      "description": "Even where documents are initially posted or submitted through an authorised person, the applicant must appear personally at least once."
+    },
+    {
+      "id": "timing",
+      "title": "Do not apply more than three months before arrival",
+      "description": "The Embassy says Working Holiday applications can be lodged no earlier than three months before the planned arrival in Japan."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final Embassy check",
+      "description": "Recheck capacity, submission method and supporting documents before lodging."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "at-embassy-working-holiday",
+      "name": "Embassy of Japan in Austria — Working Holiday Programme",
+      "url": "https://www.at.emb-japan.go.jp/itpr_de/WorkingHoliday.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}
