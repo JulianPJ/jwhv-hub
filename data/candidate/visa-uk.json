@@ -1,0 +1,74 @@
+{
+  "market": "GB",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "foundation_verified",
+  "summary_facts": [
+    {
+      "label": "Applicant route",
+      "value": "UK → Japan Working Holiday"
+    },
+    {
+      "label": "Age (general MOFA rule)",
+      "value": "18–30 inclusive at application"
+    },
+    {
+      "label": "Application method",
+      "value": "In person at the responsible Japanese mission"
+    },
+    {
+      "label": "Participation for UK nationals",
+      "value": "Up to two one-year participations, including consecutive years"
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "official-guidance",
+      "title": "Read the current official guidance",
+      "description": "Use the Embassy of Japan in the UK and Ministry of Foreign Affairs sources linked on this page."
+    },
+    {
+      "id": "jurisdiction",
+      "title": "Confirm which Japanese mission has jurisdiction",
+      "description": "Your place of residence determines whether you should use London or the Consulate-General in Edinburgh."
+    },
+    {
+      "id": "eligibility",
+      "title": "Check your eligibility against the current official rules",
+      "description": "Confirm age, nationality/residence, passport, funds and participation-history requirements before preparing documents."
+    },
+    {
+      "id": "official-checklist",
+      "title": "Prepare the documents on the current official checklist",
+      "description": "Do not rely on an old saved checklist: open the current embassy instructions before applying."
+    },
+    {
+      "id": "appointment",
+      "title": "Book the appropriate visa appointment",
+      "description": "Working Holiday applications are handled in person; follow the responsible mission's current booking instructions."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final official-source check",
+      "description": "Immediately before submission, compare your application pack with the latest official instructions."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "uk-embassy-visa-general",
+      "name": "Embassy of Japan in the UK — Visa information",
+      "url": "https://www.uk.emb-japan.go.jp/itpr_en/index_000025.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    },
+    {
+      "id": "edinburgh-visa-general",
+      "name": "Consulate-General of Japan in Edinburgh — Visa information",
+      "url": "https://www.edinburgh.uk.emb-japan.go.jp/itpr_ja/00_000205.html"
+    }
+  ]
+}

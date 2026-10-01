@@ -1,0 +1,28 @@
+const $=s=>document.querySelector(s);
+async function loadJSON(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error("Unable to load "+path);return r.json()}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+const tag=t=>'<span class="tag">'+esc(t)+'</span>';
+const empty=(title,body)=>'<div class="empty-state"><strong>'+esc(title)+'</strong><p>'+esc(body)+'</p></div>';
+
+async function initJobs(){
+ const d=await loadJSON("data/live/jobs.json"),items=d.items||[],search=$("#job-search"),lang=$("#job-language"),wh=$("#job-wh"),list=$("#job-list"),count=$("#job-count");
+ function render(){const q=search.value.trim().toLowerCase();const f=items.filter(i=>[i.title,i.employer,i.city,i.prefecture].join(" ").toLowerCase().includes(q)&&(!lang.value||i.japanese_level===lang.value)&&(!wh.value||i.working_holiday===wh.value));count.textContent=f.length+" "+(f.length===1?"listing":"listings");
+ list.innerHTML=f.length?f.map(i=>'<article class="listing-card"><div><h2>'+esc(i.title)+'</h2><div class="muted">'+esc(i.employer)+" · "+esc([i.city,i.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(i.salary_display?tag(i.salary_display):"")+(i.japanese_level?tag("Japanese: "+i.japanese_level):"")+(i.working_holiday?tag("WH: "+i.working_holiday.replaceAll("_"," ")):"")+(i.accommodation_provided===true?tag("Accommodation provided"):"")+'</div></div><a class="source-link" href="'+esc(i.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a></article>').join(""):empty(items.length?"No matching jobs":"Job feed ready",items.length?"Try changing the filters.":"Verified listings will appear once approved sources are connected.")}
+ [search,lang,wh].forEach(e=>e.addEventListener("input",render));render()
+}
+async function initHousing(){
+ const d=await loadJSON("data/live/housing.json"),items=d.items||[],search=$("#housing-search"),furn=$("#housing-furnished"),foreign=$("#housing-foreigner"),list=$("#housing-list"),count=$("#housing-count");
+ function render(){const q=search.value.trim().toLowerCase();const f=items.filter(i=>[i.name,i.city,i.prefecture,i.nearest_station].join(" ").toLowerCase().includes(q)&&(!furn.value||String(i.furnished)===furn.value)&&(!foreign.value||i.foreigner_eligibility===foreign.value));count.textContent=f.length+" "+(f.length===1?"property":"properties");
+ list.innerHTML=f.length?f.map(i=>'<article class="listing-card"><div><h2>'+esc(i.name)+'</h2><div class="muted">'+esc([i.city,i.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(i.monthly_rent_display?tag(i.monthly_rent_display):"")+(i.furnished===true?tag("Furnished"):"")+(i.minimum_stay?tag("Min stay: "+i.minimum_stay):"")+(i.foreigner_eligibility?tag(i.foreigner_eligibility.replaceAll("_"," ")):"")+'</div></div><a class="source-link" href="'+esc(i.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a></article>').join(""):empty(items.length?"No matching housing":"Housing feed ready",items.length?"Try changing the filters.":"Approved housing sources can now be connected without changing the frontend.")}
+ [search,furn,foreign].forEach(e=>e.addEventListener("input",render));render()
+}
+async function initApplication(){
+ const visa=await loadJSON("data/live/visa-uk.json");$("#visa-verified").textContent="Verified "+visa.verified_at;
+ const summary=$("#visa-summary");summary.innerHTML=(visa.summary_facts||[]).map(f=>'<div class="fact"><span>'+esc(f.label)+'</span><strong>'+esc(f.value)+'</strong></div>').join("");
+ if(visa.official_sources?.length){const links=document.createElement("div");links.className="listing-meta";links.innerHTML=visa.official_sources.map(s=>'<a class="tag" href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.name)+" ↗</a>").join("");summary.after(links)}
+ const list=$("#visa-checklist"),key="jwhv-hub:visa-progress:v1",saved=JSON.parse(localStorage.getItem(key)||"{}");
+ list.innerHTML=(visa.preparation_checklist||[]).map(i=>'<label class="check-item"><input type="checkbox" data-check-id="'+esc(i.id)+'" '+(saved[i.id]?"checked":"")+'><span><strong>'+esc(i.title)+'</strong><p>'+esc(i.description)+'</p></span></label>').join("");
+ function update(){const boxes=[...list.querySelectorAll('input[type="checkbox"]')],state=Object.fromEntries(boxes.map(b=>[b.dataset.checkId,b.checked]));localStorage.setItem(key,JSON.stringify(state));const done=boxes.filter(b=>b.checked).length,pct=boxes.length?Math.round(done/boxes.length*100):0;$("#progress-number").textContent=pct;$("#progress-bar").style.width=pct+"%";$("#progress-copy").textContent=pct===100?"Preparation checklist complete. Re-check official requirements before applying.":done+" of "+boxes.length+" preparation steps complete."}
+ list.addEventListener("change",update);$("#reset-progress").addEventListener("click",()=>{localStorage.removeItem(key);list.querySelectorAll('input[type="checkbox"]').forEach(b=>b.checked=false);update()});update()
+}
+document.addEventListener("DOMContentLoaded",async()=>{try{const p=document.body.dataset.page;if(p==="jobs")await initJobs();if(p==="housing")await initHousing();if(p==="application")await initApplication()}catch(e){console.error(e);const m=document.createElement("div");m.className="notice";m.innerHTML="<strong>Data unavailable</strong><p>The dashboard could not load its live data. Please try again later.</p>";document.querySelector("main")?.prepend(m)}});
