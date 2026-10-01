@@ -139,6 +139,26 @@
               "stale",
               "expired"
             ]
+          },
+          "monthly_rent_jpy": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "upfront_fee_display": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "available_from": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
           }
         }
       }
