@@ -291,12 +291,13 @@ async function initApplication(){
 
     const fundsRaw=$("#bank-funds").value;
     const ticket=$("#return-ticket").value;
-    const symbol=visa.funds_rule.currency_symbol||(visa.funds_rule.currency==="GBP"?"£":visa.funds_rule.currency+" ");
+    const fundsRule=currentFundsRule();
+    const symbol=fundsRule.currency_symbol||(fundsRule.currency==="GBP"?"£":(fundsRule.currency||visa.funds_rule.currency)+" ");
     if(fundsRaw==="") pending.push("Proof-of-funds amount");
     else{
       const funds=Number(fundsRaw);
-      const withTicket=visa.funds_rule.with_return_ticket_minimum;
-      const withoutTicket=visa.funds_rule.no_ticket_minimum;
+      const withTicket=fundsRule.with_return_ticket_minimum;
+      const withoutTicket=fundsRule.no_ticket_minimum;
       if(ticket==="") pending.push("Return/onward ticket evidence");
       else if(ticket==="yes"&&Number.isFinite(withTicket)&&funds<withTicket){
         issues.push("The entered funds are below the current baseline of "+symbol+withTicket+" when return/onward-ticket evidence is provided.");
@@ -306,7 +307,10 @@ async function initApplication(){
         }else if(!Number.isFinite(withoutTicket)){
           if(Number.isFinite(withTicket)&&funds<withTicket) issues.push("The entered funds are below the current baseline of "+symbol+withTicket+".");
         }
-        if(visa.funds_rule.no_ticket_note) pending.push(visa.funds_rule.no_ticket_note);
+        if(fundsRule.no_ticket_note) pending.push(fundsRule.no_ticket_note);
+      }
+      if(!Number.isFinite(withTicket)&&!Number.isFinite(withoutTicket)&&fundsRule.guidance_note){
+        pending.push(fundsRule.guidance_note);
       }
     }
 
@@ -321,7 +325,7 @@ async function initApplication(){
     }
 
     if(area.value==="") pending.push(visa.jurisdiction.ui_label||"Application route");
-    const routeOption=(visa.jurisdiction.options||[]).find(item=>item.value===area.value);
+    const routeOption=currentRouteOption();
     if(routeOption?.issue) issues.push(routeOption.issue);
 
     const result=$("#eligibility-result");
@@ -341,6 +345,8 @@ async function initApplication(){
 
   eligibilityForm.addEventListener("input",evaluateEligibility);
   for(const id of specialIds) $("#"+id)?.addEventListener("input",evaluateEligibility);
+  area.addEventListener("input",syncFundsUI);
+  syncFundsUI();
   evaluateEligibility();
 
   const progressKey=VISA_PROGRESS_KEY+":"+selected;
