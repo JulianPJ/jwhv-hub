@@ -56,7 +56,7 @@ function promoteVisaFile(file){
 }
 
 function promoteVisa(){
-  for(const file of ["visa-uk.json","visa-au.json"]) promoteVisaFile(file);
+  for(const file of ["visa-uk.json","visa-au.json","visa-de.json"]) promoteVisaFile(file);
 }
 
 for(const scope of requested){
