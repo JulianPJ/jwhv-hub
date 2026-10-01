@@ -1,0 +1,278 @@
+{
+  "market": "FI",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Finland → Japan",
+  "currency_symbol": "€",
+  "application_status": {
+    "status": "limited",
+    "label": "Annual cap of 200 visas",
+    "detail": "The Embassy states that Working Holiday issuance for Finnish citizens is limited to 200 per year and applications close when that number is reached. Recheck availability before applying."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Finland ruleset verified against the current Embassy Working Holiday page and July 2026 visa application procedure."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Finnish citizen resident in Finland",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Working Holiday visa, except narrowly defined unused-visa reissue cases",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "More than €4,200 in the applicant's name",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Annual cap",
+      "value": "200 visas per year",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "finnish_citizen",
+      "label": "Are you a Finnish citizen?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Working Holiday route is for Finnish citizens.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "finland_resident",
+      "label": "Are you resident in Finland when applying?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Finnish Working Holiday applicants must be resident in Finland.",
+      "source_ids": [
+        "fi-embassy-working-holiday",
+        "fi-embassy-how-to-apply"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Finnish Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Finnish programme is for a holiday in Japan; employment is incidental.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependent children accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "The Working Holiday conditions do not permit accompanying dependent children.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_character",
+      "label": "Can you truthfully meet the good-health, insurance and no-criminal-record requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Finnish programme requires good health, sufficient medical insurance and no criminal record.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "input_label": "Funds shown in your Finnish bank statements (€)",
+    "ticket_label": "Travel ticket position",
+    "ticket_options": [
+      {
+        "value": "ticket_or_funds",
+        "label": "I have outward/return travel arrangements or sufficient travel funds",
+        "minimum": 4200
+      }
+    ],
+    "with_return_ticket_minimum": 4200,
+    "no_ticket_minimum": 4200,
+    "bank_statement_months": 3,
+    "source_ids": [
+      "fi-embassy-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "fi-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_residence",
+    "country": "Finland",
+    "label": "Embassy of Japan in Finland — Helsinki",
+    "description": "The Working Holiday route is for Finnish citizens resident in Finland. Current visa procedure requires email pre-check before an appointment; registered-mail application is also possible after pre-check, but the completed passport is not returned by post.",
+    "source_ids": [
+      "fi-embassy-working-holiday",
+      "fi-embassy-how-to-apply"
+    ],
+    "ui_label": "Finnish residence",
+    "ui_help": "Finnish applicants must reside in Finland and use the Embassy in Helsinki.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I am a Finnish citizen resident in Finland",
+        "mission_label": "Embassy of Japan in Finland — Helsinki",
+        "mission_detail": "Email the documents for pre-check first. The Embassy then provides an appointment; registered-mail submission is also possible after pre-check, with in-person/proxy collection."
+      },
+      {
+        "value": "outside_country",
+        "label": "I am not resident in Finland",
+        "mission_label": "Finnish Working Holiday route may not apply",
+        "mission_detail": "The current Working Holiday conditions require Finnish citizenship and residence in Finland.",
+        "issue": "The Finland Working Holiday route requires the applicant to be a Finnish citizen resident in Finland."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Finnish passport",
+      "description": "Passport should have at least two blank visa pages; submit the bio-data-page copy as specified.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed visa application form",
+      "description": "Complete the current form; the applicant must physically sign it.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "photo",
+      "title": "Recent 45×35mm photograph",
+      "description": "Provide a passport-standard photo taken within the previous six months.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "CV / Resume",
+      "description": "Use the Embassy form or provide your own CV as an annex.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Outline of intended activities",
+      "description": "Prepare the current intended-activities plan.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "Reason for applying",
+      "description": "Provide the reason for the Working Holiday application on A4 paper.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Three months of bank statements",
+      "description": "Bank statements must be in the applicant's name and show a balance of more than €4,200.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "pledge",
+      "title": "Working Holiday pledge",
+      "description": "Sign the current pledge with a physical signature.",
+      "source_ids": [
+        "fi-embassy-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "cap",
+      "title": "Check the 200-visa annual cap",
+      "description": "Applications close after 200 Working Holiday visas have been issued for Finnish citizens."
+    },
+    {
+      "id": "precheck",
+      "title": "Email documents for pre-check",
+      "description": "Current Embassy procedure says to pre-check the complete documents by email before appointment or registered-mail submission."
+    },
+    {
+      "id": "timing",
+      "title": "Apply within three months of departure",
+      "description": "The Embassy does not accept applications more than three months before the scheduled departure because the issued visa is valid for three months."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final Embassy check",
+      "description": "Recheck annual-cap status and current visa procedure before lodging."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "fi-embassy-working-holiday",
+      "name": "Embassy of Japan in Finland — Visa for Working Holiday",
+      "url": "https://www.fi.emb-japan.go.jp/itpr_ja/11_000001_00544.html"
+    },
+    {
+      "id": "fi-embassy-how-to-apply",
+      "name": "Embassy of Japan in Finland — How to Apply",
+      "url": "https://www.fi.emb-japan.go.jp/itpr_fi/11_000001_00365.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}
