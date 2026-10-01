@@ -3,8 +3,33 @@ name: Validate and publish Pages
 on:
   push:
     branches: [main]
+    paths:
+      - "index.html"
+      - "jobs.html"
+      - "housing.html"
+      - "application.html"
+      - "status.html"
+      - "styles.css"
+      - "app.js"
+      - ".nojekyll"
+      - "data/live/**"
+      - "data/worker-state.json"
+      - "scripts/build.mjs"
+      - ".github/workflows/pages.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "index.html"
+      - "jobs.html"
+      - "housing.html"
+      - "application.html"
+      - "status.html"
+      - "styles.css"
+      - "app.js"
+      - "data/live/**"
+      - "data/worker-state.json"
+      - "scripts/build.mjs"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
