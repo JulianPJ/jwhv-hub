@@ -49,6 +49,20 @@
       "last_checked": "2026-10-01",
       "last_success": "2026-10-01",
       "consecutive_failures": 0
+    },
+    "de-embassy-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "de-working-holiday-faq": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
     }
   }
 }
