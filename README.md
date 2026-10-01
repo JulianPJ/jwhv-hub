@@ -172,7 +172,22 @@ Current detailed planners:
 - United Kingdom (`data/live/visa-uk.json`)
 - Australia (`data/live/visa-au.json`)
 - Germany (`data/live/visa-de.json`)
+- Canada (`data/live/visa-ca.json`)
+- New Zealand (`data/live/visa-nz.json`)
+- France (`data/live/visa-fr.json`)
 
 `data/live/visa-markets.json` tracks Japan's current Working Holiday partner countries/regions from MOFA and highlights EU/North American availability. The European Union is not treated as one visa market: eligibility and application rules are passport-country specific. The United States is shown as having no current Japan Working Holiday arrangement because it is not on MOFA's current partner list.
 
 Browser-local eligibility, checklist and planning state is namespaced by selected market so one country's answers do not contaminate another country's planner.
+
+
+## Phase 8 market expansion wave 1
+
+Canada, New Zealand and France now use the same registry-driven planner architecture.
+
+Notable country-specific behavior:
+- Canada routes applicants by Canadian residential jurisdiction and supports mission-specific funds overrides where current official amounts are verified.
+- New Zealand requires current NZ residence, in-person regional lodgement, and uses NZ$3,000 with a paid return ticket or NZ$4,000 without one.
+- France is eligible in principle, but the planner surfaces current application availability separately from eligibility. Major metropolitan missions checked for 2026 report their Working Holiday intake/calendar closed, so the UI warns users rather than presenting the route as presently bookable.
+
+Application availability is not treated as the same thing as legal eligibility. A country can remain an eligible Working Holiday partner while a mission's quota/calendar is temporarily closed.
