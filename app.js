@@ -667,12 +667,55 @@ async function initStatus(){
     loadVisibleFeed("housing"),
     loadJSON("data/live/visa-markets.json")
   ]);
+  const detailedEntries=Object.entries(markets.detailed_planners||{});
+  const detailedRules=await Promise.all(detailedEntries.map(async([market,file])=>[market,await loadJSON("data/live/"+file)]));
+  const rulesByMarket=new Map(detailedRules);
+  const detailedCodes=new Set(detailedEntries.map(([market])=>market));
+  const partnerCountries=markets.partner_countries||[];
+  const referenceCountries=markets.reference_countries||[];
+  const detailedCount=detailedCodes.size;
+  const partnerCount=partnerCountries.length;
+  const queue=partnerCountries.filter(item=>!detailedCodes.has(item.code)).sort((a,b)=>a.name.localeCompare(b.name));
+  const coveragePct=partnerCount?Math.round(detailedCount/partnerCount*100):0;
+
   const summary=$("#status-summary");
   summary.innerHTML=[
     ["Jobs",jobsFeed.items.length,jobsFeed.liveCount+" live · "+jobsFeed.pendingCount+" pending"],
     ["Housing",housingFeed.items.length,housingFeed.liveCount+" live · "+housingFeed.pendingCount+" pending"],
-    ["Visa coverage",(markets.partner_countries||[]).length+" partner markets",Object.keys(markets.detailed_planners||{}).length+" detailed planners · verified "+markets.verified_at]
+    ["Visa coverage",detailedCount+" / "+partnerCount+" detailed",coveragePct+"% of Working Holiday partner markets · verified "+markets.verified_at]
   ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
+
+  $("#visa-coverage-metrics").innerHTML=[
+    ["Detailed planners",detailedCount,coveragePct+"% of "+partnerCount+" partner markets"],
+    ["Expansion queue",queue.length,"Eligible Working Holiday partners still status-only"],
+    ["Reference markets",referenceCountries.length,"Non-partner markets tracked for safe guidance"]
+  ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
+
+  const detailed=partnerCountries
+    .filter(item=>detailedCodes.has(item.code))
+    .sort((a,b)=>a.name.localeCompare(b.name));
+  $("#visa-detailed-markets").innerHTML=detailed.map(item=>{
+    const rules=rulesByMarket.get(item.code)||{};
+    const status=rules.application_status||null;
+    const statusKey=status?.status||"verified";
+    const statusLabel=status?.label||"Detailed ruleset verified";
+    const detail=status?.detail||"No country-level intake closure is recorded in the current ruleset; re-check the responsible mission before applying.";
+    return '<article class="visa-market-card"><div class="status-card-row"><div><span class="small-label">'+esc(item.code)+'</span><h3>'+esc(item.name)+'</h3></div><span class="availability-badge '+esc(statusKey)+'">'+esc(statusKey.replaceAll("_"," "))+'</span></div><strong>'+esc(statusLabel)+'</strong><p>'+esc(detail)+'</p><a href="application.html" class="card-link" data-visa-market-link="'+esc(item.code)+'">Open planner →</a></article>';
+  }).join("");
+
+  $("#visa-expansion-queue").innerHTML=queue.length
+    ?queue.map(item=>'<span class="tag">'+esc(item.name)+'</span>').join("")
+    :'<span class="muted">All current partner markets have detailed planners.</span>';
+
+  $("#visa-reference-markets").innerHTML=referenceCountries.length
+    ?referenceCountries.sort((a,b)=>a.name.localeCompare(b.name)).map(item=>'<span class="tag" title="'+esc(item.reason||"No current Working Holiday arrangement")+'">'+esc(item.name)+'</span>').join("")
+    :'<span class="muted">No reference markets configured.</span>';
+
+  $("#visa-detailed-markets").addEventListener("click",event=>{
+    const link=event.target.closest("[data-visa-market-link]");
+    if(!link) return;
+    writeLocal(VISA_MARKET_KEY,{market:link.dataset.visaMarketLink});
+  });
 
   const workers=state.workers||{};
   const severity={failed:3,warning:2,not_started:1,healthy:0};
@@ -686,7 +729,7 @@ async function initStatus(){
   };
   const taskCards=[
     combine(["jobs","housing"],"Listings Research"),
-    combine(["qa","site_health"],"QA & Publish")
+    combine(["qa","site_health"],"QA & Site Audit")
   ];
   $("#worker-status").innerHTML=taskCards.map(task=>
     '<article class="status-card worker-card"><div class="status-card-row"><span>'+esc(task.label)+'</span><span class="health '+esc(task.status)+'">'+esc(task.status.replaceAll("_"," "))+'</span></div><strong>'+esc(task.last)+'</strong><small>'+esc(task.summary||"No status reported.")+'</small></article>'
