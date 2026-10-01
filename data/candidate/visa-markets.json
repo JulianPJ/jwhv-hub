@@ -7,7 +7,10 @@
   "detailed_planners": {
     "GB": "visa-uk.json",
     "AU": "visa-au.json",
-    "DE": "visa-de.json"
+    "DE": "visa-de.json",
+    "CA": "visa-ca.json",
+    "NZ": "visa-nz.json",
+    "FR": "visa-fr.json"
   },
   "partner_countries": [
     {
@@ -20,13 +23,13 @@
       "code": "NZ",
       "name": "New Zealand",
       "region": "Oceania",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "CA",
       "name": "Canada",
       "region": "North America",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "KR",
@@ -38,7 +41,7 @@
       "code": "FR",
       "name": "France",
       "region": "Europe",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "DE",
@@ -205,7 +208,7 @@
   ],
   "coverage_groups": [
     {
-      "id": "eu",
+      "id": "european-union",
       "label": "European Union",
       "summary": "Working Holiday eligibility is passport-country specific, not EU-wide.",
       "eligible_codes": [
@@ -241,18 +244,19 @@
       ]
     },
     {
-      "id": "australia",
-      "label": "Australia",
-      "summary": "Japan and Australia have a Working Holiday arrangement; a detailed planner is available.",
+      "id": "oceania",
+      "label": "Oceania",
+      "summary": "Australia and New Zealand both have current Japan Working Holiday arrangements.",
       "eligible_codes": [
-        "AU"
+        "AU",
+        "NZ"
       ],
       "unavailable_codes": []
     },
     {
       "id": "north-america",
       "label": "North America",
-      "summary": "Canada has a Japan Working Holiday arrangement. The United States is not listed among Japan's current partner countries/regions.",
+      "summary": "Canada has a current Japan Working Holiday arrangement; the United States does not.",
       "eligible_codes": [
         "CA"
       ],
@@ -315,6 +319,6 @@
   "change_control": {
     "status": "approved",
     "reviewed_at": "2026-10-01",
-    "review_note": "Global Working Holiday partner-country registry verified against MOFA's 1 April 2026 programme list; detailed planners currently enabled for GB, AU and DE."
+    "review_note": "MOFA partner registry retained; detailed planners now enabled for GB, AU, DE, CA, NZ and FR using current official Japanese diplomatic sources."
   }
 }

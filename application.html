@@ -7,7 +7,9 @@
 <nav><a href="jobs.html">Jobs</a><a href="housing.html">Housing</a><a class="active" href="application.html">Visa planner</a><a href="plan.html">My plan</a><a href="shortlist.html">Shortlist</a><a href="status.html">Status</a></nav></header>
 <main>
 <section class="page-intro"><p class="eyebrow">Application preparation</p><h1>Your Working Holiday preparation dashboard.</h1>
-<p>Choose your passport market, check the current baseline rules, identify your responsible Japanese mission, prepare the document pack and keep private planning notes. Everything you enter stays in this browser.</p></section>\n\n<section class="panel market-panel"><div class="panel-heading"><div><p class="eyebrow">Passport market</p><h2>Choose your route to Japan</h2></div><span id="market-verified" class="status-pill">Loading…</span></div><div class="market-picker"><label>Detailed visa planner<select id="visa-market"></select></label><p id="visa-market-note" class="muted"></p></div><div id="market-coverage" class="market-coverage"></div></section>
+<p>Choose your passport market, check the current baseline rules, identify your responsible Japanese mission, prepare the document pack and keep private planning notes. Everything you enter stays in this browser.</p></section>
+
+<section class="panel market-panel"><div class="panel-heading"><div><p class="eyebrow">Passport market</p><h2>Choose your route to Japan</h2></div><span id="market-verified" class="status-pill">Loading…</span></div><div class="market-picker"><label>Detailed visa planner<select id="visa-market"></select></label><p id="visa-market-note" class="muted"></p></div><div id="market-coverage" class="market-coverage"></div></section>
 
 <section class="application-layout">
 <aside class="progress-card">
@@ -25,6 +27,7 @@
       <div><p class="eyebrow">Current ruleset</p><h2 id="visa-route-title">Loading…</h2></div>
       <span id="visa-verified" class="status-pill">Loading…</span>
     </div>
+    <div id="visa-route-notice"></div>
     <div id="visa-summary" class="visa-summary"></div>
     <div id="official-source-links" class="listing-meta"></div>
   </section>
@@ -36,8 +39,8 @@
     <div class="special-check-grid">
       <div class="mini-panel">
         <h3>Funds</h3>
-        <label>Cleared funds shown in your UK bank statements (£)
-          <input id="bank-funds" type="number" inputmode="numeric" min="0" step="50" placeholder="2500">
+        <label><span id="funds-label">Funds shown in your bank statements</span>
+          <input id="bank-funds" type="number" inputmode="numeric" min="0" step="50" placeholder="">
         </label>
         <label>Do you have evidence of a return/onward ticket?
           <select id="return-ticket"><option value="">Choose…</option><option value="yes">Yes</option><option value="no">No</option></select>
@@ -53,17 +56,11 @@
         </label>
       </div>
       <div class="mini-panel">
-        <h3>Where do you live?</h3>
-        <label>UK residence area
-          <select id="jurisdiction-area">
-            <option value="">Choose…</option>
-            <option value="scotland">Scotland</option>
-            <option value="edinburgh_north">Listed North of England council area</option>
-            <option value="other_uk">Elsewhere in the UK</option>
-            <option value="outside_uk">Outside the UK</option>
-          </select>
+        <h3>Application route</h3>
+        <label><span id="residence-label">Application route</span>
+          <select id="jurisdiction-area"></select>
         </label>
-        <p class="field-help">The Edinburgh jurisdiction includes Scotland plus specified northern council areas. The exact current list is shown from the verified ruleset.</p>
+        <p id="residence-help" class="field-help"></p>
       </div>
     </div>
     <div id="eligibility-result" class="eligibility-result neutral" aria-live="polite">
