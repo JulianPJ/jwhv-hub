@@ -54,6 +54,17 @@
       "allowed_for": [
         "visa"
       ]
+    },
+    {
+      "id": "au-embassy-working-holiday",
+      "name": "Embassy of Japan in Australia — Working Holiday Visa",
+      "url": "https://www.au.emb-japan.go.jp/itpr_en/visa_workingholiday_en.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
     }
   ],
   "job_sources": [
