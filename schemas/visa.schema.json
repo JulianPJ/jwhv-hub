@@ -7,16 +7,22 @@
     "destination",
     "visa_type",
     "verified_at",
+    "change_control",
     "summary_facts",
+    "eligibility_rules",
+    "funds_rule",
+    "participation_rule",
+    "jurisdiction",
+    "document_checklist",
     "preparation_checklist",
     "official_sources"
   ],
   "properties": {
     "market": {
-      "type": "string"
+      "const": "GB"
     },
     "destination": {
-      "type": "string"
+      "const": "JP"
     },
     "visa_type": {
       "const": "working_holiday"
@@ -25,7 +31,36 @@
       "type": "string",
       "format": "date"
     },
+    "change_control": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "approved",
+            "pending_review"
+          ]
+        }
+      }
+    },
     "summary_facts": {
+      "type": "array"
+    },
+    "eligibility_rules": {
+      "type": "array"
+    },
+    "funds_rule": {
+      "type": "object"
+    },
+    "participation_rule": {
+      "type": "object"
+    },
+    "jurisdiction": {
+      "type": "object"
+    },
+    "document_checklist": {
       "type": "array"
     },
     "preparation_checklist": {
