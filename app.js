@@ -11,6 +11,23 @@ const empty=(title,body)=>'<div class="empty-state"><strong>'+esc(title)+'</stro
 function readLocal(key,fallback={}){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
 function writeLocal(key,value){localStorage.setItem(key,JSON.stringify(value))}
 const SHORTLIST_KEY="jwhv-hub:shortlist:v1";
+const MOVE_PLAN_KEY="jwhv-hub:move-plan:v1";
+const VISA_PROGRESS_KEY="jwhv-hub:visa-progress:v2";
+function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
+function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
+function parseLocalDate(value){return value?new Date(value+"T12:00:00"):null}
+function isoDate(date){return date.toISOString().slice(0,10)}
+function shiftDays(value,days){const d=parseLocalDate(value);if(!d)return null;d.setDate(d.getDate()+days);return d}
+function daysBetween(a,b){return Math.ceil((b-a)/86400000)}
+function visaProgressSummary(visa){
+  const saved=readLocal(VISA_PROGRESS_KEY,{});
+  const ids=[
+    ...(visa.document_checklist||[]).map(item=>"doc:"+item.id),
+    ...(visa.preparation_checklist||[]).map(item=>"prep:"+item.id)
+  ];
+  const complete=ids.filter(id=>saved[id]).length;
+  return {complete,total:ids.length,pct:ids.length?Math.round(complete/ids.length*100):0};
+}
 function getShortlist(){
   const value=readLocal(SHORTLIST_KEY,{jobs:[],housing:[]});
   return {
@@ -294,6 +311,156 @@ async function initApplication(){
 
 
 
+
+function planMilestones(targetArrival){
+  if(!targetArrival) return [];
+  const definitions=[
+    {id:"official-check",offset:-112,title:"Confirm current visa route and official requirements",body:"Open the current Japanese mission guidance and confirm the application route that applies to you."},
+    {id:"application-pack",offset:-84,title:"Build your application pack",body:"Work through the visa planner, statement notes and proposed itinerary while leaving time to correct missing items."},
+    {id:"job-search",offset:-70,title:"Build a job shortlist",body:"Save direct-employer roles that fit your likely arrival window, language level and housing needs."},
+    {id:"housing-search",offset:-56,title:"Build a housing shortlist",body:"Compare furnished monthly options and check availability against your expected arrival."},
+    {id:"appointment-check",offset:-42,title:"Check appointment instructions and availability",body:"Use the responsible Japanese mission's current official instructions. This milestone is a planning reminder, not an official deadline."},
+    {id:"budget-review",offset:-28,title:"Review your arrival budget",body:"Re-check saved housing costs, upfront fees, transport and initial living expenses before committing."},
+    {id:"source-recheck",offset:-14,title:"Re-check every saved source",body:"Confirm jobs remain open and housing is still available directly with the employer or provider."},
+    {id:"arrival-week",offset:-3,title:"Prepare arrival-week essentials",body:"Keep the documents and booking details you need accessible and verify your first accommodation and onward plan."}
+  ];
+  return definitions.map(item=>({...item,date:isoDate(shiftDays(targetArrival,item.offset))}));
+}
+
+async function initPlan(){
+  const [jobsData,housingData,visa]=await Promise.all([
+    loadJSON("data/live/jobs.json"),
+    loadJSON("data/live/housing.json"),
+    loadJSON("data/live/visa-uk.json")
+  ]);
+  const plan=getMovePlan();
+  const shortlist=getShortlist();
+  const savedJobs=(jobsData.items||[]).filter(item=>shortlist.jobs.includes(item.id)&&item.status==="active");
+  const savedHousing=(housingData.items||[]).filter(item=>shortlist.housing.includes(item.id)&&item.status==="active");
+  const visaState=visaProgressSummary(visa);
+  const arrival=$("#target-arrival");
+  arrival.value=plan.targetArrival||"";
+
+  function render(){
+    const current=getMovePlan();
+    const target=current.targetArrival;
+    const targetDate=parseLocalDate(target);
+    const today=new Date();
+    today.setHours(12,0,0,0);
+
+    if(targetDate){
+      const days=daysBetween(today,targetDate);
+      $("#plan-countdown").textContent=days>=0?(days+" days to Japan"):(Math.abs(days)+" days past target");
+      $("#plan-countdown-copy").textContent="Target arrival: "+target+". Adjust it any time; milestones recalculate automatically.";
+    }else{
+      $("#plan-countdown").textContent="Choose a date";
+      $("#plan-countdown-copy").textContent="Your planning milestones will be calculated relative to the date you choose.";
+    }
+
+    $("#plan-metrics").innerHTML=[
+      ["Visa preparation",visaState.pct+"%",visaState.complete+" of "+visaState.total+" local checklist items"],
+      ["Saved jobs",savedJobs.length,savedJobs.length?"Options worth revisiting":"Save roles from the Jobs page"],
+      ["Saved housing",savedHousing.length,savedHousing.length?"Options worth revisiting":"Save places from the Housing page"]
+    ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
+
+    const actions=[];
+    if(!target) actions.push({title:"Set a target arrival date",body:"This unlocks your planning timeline and countdown.",href:"#target-arrival"});
+    if(visaState.pct<100) actions.push({title:"Continue visa preparation",body:visaState.complete+" of "+visaState.total+" local checklist items are complete.",href:"application.html"});
+    if(!savedJobs.length) actions.push({title:"Save some job options",body:"Use direct-employer listings to build a shortlist before comparing dates and locations.",href:"jobs.html"});
+    if(!savedHousing.length) actions.push({title:"Save some housing options",body:"Add furnished monthly options so you can compare cost and availability.",href:"housing.html"});
+    if(savedJobs.length&&savedHousing.length) actions.push({title:"Review your shortlist together",body:"Compare start dates, locations, rent and staff-housing options before narrowing down.",href:"shortlist.html"});
+    if(targetDate&&daysBetween(today,targetDate)<=45&&visaState.pct<100) actions.unshift({title:"Prioritise unfinished application preparation",body:"Your target arrival is relatively close and your local checklist is not complete. Check the official application instructions before relying on this date.",href:"application.html"});
+    if(!actions.length) actions.push({title:"Re-check your sources",body:"Your local plan is well populated. Re-open the official visa guidance and each saved employer/provider page before committing.",href:"shortlist.html"});
+
+    $("#next-actions").innerHTML=actions.slice(0,4).map((item,index)=>
+      '<a class="action-card" href="'+esc(item.href)+'"><span class="feature-number">0'+(index+1)+'</span><div><h3>'+esc(item.title)+'</h3><p>'+esc(item.body)+'</p></div><span aria-hidden="true">→</span></a>'
+    ).join("");
+
+    const milestones=planMilestones(target);
+    const timeline=$("#move-timeline");
+    if(!milestones.length){
+      timeline.innerHTML=empty("Set your arrival date","Choose a target arrival above to generate a private planning timeline.");
+    }else{
+      timeline.innerHTML=milestones.map(item=>{
+        const done=Boolean(current.timelineDone?.[item.id]);
+        const due=parseLocalDate(item.date);
+        const relative=daysBetween(today,due);
+        const timing=relative<0?Math.abs(relative)+" days ago":relative===0?"Today":relative+" days away";
+        return '<label class="timeline-item'+(done?" complete":"")+'"><input type="checkbox" data-milestone-id="'+esc(item.id)+'" '+(done?"checked":"")+'><span class="timeline-date"><strong>'+esc(item.date)+'</strong><small>'+esc(timing)+'</small></span><span><strong>'+esc(item.title)+'</strong><p>'+esc(item.body)+'</p></span></label>';
+      }).join("");
+    }
+
+    const jobMin=savedJobs.map(item=>item.salary_min_jpy).filter(Number.isFinite);
+    const jobMax=savedJobs.map(item=>item.salary_max_jpy).filter(Number.isFinite);
+    const rents=savedHousing.map(item=>item.monthly_rent_jpy).filter(Number.isFinite);
+    const optionCards=[];
+    if(savedJobs.length){
+      optionCards.push('<article class="plan-option-card"><span>Saved work</span><strong>'+savedJobs.length+' role'+(savedJobs.length===1?"":"s")+'</strong><p>'+(jobMin.length&&jobMax.length?esc(formatJPY(Math.min(...jobMin))+"–"+formatJPY(Math.max(...jobMax))+" / hour across saved roles"):"Pay varies by source")+'</p></article>');
+    }
+    if(savedHousing.length){
+      optionCards.push('<article class="plan-option-card"><span>Saved housing</span><strong>'+savedHousing.length+' option'+(savedHousing.length===1?"":"s")+'</strong><p>'+(rents.length?esc("Lowest saved monthly total: "+formatJPY(Math.min(...rents))):"Check provider pages for current rent")+'</p></article>');
+    }
+    $("#plan-options").innerHTML=optionCards.length?optionCards.join(""):empty("No saved options yet","Save jobs and housing to build a snapshot here.");
+  }
+
+  arrival.addEventListener("change",()=>{
+    const state=getMovePlan();
+    state.targetArrival=arrival.value;
+    writeLocal(MOVE_PLAN_KEY,state);
+    render();
+  });
+
+  $("#move-timeline").addEventListener("change",event=>{
+    const box=event.target.closest("[data-milestone-id]");
+    if(!box) return;
+    const state=getMovePlan();
+    state.timelineDone=state.timelineDone||{};
+    state.timelineDone[box.dataset.milestoneId]=box.checked;
+    writeLocal(MOVE_PLAN_KEY,state);
+    render();
+  });
+
+  $("#download-move-plan").addEventListener("click",()=>{
+    const state=getMovePlan();
+    const milestones=planMilestones(state.targetArrival);
+    const lines=[
+      "Japan Working Holiday move plan",
+      "",
+      "Target arrival: "+(state.targetArrival||"(not set)"),
+      "Visa preparation: "+visaState.pct+"% ("+visaState.complete+"/"+visaState.total+")",
+      "Saved jobs: "+savedJobs.length,
+      "Saved housing: "+savedHousing.length,
+      "",
+      "Planning milestones",
+      "-------------------"
+    ];
+    for(const item of milestones){
+      lines.push((state.timelineDone?.[item.id]?"[x] ":"[ ] ")+item.date+" — "+item.title);
+    }
+    lines.push("","This file contains planning suggestions, not official visa deadlines. Re-check current Japanese mission guidance and original listing sources.");
+    const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");a.href=url;a.download="japan-working-holiday-move-plan.txt";a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  render();
+}
+
+async function initHome(){
+  const plan=getMovePlan();
+  const shortlist=getShortlist();
+  const card=$("#home-plan-summary");
+  if(!card) return;
+  const targetDate=parseLocalDate(plan.targetArrival);
+  const today=new Date();today.setHours(12,0,0,0);
+  const countdown=targetDate?daysBetween(today,targetDate):null;
+  card.innerHTML='<p class="small-label">YOUR LOCAL PLAN</p>'+
+    '<strong>'+(countdown===null?"Start your move plan":(countdown>=0?esc(countdown+" days to Japan"):esc(Math.abs(countdown)+" days past target")))+'</strong>'+
+    '<p>'+esc(shortlist.jobs.length+" saved jobs · "+shortlist.housing.length+" saved housing")+'</p>'+
+    '<p><a class="card-link" href="plan.html">'+(countdown===null?"Set target arrival":"Open my plan")+' →</a></p>';
+}
+
 async function initShortlist(){
   const [jobsData,housingData]=await Promise.all([
     loadJSON("data/live/jobs.json"),
@@ -361,11 +528,13 @@ async function initStatus(){
 document.addEventListener("DOMContentLoaded",async()=>{
   try{
     const page=document.body.dataset.page;
+    if(page==="home") await initHome();
     if(page==="jobs") await initJobs();
     if(page==="housing") await initHousing();
     if(page==="application") await initApplication();
     if(page==="status") await initStatus();
     if(page==="shortlist") await initShortlist();
+    if(page==="plan") await initPlan();
   }catch(error){
     console.error(error);
     const message=document.createElement("div");
