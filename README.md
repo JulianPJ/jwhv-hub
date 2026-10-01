@@ -178,6 +178,9 @@ Current detailed planners:
 - Ireland (`data/live/visa-ie.json`)
 - Netherlands (`data/live/visa-nl.json`)
 - Italy (`data/live/visa-it.json`)
+- Spain (`data/live/visa-es.json`)
+- Portugal (`data/live/visa-pt.json`)
+- Sweden (`data/live/visa-se.json`)
 
 `data/live/visa-markets.json` tracks Japan's current Working Holiday partner countries/regions from MOFA and highlights EU/North American availability. The European Union is not treated as one visa market: eligibility and application rules are passport-country specific. The United States is shown as having no current Japan Working Holiday arrangement because it is not on MOFA's current partner list.
 
@@ -222,3 +225,16 @@ Ireland, the Netherlands and Italy now have detailed country-specific planners.
 - **Italy:** programme operating since 1 April 2026; one lifetime Working Holiday visa; at least €1,800 initial living funds plus a return ticket, or roughly €3,800 without a return ticket. The planner routes northern residents to Milan and other Italian residents to Rome using their different current submission procedures.
 
 Capacity or calendar availability is modeled separately from legal eligibility. A market can remain an eligible partner while the current year's intake is closed or quota-limited.
+
+
+## Phase 11 EU market expansion wave 3
+
+Spain, Portugal and Sweden now have detailed planners, taking the registry to 12 detailed passport markets.
+
+The shared visa schema now supports:
+- **jurisdiction-specific application availability**, so one country's consular offices can show different current quota/calendar states;
+- **multi-tier flight/funds rules**, for markets where the required balance depends on round-trip, one-way or no ticket evidence.
+
+Spain is the first market using both features. Current 2026 evidence is mixed by jurisdiction: Madrid reports its allocation exhausted, Barcelona's latest verified notice reported availability, and Las Palmas requires a direct quota re-check. The planner therefore changes the intake notice when the user selects their Spanish consular jurisdiction rather than applying one national status.
+
+Portugal uses the current official €7,000 / €8,000 funds rule depending on whether the return ticket has been acquired. Sweden uses SEK 20,000 with return/onward ticket evidence or SEK 41,000 without.
