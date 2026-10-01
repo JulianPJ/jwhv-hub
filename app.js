@@ -22,7 +22,8 @@ function isoDate(date){return date.toISOString().slice(0,10)}
 function shiftDays(value,days){const d=parseLocalDate(value);if(!d)return null;d.setDate(d.getDate()+days);return d}
 function daysBetween(a,b){return Math.ceil((b-a)/86400000)}
 function visaProgressSummary(visa,market="GB"){
-  const saved=readLocal(VISA_PROGRESS_KEY+":"+market,{});
+  const legacy=market==="GB"?readLocal(VISA_PROGRESS_KEY,{}):{};
+  const saved=readLocal(VISA_PROGRESS_KEY+":"+market,legacy);
   const ids=[
     ...(visa.document_checklist||[]).map(item=>"doc:"+item.id),
     ...(visa.preparation_checklist||[]).map(item=>"prep:"+item.id)
@@ -210,7 +211,8 @@ async function initApplication(){
   $("#official-source-links").innerHTML=(visa.official_sources||[]).map(source=>'<a class="tag" href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">'+esc(source.name)+" ↗</a>").join("");
 
   const eligibilityKey="jwhv-hub:eligibility:v2:"+selected;
-  const eligibilitySaved=readLocal(eligibilityKey,{});
+  const legacyEligibility=selected==="GB"?readLocal("jwhv-hub:eligibility:v1",{}):{};
+  const eligibilitySaved=readLocal(eligibilityKey,legacyEligibility);
   const eligibilityForm=$("#eligibility-form");
 
   function booleanQuestion(rule,value){
@@ -322,7 +324,8 @@ async function initApplication(){
   evaluateEligibility();
 
   const progressKey=VISA_PROGRESS_KEY+":"+selected;
-  const savedProgress=readLocal(progressKey,{});
+  const legacyProgress=selected==="GB"?readLocal(VISA_PROGRESS_KEY,{}):{};
+  const savedProgress=readLocal(progressKey,legacyProgress);
   function checklistMarkup(items,prefix){
     return items.map(item=>'<label class="check-item"><input type="checkbox" data-check-id="'+esc(prefix+item.id)+'" '+(savedProgress[prefix+item.id]?"checked":"")+'><span><strong>'+esc(item.title)+'</strong><p>'+esc(item.description)+'</p></span></label>').join("");
   }
@@ -348,7 +351,8 @@ async function initApplication(){
   updateProgress();
 
   const workspaceKey="jwhv-hub:workspace:v2:"+selected;
-  const workspace=readLocal(workspaceKey,{statement:"",months:{}});
+  const legacyWorkspace=selected==="GB"?readLocal("jwhv-hub:workspace:v1",{statement:"",months:{}}):{statement:"",months:{}};
+  const workspace=readLocal(workspaceKey,legacyWorkspace);
   $("#statement-notes").value=workspace.statement||"";
   $("#itinerary-months").innerHTML=Array.from({length:12},(_,index)=>{
     const month=index+1;
