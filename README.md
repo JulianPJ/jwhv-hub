@@ -78,3 +78,45 @@ Job and housing source lists are intentionally empty until each source has been 
 ## Important
 
 This project is an independent planning tool, not a government service or immigration adviser. Official Japanese government and embassy/consulate information takes precedence.
+
+
+## Phase 2 application assistance
+
+The visa planner now includes:
+
+- rules-based eligibility pre-check
+- UK residence / London vs Edinburgh jurisdiction routing
+- proof-of-funds and prior-participation checks
+- official-source-backed document checklist
+- browser-only Statement of Purpose notes
+- browser-only 12-month itinerary workspace
+- downloadable local planning notes
+
+These tools are for preparation only. They do not determine visa eligibility and do not submit an application.
+
+## Candidate promotion safety
+
+Use:
+
+```bash
+node scripts/promote.mjs jobs
+node scripts/promote.mjs housing
+node scripts/promote.mjs visa
+```
+
+or run the **Promote candidate data** GitHub workflow manually.
+
+Promotion is blocked when:
+
+- a listing uses an unapproved source
+- a source is marked unhealthy/quarantined
+- a feed with at least 10 live records falls by more than 30% in one candidate update
+- a visa candidate does not have `change_control.status: "approved"`
+
+This is intentional: source failure should preserve last-known-good data instead of emptying the public site.
+
+## Source approval
+
+`data/source-candidates.json` records sources considered for automation.
+
+Commercial job boards and housing portals are not approved merely because their pages are public. Prefer documented APIs/feeds, explicit partner/affiliate access, or direct sources with suitable reuse terms.

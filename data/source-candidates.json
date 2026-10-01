@@ -1,0 +1,37 @@
+{
+  "reviewed_at": "2026-10-01",
+  "candidates": [
+    {
+      "id": "hellowork-job-data-service",
+      "category": "jobs",
+      "name": "Hello Work job information data service",
+      "url": "https://www.hellowork.mhlw.go.jp/provide/provide_top.html",
+      "decision": "not_approved_for_mvp",
+      "reason": "The structured CSV/API service requires an application and is limited to eligible local authorities, training bodies and licensed/notified employment-placement businesses. Do not automate against it unless the project later qualifies and obtains access."
+    },
+    {
+      "id": "mlit-real-estate-library",
+      "category": "housing_context",
+      "name": "MLIT Real Estate Information Library API",
+      "url": "https://www.reinfolib.mlit.go.jp/help/apiManual",
+      "decision": "approved_for_context_only",
+      "reason": "Official public API intended for web services/research. Useful for area/property-market context, not live short-term rental inventory."
+    },
+    {
+      "id": "commercial-job-boards",
+      "category": "jobs",
+      "name": "Commercial Japan job boards",
+      "url": null,
+      "decision": "individual_review_required",
+      "reason": "Do not scrape or republish a commercial board by default. Prefer a documented API/feed, affiliate/partner agreement, or direct employer source with suitable terms."
+    },
+    {
+      "id": "commercial-housing-portals",
+      "category": "housing",
+      "name": "Commercial housing portals/share-house operators",
+      "url": null,
+      "decision": "individual_review_required",
+      "reason": "Do not scrape or republish inventory by default. Approve providers individually when a documented feed/API/partner route or suitable permission is available."
+    }
+  ]
+}

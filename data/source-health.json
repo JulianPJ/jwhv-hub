@@ -1,4 +1,47 @@
 {
   "updated_at": "2026-10-01",
-  "sources": {}
+  "sources": {
+    "uk-embassy-visa-general": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "uk-embassy-working-holiday-checklist": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "mofa-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "edinburgh-visa-general": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "edinburgh-working-holiday": {
+      "category": "visa",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    },
+    "mlit-real-estate-library": {
+      "category": "housing_context",
+      "status": "healthy",
+      "last_checked": "2026-10-01",
+      "last_success": "2026-10-01",
+      "consecutive_failures": 0
+    }
+  }
 }

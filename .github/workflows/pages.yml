@@ -26,12 +26,17 @@ jobs:
       - name: Validate structured data
         run: node scripts/validate.mjs
 
+      - name: Check source health
+        run: node scripts/check-source-health.mjs
+
       - name: Build static site
         run: node scripts/build.mjs
 
       - name: Configure Pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload Pages artifact
         if: github.event_name != 'pull_request'
