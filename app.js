@@ -49,8 +49,29 @@ function saveButton(type,id){
   return '<button class="save-button'+(saved?" saved":"")+'" type="button" data-save-type="'+esc(type)+'" data-save-id="'+esc(id)+'" aria-pressed="'+saved+'">'+(saved?"Saved ✓":"Save")+'</button>';
 }
 
+async function loadVisibleFeed(kind){
+  const [live,candidate]=await Promise.all([
+    loadJSON("data/live/"+kind+".json"),
+    loadJSON("data/candidate/"+kind+".json")
+  ]);
+  const liveItems=(live.items||[])
+    .filter(item=>item.status==="active")
+    .map(item=>({...item,_feedStatus:"live"}));
+  const liveIds=new Set(liveItems.map(item=>item.id));
+  const pendingItems=(candidate.items||[])
+    .filter(item=>item.status==="active"&&!liveIds.has(item.id))
+    .map(item=>({...item,_feedStatus:"pending"}));
+  return {
+    items:[...liveItems,...pendingItems],
+    live,
+    candidate,
+    liveCount:liveItems.length,
+    pendingCount:pendingItems.length
+  };
+}
+
 async function initJobs(){
-  const data=await loadJSON("data/live/jobs.json"),items=(data.items||[]).filter(item=>item.status==="active");
+  const feed=await loadVisibleFeed("jobs"),items=feed.items;
   const search=$("#job-search"),language=$("#job-language"),wh=$("#job-wh"),housing=$("#job-housing"),sort=$("#job-sort"),list=$("#job-list"),count=$("#job-count");
   const japaneseLabel={none:"Japanese not required",basic:"Japanese: basic",conversational:"Japanese: conversational",business:"Japanese: business",native:"Japanese: native",unknown:"Japanese not stated"};
   const whLabel={explicitly_accepted:"Working Holiday explicitly accepted",likely_compatible:"Working Holiday likely compatible",unknown:"Working Holiday not stated"};
@@ -74,18 +95,22 @@ async function initJobs(){
       return String(b.last_seen||"").localeCompare(String(a.last_seen||""));
     });
 
-    count.textContent=filtered.length+" "+(filtered.length===1?"listing":"listings")+" · feed verified "+data.updated_at;
+    count.textContent=filtered.length+" "+(filtered.length===1?"listing":"listings")+" · "+feed.liveCount+" live · "+feed.pendingCount+" pending review";
     list.innerHTML=filtered.length?filtered.map(item=>{
       const accommodation=item.accommodation_status||(item.accommodation_provided===true?"provided":"not_stated");
       const details=[
+        tag(item._feedStatus==="live"?"Live":"Pending review"),
         item.salary_display?tag(item.salary_display):"",
         item.start_date?tag("Starts "+item.start_date):"",
         item.japanese_level?tag(japaneseLabel[item.japanese_level]||item.japanese_level):"",
         item.working_holiday?tag(whLabel[item.working_holiday]||item.working_holiday):"",
         tag(accommodationLabel[accommodation]||accommodation)
       ].join("");
-      return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div>'+(item.accommodation_note?'<p class="listing-note">'+esc(item.accommodation_note)+'</p>':"")+'<p class="listing-verified">Verified from employer source '+esc(item.last_seen)+'</p></div><div class="listing-actions">'+saveButton("jobs",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
-    }).join(""):empty(items.length?"No matching jobs":"No verified jobs yet",items.length?"Try changing the filters.":"The research worker has not published a verified direct-employer listing yet.");
+      const provenance=item._feedStatus==="live"
+        ?"Live · verified from employer source "+item.last_seen
+        :"Pending review · direct employer source observed "+item.last_seen;
+      return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div>'+(item.accommodation_note?'<p class="listing-note">'+esc(item.accommodation_note)+'</p>':"")+'<p class="listing-verified">'+esc(provenance)+'</p></div><div class="listing-actions">'+saveButton("jobs",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
+    }).join(""):empty(items.length?"No matching jobs":"No direct-source jobs yet",items.length?"Try changing the filters.":"No current direct-employer listing is available yet.");
   }
   [search,language,wh,housing,sort].forEach(el=>el.addEventListener("input",render));
   list.addEventListener("click",event=>{
@@ -98,7 +123,7 @@ async function initJobs(){
 }
 
 async function initHousing(){
-  const data=await loadJSON("data/live/housing.json"),items=(data.items||[]).filter(item=>item.status==="active");
+  const feed=await loadVisibleFeed("housing"),items=feed.items;
   const search=$("#housing-search"),maxRent=$("#housing-max-rent"),furnished=$("#housing-furnished"),foreigner=$("#housing-foreigner"),sort=$("#housing-sort"),list=$("#housing-list"),count=$("#housing-count");
   function render(){
     const q=search.value.trim().toLowerCase();
@@ -118,17 +143,21 @@ async function initHousing(){
       return String(a.available_from||"9999-12-31").localeCompare(String(b.available_from||"9999-12-31"));
     });
 
-    count.textContent=filtered.length+" "+(filtered.length===1?"option":"options")+" · feed verified "+data.updated_at;
+    count.textContent=filtered.length+" "+(filtered.length===1?"option":"options")+" · "+feed.liveCount+" live · "+feed.pendingCount+" pending review";
     list.innerHTML=filtered.length?filtered.map(item=>{
       const details=[
+        tag(item._feedStatus==="live"?"Live":"Pending review"),
         item.monthly_rent_display?tag(item.monthly_rent_display):"",
         item.available_from?tag("Available "+item.available_from):"",
         item.furnished===true?tag("Furnished"):"",
         item.minimum_stay?tag(item.minimum_stay):"",
         item.foreigner_eligibility==="explicitly_accepted"?tag("Foreign residents accepted"):tag("Eligibility not stated")
       ].join("");
-      return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div>'+(item.upfront_fee_display?'<p class="listing-note">'+esc(item.upfront_fee_display)+'</p>':"")+'<p class="listing-verified">Verified from '+esc(item.source_name)+" "+esc(item.last_seen)+'</p></div><div class="listing-actions">'+saveButton("housing",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
-    }).join(""):empty(items.length?"No matching housing":"No verified housing yet",items.length?"Try changing the filters.":"The research worker has not published a verified direct-provider option yet.");
+      const provenance=item._feedStatus==="live"
+        ?"Live · verified from "+item.source_name+" "+item.last_seen
+        :"Pending review · direct provider source observed "+item.last_seen;
+      return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div>'+(item.upfront_fee_display?'<p class="listing-note">'+esc(item.upfront_fee_display)+'</p>':"")+'<p class="listing-verified">'+esc(provenance)+'</p></div><div class="listing-actions">'+saveButton("housing",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
+    }).join(""):empty(items.length?"No matching housing":"No direct-source housing yet",items.length?"Try changing the filters.":"No current direct-provider option is available yet.");
   }
   [search,maxRent,furnished,foreigner,sort].forEach(el=>el.addEventListener("input",render));
   list.addEventListener("click",event=>{
@@ -328,15 +357,15 @@ function planMilestones(targetArrival){
 }
 
 async function initPlan(){
-  const [jobsData,housingData,visa]=await Promise.all([
-    loadJSON("data/live/jobs.json"),
-    loadJSON("data/live/housing.json"),
+  const [jobsFeed,housingFeed,visa]=await Promise.all([
+    loadVisibleFeed("jobs"),
+    loadVisibleFeed("housing"),
     loadJSON("data/live/visa-uk.json")
   ]);
   const plan=getMovePlan();
   const shortlist=getShortlist();
-  const savedJobs=(jobsData.items||[]).filter(item=>shortlist.jobs.includes(item.id)&&item.status==="active");
-  const savedHousing=(housingData.items||[]).filter(item=>shortlist.housing.includes(item.id)&&item.status==="active");
+  const savedJobs=jobsFeed.items.filter(item=>shortlist.jobs.includes(item.id));
+  const savedHousing=housingFeed.items.filter(item=>shortlist.housing.includes(item.id));
   const visaState=visaProgressSummary(visa);
   const arrival=$("#target-arrival");
   arrival.value=plan.targetArrival||"";
@@ -462,13 +491,13 @@ async function initHome(){
 }
 
 async function initShortlist(){
-  const [jobsData,housingData]=await Promise.all([
-    loadJSON("data/live/jobs.json"),
-    loadJSON("data/live/housing.json")
+  const [jobsFeed,housingFeed]=await Promise.all([
+    loadVisibleFeed("jobs"),
+    loadVisibleFeed("housing")
   ]);
   const state=getShortlist();
-  const jobs=(jobsData.items||[]).filter(item=>state.jobs.includes(item.id)&&item.status==="active");
-  const housing=(housingData.items||[]).filter(item=>state.housing.includes(item.id)&&item.status==="active");
+  const jobs=jobsFeed.items.filter(item=>state.jobs.includes(item.id));
+  const housing=housingFeed.items.filter(item=>state.housing.includes(item.id));
 
   $("#shortlist-summary").innerHTML=
     '<article class="status-card"><span>Saved jobs</span><strong>'+jobs.length+'</strong><small>Stored in this browser</small></article>'+
@@ -476,12 +505,12 @@ async function initShortlist(){
 
   const jobsList=$("#shortlist-jobs");
   jobsList.innerHTML=jobs.length?jobs.map(item=>
-    '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(item.salary_display?tag(item.salary_display):"")+(item.start_date?tag("Starts "+item.start_date):"")+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>'
+    '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+tag(item._feedStatus==="live"?"Live":"Pending review")+(item.salary_display?tag(item.salary_display):"")+(item.start_date?tag("Starts "+item.start_date):"")+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>'
   ).join(""):empty("No saved jobs","Save jobs from the Jobs page and they will appear here.");
 
   const housingList=$("#shortlist-housing");
   housingList.innerHTML=housing.length?housing.map(item=>
-    '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+(item.monthly_rent_display?tag(item.monthly_rent_display):"")+(item.available_from?tag("Available "+item.available_from):"")+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>'
+    '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+tag(item._feedStatus==="live"?"Live":"Pending review")+(item.monthly_rent_display?tag(item.monthly_rent_display):"")+(item.available_from?tag("Available "+item.available_from):"")+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>'
   ).join(""):empty("No saved housing","Save housing from the Housing page and it will appear here.");
 
   document.querySelector("main").addEventListener("click",event=>{
@@ -493,18 +522,18 @@ async function initShortlist(){
 }
 
 async function initStatus(){
-  const [state,jobs,housing,visa]=await Promise.all([
+  const [state,jobsFeed,housingFeed,visa]=await Promise.all([
     loadJSON("data/worker-state.json"),
-    loadJSON("data/live/jobs.json"),
-    loadJSON("data/live/housing.json"),
+    loadVisibleFeed("jobs"),
+    loadVisibleFeed("housing"),
     loadJSON("data/live/visa-uk.json")
   ]);
   const summary=$("#status-summary");
   summary.innerHTML=[
-    ["Live jobs",(jobs.items||[]).length,jobs.updated_at],
-    ["Live housing",(housing.items||[]).length,housing.updated_at],
-    ["Visa ruleset","UK → Japan",visa.verified_at]
-  ].map(([label,value,date])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>Updated '+esc(date)+'</small></article>').join("");
+    ["Jobs",jobsFeed.items.length,jobsFeed.liveCount+" live · "+jobsFeed.pendingCount+" pending"],
+    ["Housing",housingFeed.items.length,housingFeed.liveCount+" live · "+housingFeed.pendingCount+" pending"],
+    ["Visa ruleset","UK → Japan","Verified "+visa.verified_at]
+  ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
 
   const workers=state.workers||{};
   const severity={failed:3,warning:2,not_started:1,healthy:0};
