@@ -38,15 +38,25 @@ function promoteFeed(name){
   console.log(`✓ promoted ${name}: ${candidateCount} records`);
 }
 
-function promoteVisa(){
-  const candidate=read("data/candidate/visa-uk.json");
+function promoteVisaFile(file){
+  const candidate=read(`data/candidate/${file}`);
   if(candidate.change_control?.status!=="approved"){
-    console.log(`- skipped visa: candidate status is ${candidate.change_control?.status||"missing"}`);
+    console.log(`- skipped ${file}: candidate status is ${candidate.change_control?.status||"missing"}`);
     return;
   }
-  write("data/live/visa-uk.json",candidate);
+  for(const source of candidate.official_sources||[]){
+    const state=health.sources[source.id];
+    if(state&&["unhealthy","quarantined"].includes(state.status)){
+      throw new Error(`${file}: source ${source.id} is ${state.status}; promotion blocked`);
+    }
+  }
+  write(`data/live/${file}`,candidate);
   promoted++;
-  console.log("✓ promoted visa ruleset");
+  console.log(`✓ promoted ${file}`);
+}
+
+function promoteVisa(){
+  for(const file of ["visa-uk.json","visa-au.json"]) promoteVisaFile(file);
 }
 
 for(const scope of requested){
