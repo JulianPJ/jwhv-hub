@@ -28,7 +28,7 @@ Run procedure:
 3. Check each detailed market's official Japanese diplomatic sources, including application availability/quota/calendar status where the mission publishes it.
 4. Compare current wording, age limits, participation limits, funds, route-specific financial overrides, application route, jurisdiction, documents, appointment procedure and application availability with live data.
 5. If nothing material changed, leave candidate rulesets unchanged and update only permitted health/worker state.
-6. If MOFA's partner registry changed, write a complete proposed `data/candidate/visa-markets.json` with `change_control.status: "pending_review"` and precise evidence.
-7. If a detailed country's rules changed, write that country's complete candidate ruleset with `change_control.status: "pending_review"`, identify old/new values and official source IDs in the review note.
+6. If MOFA's partner registry changed, or a reference-market guide materially changed, write a complete proposed `data/candidate/visa-markets.json` with `change_control.status: "pending_review"` and precise evidence.
+7. If a detailed country's rules changed, write that country's complete candidate ruleset with `change_control.status: "pending_review"`, identify old/new values and official source IDs in the review note. For non-partner guides, verify both the absence/presence of a Working Holiday arrangement and any alternative-route facts only against official Japanese sources.
 8. Never approve your own visa change and never write directly to `data/live/`.
 9. If official sources conflict or wording is unclear, preserve last-known-good data and surface the conflict rather than guessing.

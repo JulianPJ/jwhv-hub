@@ -91,3 +91,9 @@ textarea{display:block;width:100%;margin-top:7px;padding:12px 13px;border:1px so
 .route-status p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
 .route-status.open{background:#eef5f0;border-color:#b9cec1}
 .route-status.warning{background:#f9eded;border-color:#dfb8b4}
+
+.market-detail-panel{margin:0 0 22px}
+.market-next-steps{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.market-next-steps h3{font-family:Georgia,serif;font-size:1.5rem;font-weight:500;margin:0 0 10px}
+.market-next-steps ol{margin:0;padding-left:1.25rem;color:var(--muted)}
+.market-next-steps li+li{margin-top:7px}
