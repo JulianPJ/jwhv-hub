@@ -1,100 +1,147 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "JWHV housing",
+  "title": "JWHV housing feed",
   "type": "object",
   "required": [
-    "id",
-    "name",
-    "source_id",
-    "source_name",
-    "source_url",
-    "first_seen",
-    "last_seen",
-    "status"
+    "updated_at",
+    "change_control",
+    "items"
   ],
   "properties": {
-    "id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "name": {
-      "type": "string",
-      "minLength": 1
-    },
-    "prefecture": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "city": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "nearest_station": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "monthly_rent_display": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "minimum_stay": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "furnished": {
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "guarantor_required": {
-      "type": [
-        "boolean",
-        "null"
-      ]
-    },
-    "foreigner_eligibility": {
-      "enum": [
-        "explicitly_accepted",
-        "unknown"
-      ]
-    },
-    "source_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "source_name": {
-      "type": "string",
-      "minLength": 1
-    },
-    "source_url": {
-      "type": "string",
-      "format": "uri"
-    },
-    "first_seen": {
+    "updated_at": {
       "type": "string",
       "format": "date"
     },
-    "last_seen": {
-      "type": "string",
-      "format": "date"
+    "change_control": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "approved",
+            "pending_review",
+            "rejected"
+          ]
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "review_note": {
+          "type": "string"
+        }
+      }
     },
-    "status": {
-      "enum": [
-        "active",
-        "stale",
-        "expired"
-      ]
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "source_id",
+          "source_name",
+          "source_domain",
+          "source_url",
+          "first_seen",
+          "last_seen",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "prefecture": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nearest_station": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "monthly_rent_display": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "minimum_stay": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "furnished": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "guarantor_required": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "foreigner_eligibility": {
+            "enum": [
+              "explicitly_accepted",
+              "unknown"
+            ]
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_domain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "first_seen": {
+            "type": "string",
+            "format": "date"
+          },
+          "last_seen": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "stale",
+              "expired"
+            ]
+          }
+        }
+      }
     }
   }
 }
