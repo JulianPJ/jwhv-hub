@@ -1,0 +1,35 @@
+{
+  "updated_at": "2026-10-01",
+  "workers": {
+    "jobs": {
+      "last_run": null,
+      "last_success": null,
+      "status": "not_started",
+      "summary": "Awaiting scheduled worker."
+    },
+    "housing": {
+      "last_run": null,
+      "last_success": null,
+      "status": "not_started",
+      "summary": "Awaiting scheduled worker."
+    },
+    "visa": {
+      "last_run": "2026-10-01",
+      "last_success": "2026-10-01",
+      "status": "healthy",
+      "summary": "Phase 2 official-source baseline verified."
+    },
+    "qa": {
+      "last_run": null,
+      "last_success": null,
+      "status": "not_started",
+      "summary": "Awaiting scheduled worker."
+    },
+    "site_health": {
+      "last_run": null,
+      "last_success": null,
+      "status": "not_started",
+      "summary": "Awaiting scheduled worker."
+    }
+  }
+}
