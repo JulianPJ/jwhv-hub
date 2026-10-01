@@ -1,0 +1,257 @@
+{
+  "market": "DE",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Germany → Japan",
+  "currency_symbol": "€",
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "German Working Holiday baseline verified against the current Embassy of Japan in Germany Working Holiday guidance and FAQ."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "mofa-working-holiday",
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Passport",
+      "value": "German passport required",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Application location",
+      "value": "Japanese Embassy/Consulates in Germany only",
+      "source_ids": [
+        "de-embassy-working-holiday",
+        "de-working-holiday-faq"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "Up to two Working Holiday stays in a lifetime",
+      "source_ids": [
+        "mofa-working-holiday",
+        "de-embassy-working-holiday",
+        "de-working-holiday-faq"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "€2,000 with outbound+return tickets; €3,200 with outbound ticket only",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "german_citizen",
+      "label": "Do you hold a German passport?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The German Working Holiday route is available only to applicants with a German passport.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The German Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "mofa-working-holiday",
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The main purpose must be a holiday in Japan; temporary work is incidental.",
+      "source_ids": [
+        "mofa-working-holiday",
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependent family members rely on your Working Holiday route?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "Accompanying dependants are not eligible for an additional family visa under this route.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "valid_passport",
+      "label": "Will your German passport be valid for the application and travel?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "A valid German passport is required.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health",
+      "label": "Can you truthfully meet the programme's good-health requirement?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Working Holiday programme includes a good-health requirement.",
+      "source_ids": [
+        "mofa-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "with_return_ticket_minimum": 2000,
+    "no_ticket_minimum": 3200,
+    "no_ticket_note": "The €3,200 figure applies when only an outbound ticket is submitted. If no flight ticket is submitted, the Embassy requires €3,200 plus at least the amount of a one-way ticket.",
+    "bank_statement_months": null,
+    "source_ids": [
+      "de-embassy-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 2,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "mofa-working-holiday",
+      "de-embassy-working-holiday",
+      "de-working-holiday-faq"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_application",
+    "country": "Germany",
+    "residence_required": false,
+    "label": "Japanese Embassy or Consulate-General in Germany",
+    "description": "German passport holders may apply even if they do not reside in Germany, but the Working Holiday application itself must be lodged at a Japanese diplomatic mission in Germany.",
+    "source_ids": [
+      "de-embassy-working-holiday",
+      "de-working-holiday-faq"
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "German passport",
+      "description": "Valid German passport; follow the chosen mission's instructions for original/copy handling.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Visa application form and current photo",
+      "description": "Complete the current visa application form and provide the required recent passport photograph.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Detailed proposed itinerary",
+      "description": "Provide concrete intended places and activities; generic entries such as only 'work' or 'travel' are not sufficient.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "CV",
+      "description": "CV in English or Japanese; an individually created format is acceptable.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "One-page motivation letter",
+      "description": "Provide a motivation letter in English or Japanese explaining the Working Holiday purpose.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Proof of funds",
+      "description": "Current bank statement meeting the applicable €2,000 / €3,200 baseline and current official flight-evidence rule.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "insurance",
+      "title": "Travel health insurance evidence or National Health Insurance pledge",
+      "description": "Provide the insurance evidence or pledge permitted by the current official guidance.",
+      "source_ids": [
+        "de-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "second-stay-proof",
+      "title": "Proof first stay ended (second application only)",
+      "description": "For a second Working Holiday application, provide evidence that the first stay has ended or is no longer valid.",
+      "source_ids": [
+        "de-embassy-working-holiday",
+        "de-working-holiday-faq"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "official-guidance",
+      "title": "Read the current German official guidance",
+      "description": "Re-open the Embassy/Consulate guidance immediately before preparing your application."
+    },
+    {
+      "id": "mission",
+      "title": "Choose the Japanese mission in Germany",
+      "description": "The Working Holiday application must be made through a Japanese diplomatic mission in Germany; local submission procedures vary."
+    },
+    {
+      "id": "travel-proof",
+      "title": "Align funds with your flight evidence",
+      "description": "The required funds differ depending on whether you show return, outbound-only or no flight tickets."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final source check",
+      "description": "Compare your pack with the exact current instructions of the mission where you will apply."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "de-embassy-working-holiday",
+      "name": "Embassy of Japan in Germany — Working Holiday Visa",
+      "url": "https://www.de.emb-japan.go.jp/itpr_de/konsular_VisaWH_EN.html"
+    },
+    {
+      "id": "de-working-holiday-faq",
+      "name": "Embassy of Japan in Germany — Working Holiday FAQ",
+      "url": "https://www.de.emb-japan.go.jp/files/100809960.pdf"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}
