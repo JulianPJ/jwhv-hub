@@ -73,8 +73,31 @@ function validateFeed(path,kind,scope){
       if(item.japanese_level&&![ "none","basic","conversational","business","native","unknown" ].includes(item.japanese_level)){
         fail(`${path}: ${item.id} invalid japanese_level`);
       }
-    }else if(item.foreigner_eligibility&&![ "explicitly_accepted","unknown" ].includes(item.foreigner_eligibility)){
-      fail(`${path}: ${item.id} invalid foreigner_eligibility`);
+      if(item.accommodation_status&&![ "provided","subsidized","not_stated" ].includes(item.accommodation_status)){
+        fail(`${path}: ${item.id} invalid accommodation_status`);
+      }
+      if(item.salary_min_jpy!=null&&(!Number.isFinite(item.salary_min_jpy)||item.salary_min_jpy<0)){
+        fail(`${path}: ${item.id} invalid salary_min_jpy`);
+      }
+      if(item.salary_max_jpy!=null&&(!Number.isFinite(item.salary_max_jpy)||item.salary_max_jpy<0)){
+        fail(`${path}: ${item.id} invalid salary_max_jpy`);
+      }
+      if(item.salary_min_jpy!=null&&item.salary_max_jpy!=null&&item.salary_max_jpy<item.salary_min_jpy){
+        fail(`${path}: ${item.id} salary range is inverted`);
+      }
+      for(const field of ["start_date","end_date","expires_at"]){
+        if(item[field]!=null&&!isDate(item[field])) fail(`${path}: ${item.id} invalid ${field}`);
+      }
+    }else{
+      if(item.foreigner_eligibility&&![ "explicitly_accepted","unknown" ].includes(item.foreigner_eligibility)){
+        fail(`${path}: ${item.id} invalid foreigner_eligibility`);
+      }
+      if(item.monthly_rent_jpy!=null&&(!Number.isFinite(item.monthly_rent_jpy)||item.monthly_rent_jpy<0)){
+        fail(`${path}: ${item.id} invalid monthly_rent_jpy`);
+      }
+      if(item.available_from!=null&&!isDate(item.available_from)){
+        fail(`${path}: ${item.id} invalid available_from`);
+      }
     }
   }
 }
