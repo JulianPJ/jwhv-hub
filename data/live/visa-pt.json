@@ -1,0 +1,294 @@
+{
+  "market": "PT",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Portugal → Japan",
+  "currency_symbol": "€",
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Portugal ruleset verified against the official Embassy Working Holiday page and current Embassy visa procedure page."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Portuguese citizen resident in Portugal at application",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Japanese Working Holiday visa",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "€7,000 with a purchased return ticket; €8,000 without one",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Application route",
+      "value": "In person at the Embassy of Japan in Lisbon by prior appointment",
+      "source_ids": [
+        "pt-embassy-working-holiday",
+        "pt-embassy-visa-current"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "portuguese_citizen",
+      "label": "Are you a Portuguese citizen?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Working Holiday route is for Portuguese citizens.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "portugal_resident",
+      "label": "Are you resident in Portugal at the time of application?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Portuguese Working Holiday applicants must reside in Portugal when applying.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Portuguese Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Portuguese programme is for an extended holiday; it is not intended for full-time work or academic study.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependants without their own eligible status accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "Dependants may only accompany you if they independently hold an appropriate Japanese status.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_character",
+      "label": "Can you truthfully meet the good-health and no-criminal-record requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The programme requires good health and no criminal record.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "input_label": "Funds shown in your Portuguese bank statements (€)",
+    "ticket_label": "Return-ticket position",
+    "ticket_options": [
+      {
+        "value": "return_purchased",
+        "label": "Paid return ticket",
+        "minimum": 7000
+      },
+      {
+        "value": "no_return",
+        "label": "No paid return ticket",
+        "minimum": 8000
+      }
+    ],
+    "with_return_ticket_minimum": 7000,
+    "no_ticket_minimum": 8000,
+    "bank_statement_months": 3,
+    "source_ids": [
+      "pt-embassy-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "pt-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_residence",
+    "country": "Portugal",
+    "label": "Embassy of Japan in Portugal — Lisbon",
+    "description": "Working Holiday applications are submitted personally to the Embassy in Lisbon. The current general visa page says applicants must make an appointment by phone or email before applying.",
+    "source_ids": [
+      "pt-embassy-working-holiday",
+      "pt-embassy-visa-current"
+    ],
+    "ui_label": "Portuguese residence",
+    "ui_help": "Portuguese applicants must reside in Portugal and use the Embassy in Lisbon.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I am resident in Portugal",
+        "mission_label": "Embassy of Japan in Portugal — Lisbon",
+        "mission_detail": "Apply personally at the Embassy in Lisbon after arranging an appointment under the current visa procedure."
+      },
+      {
+        "value": "outside_country",
+        "label": "I am not resident in Portugal",
+        "mission_label": "Portuguese Working Holiday route may not apply",
+        "mission_detail": "The programme requires Portuguese citizenship and residence in Portugal at application.",
+        "issue": "The Portugal Working Holiday route requires the applicant to be a Portuguese citizen resident in Portugal at the time of application."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Portuguese passport",
+      "description": "Passport should have available visa pages and at least 12 months validity under the current Working Holiday guidance.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed and signed visa application form",
+      "description": "Prepare the current application form with the applicant's signature.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "photo",
+      "title": "Recent photograph",
+      "description": "45mm × 35mm photograph taken within the previous six months.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Curriculum Vitae",
+      "description": "Prepare the current Working Holiday CV form.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Itinerary / activity plan",
+      "description": "Prepare the official stay/activity outline for the planned period in Japan.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "A4 motivation statement",
+      "description": "Explain the reasons for requesting the Working Holiday visa.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "flight",
+      "title": "Return ticket / reservation or extra funds",
+      "description": "Provide the return ticket or booking, or enough additional funds to acquire the return travel.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Three months of bank statements",
+      "description": "Current guidance requires at least €8,000, or €7,000 where the return ticket has been acquired.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "medical",
+      "title": "Medical certificate",
+      "description": "Provide the medical certificate requested by the current Working Holiday checklist.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "insurance",
+      "title": "International health insurance or National Health Insurance pledge",
+      "description": "Provide qualifying international health coverage for the authorised stay or the permitted pledge to join Japan's National Health Insurance.",
+      "source_ids": [
+        "pt-embassy-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "appointment",
+      "title": "Book the Lisbon Embassy appointment",
+      "description": "Current general visa guidance requires an appointment by phone or email before lodging."
+    },
+    {
+      "id": "funds",
+      "title": "Match funds to return-ticket position",
+      "description": "Use the €7,000 threshold only where the return ticket has been acquired; otherwise use the €8,000 baseline."
+    },
+    {
+      "id": "in-person",
+      "title": "Plan for personal submission",
+      "description": "The Working Holiday application must be submitted by the applicant; family, travel agency and postal applications are not accepted."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final official-source check",
+      "description": "Recheck the Embassy Working Holiday and visa procedure pages before applying."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "pt-embassy-working-holiday",
+      "name": "Embassy of Japan in Portugal — Working Holiday Visa",
+      "url": "https://www.pt.emb-japan.go.jp/itpr_ja/00_000236.html"
+    },
+    {
+      "id": "pt-embassy-visa-current",
+      "name": "Embassy of Japan in Portugal — Visa for Japan",
+      "url": "https://www.pt.emb-japan.go.jp/itpr_ja/00_000242.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}
