@@ -10,6 +10,27 @@ const tag=text=>'<span class="tag">'+esc(text)+'</span>';
 const empty=(title,body)=>'<div class="empty-state"><strong>'+esc(title)+'</strong><p>'+esc(body)+'</p></div>';
 function readLocal(key,fallback={}){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
 function writeLocal(key,value){localStorage.setItem(key,JSON.stringify(value))}
+const SHORTLIST_KEY="jwhv-hub:shortlist:v1";
+function getShortlist(){
+  const value=readLocal(SHORTLIST_KEY,{jobs:[],housing:[]});
+  return {
+    jobs:Array.isArray(value.jobs)?value.jobs:[],
+    housing:Array.isArray(value.housing)?value.housing:[]
+  };
+}
+function isSaved(type,id){return getShortlist()[type]?.includes(id)}
+function toggleSaved(type,id){
+  const state=getShortlist();
+  const set=new Set(state[type]||[]);
+  if(set.has(id)) set.delete(id); else set.add(id);
+  state[type]=[...set];
+  writeLocal(SHORTLIST_KEY,state);
+  return set.has(id);
+}
+function saveButton(type,id){
+  const saved=isSaved(type,id);
+  return '<button class="save-button'+(saved?" saved":"")+'" type="button" data-save-type="'+esc(type)+'" data-save-id="'+esc(id)+'" aria-pressed="'+saved+'">'+(saved?"Saved ✓":"Save")+'</button>';
+}
 
 async function initJobs(){
   const data=await loadJSON("data/live/jobs.json"),items=(data.items||[]).filter(item=>item.status==="active");
@@ -46,10 +67,16 @@ async function initJobs(){
         item.working_holiday?tag(whLabel[item.working_holiday]||item.working_holiday):"",
         tag(accommodationLabel[accommodation]||accommodation)
       ].join("");
-      return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div>'+(item.accommodation_note?'<p class="listing-note">'+esc(item.accommodation_note)+'</p>':"")+'<p class="listing-verified">Verified from employer source '+esc(item.last_seen)+'</p></div><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></article>';
+      return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div>'+(item.accommodation_note?'<p class="listing-note">'+esc(item.accommodation_note)+'</p>':"")+'<p class="listing-verified">Verified from employer source '+esc(item.last_seen)+'</p></div><div class="listing-actions">'+saveButton("jobs",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
     }).join(""):empty(items.length?"No matching jobs":"No verified jobs yet",items.length?"Try changing the filters.":"The research worker has not published a verified direct-employer listing yet.");
   }
   [search,language,wh,housing,sort].forEach(el=>el.addEventListener("input",render));
+  list.addEventListener("click",event=>{
+    const button=event.target.closest("[data-save-type]");
+    if(!button) return;
+    toggleSaved(button.dataset.saveType,button.dataset.saveId);
+    render();
+  });
   render();
 }
 
@@ -83,10 +110,16 @@ async function initHousing(){
         item.minimum_stay?tag(item.minimum_stay):"",
         item.foreigner_eligibility==="explicitly_accepted"?tag("Foreign residents accepted"):tag("Eligibility not stated")
       ].join("");
-      return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div>'+(item.upfront_fee_display?'<p class="listing-note">'+esc(item.upfront_fee_display)+'</p>':"")+'<p class="listing-verified">Verified from '+esc(item.source_name)+" "+esc(item.last_seen)+'</p></div><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></article>';
+      return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div>'+(item.upfront_fee_display?'<p class="listing-note">'+esc(item.upfront_fee_display)+'</p>':"")+'<p class="listing-verified">Verified from '+esc(item.source_name)+" "+esc(item.last_seen)+'</p></div><div class="listing-actions">'+saveButton("housing",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
     }).join(""):empty(items.length?"No matching housing":"No verified housing yet",items.length?"Try changing the filters.":"The research worker has not published a verified direct-provider option yet.");
   }
   [search,maxRent,furnished,foreigner,sort].forEach(el=>el.addEventListener("input",render));
+  list.addEventListener("click",event=>{
+    const button=event.target.closest("[data-save-type]");
+    if(!button) return;
+    toggleSaved(button.dataset.saveType,button.dataset.saveId);
+    render();
+  });
   render();
 }
 
@@ -260,6 +293,38 @@ async function initApplication(){
 }
 
 
+
+async function initShortlist(){
+  const [jobsData,housingData]=await Promise.all([
+    loadJSON("data/live/jobs.json"),
+    loadJSON("data/live/housing.json")
+  ]);
+  const state=getShortlist();
+  const jobs=(jobsData.items||[]).filter(item=>state.jobs.includes(item.id)&&item.status==="active");
+  const housing=(housingData.items||[]).filter(item=>state.housing.includes(item.id)&&item.status==="active");
+
+  $("#shortlist-summary").innerHTML=
+    '<article class="status-card"><span>Saved jobs</span><strong>'+jobs.length+'</strong><small>Stored in this browser</small></article>'+
+    '<article class="status-card"><span>Saved housing</span><strong>'+housing.length+'</strong><small>Stored in this browser</small></article>';
+
+  const jobsList=$("#shortlist-jobs");
+  jobsList.innerHTML=jobs.length?jobs.map(item=>
+    '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(item.salary_display?tag(item.salary_display):"")+(item.start_date?tag("Starts "+item.start_date):"")+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>'
+  ).join(""):empty("No saved jobs","Save jobs from the Jobs page and they will appear here.");
+
+  const housingList=$("#shortlist-housing");
+  housingList.innerHTML=housing.length?housing.map(item=>
+    '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+(item.monthly_rent_display?tag(item.monthly_rent_display):"")+(item.available_from?tag("Available "+item.available_from):"")+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>'
+  ).join(""):empty("No saved housing","Save housing from the Housing page and it will appear here.");
+
+  document.querySelector("main").addEventListener("click",event=>{
+    const button=event.target.closest("[data-remove-type]");
+    if(!button) return;
+    toggleSaved(button.dataset.removeType,button.dataset.removeId);
+    initShortlist();
+  },{once:true});
+}
+
 async function initStatus(){
   const [state,jobs,housing,visa]=await Promise.all([
     loadJSON("data/worker-state.json"),
@@ -300,6 +365,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
     if(page==="housing") await initHousing();
     if(page==="application") await initApplication();
     if(page==="status") await initStatus();
+    if(page==="shortlist") await initShortlist();
   }catch(error){
     console.error(error);
     const message=document.createElement("div");

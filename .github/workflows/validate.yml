@@ -16,3 +16,6 @@ jobs:
       - uses: actions/checkout@v6
       - name: Validate structured data
         run: node scripts/validate.mjs
+
+      - name: Check browser JavaScript syntax
+        run: node --check app.js
