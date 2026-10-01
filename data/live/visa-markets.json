@@ -1,0 +1,314 @@
+{
+  "verified_at": "2026-10-01",
+  "destination": "JP",
+  "source_ids": [
+    "mofa-working-holiday"
+  ],
+  "detailed_planners": {
+    "GB": "visa-uk.json",
+    "AU": "visa-au.json"
+  },
+  "partner_countries": [
+    {
+      "code": "AU",
+      "name": "Australia",
+      "region": "Oceania",
+      "detailed_planner": true
+    },
+    {
+      "code": "NZ",
+      "name": "New Zealand",
+      "region": "Oceania",
+      "detailed_planner": false
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "region": "North America",
+      "detailed_planner": false
+    },
+    {
+      "code": "KR",
+      "name": "South Korea",
+      "region": "Asia",
+      "detailed_planner": false
+    },
+    {
+      "code": "FR",
+      "name": "France",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "DE",
+      "name": "Germany",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "GB",
+      "name": "United Kingdom",
+      "region": "Europe",
+      "detailed_planner": true
+    },
+    {
+      "code": "IE",
+      "name": "Ireland",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "DK",
+      "name": "Denmark",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "TW",
+      "name": "Taiwan",
+      "region": "Asia",
+      "detailed_planner": false
+    },
+    {
+      "code": "HK",
+      "name": "Hong Kong",
+      "region": "Asia",
+      "detailed_planner": false
+    },
+    {
+      "code": "NO",
+      "name": "Norway",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "PT",
+      "name": "Portugal",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "PL",
+      "name": "Poland",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "SK",
+      "name": "Slovakia",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "AT",
+      "name": "Austria",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "HU",
+      "name": "Hungary",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "ES",
+      "name": "Spain",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "AR",
+      "name": "Argentina",
+      "region": "Latin America",
+      "detailed_planner": false
+    },
+    {
+      "code": "CL",
+      "name": "Chile",
+      "region": "Latin America",
+      "detailed_planner": false
+    },
+    {
+      "code": "IS",
+      "name": "Iceland",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "CZ",
+      "name": "Czech Republic",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "LT",
+      "name": "Lithuania",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "SE",
+      "name": "Sweden",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "EE",
+      "name": "Estonia",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "NL",
+      "name": "Netherlands",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "UY",
+      "name": "Uruguay",
+      "region": "Latin America",
+      "detailed_planner": false
+    },
+    {
+      "code": "FI",
+      "name": "Finland",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "LV",
+      "name": "Latvia",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "LU",
+      "name": "Luxembourg",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "MT",
+      "name": "Malta",
+      "region": "Europe",
+      "detailed_planner": false
+    },
+    {
+      "code": "IT",
+      "name": "Italy",
+      "region": "Europe",
+      "detailed_planner": false
+    }
+  ],
+  "coverage_groups": [
+    {
+      "id": "eu",
+      "label": "European Union",
+      "summary": "Working Holiday eligibility is passport-country specific, not EU-wide.",
+      "eligible_codes": [
+        "AT",
+        "CZ",
+        "DK",
+        "EE",
+        "FI",
+        "FR",
+        "DE",
+        "HU",
+        "IE",
+        "IT",
+        "LV",
+        "LT",
+        "LU",
+        "MT",
+        "NL",
+        "PL",
+        "PT",
+        "SK",
+        "ES",
+        "SE"
+      ],
+      "unavailable_codes": [
+        "BE",
+        "BG",
+        "HR",
+        "CY",
+        "GR",
+        "RO",
+        "SI"
+      ]
+    },
+    {
+      "id": "australia",
+      "label": "Australia",
+      "summary": "Japan and Australia have a Working Holiday arrangement; a detailed planner is available.",
+      "eligible_codes": [
+        "AU"
+      ],
+      "unavailable_codes": []
+    },
+    {
+      "id": "north-america",
+      "label": "North America",
+      "summary": "Canada has a Japan Working Holiday arrangement. The United States is not listed among Japan's current partner countries/regions.",
+      "eligible_codes": [
+        "CA"
+      ],
+      "unavailable_codes": [
+        "US"
+      ]
+    }
+  ],
+  "reference_countries": [
+    {
+      "code": "US",
+      "name": "United States",
+      "region": "North America",
+      "working_holiday_available": false,
+      "reason": "Not listed among Japan's 32 Working Holiday partner countries/regions as of 2026-04-01."
+    },
+    {
+      "code": "BE",
+      "name": "Belgium",
+      "region": "European Union",
+      "working_holiday_available": false
+    },
+    {
+      "code": "BG",
+      "name": "Bulgaria",
+      "region": "European Union",
+      "working_holiday_available": false
+    },
+    {
+      "code": "HR",
+      "name": "Croatia",
+      "region": "European Union",
+      "working_holiday_available": false
+    },
+    {
+      "code": "CY",
+      "name": "Cyprus",
+      "region": "European Union",
+      "working_holiday_available": false
+    },
+    {
+      "code": "GR",
+      "name": "Greece",
+      "region": "European Union",
+      "working_holiday_available": false
+    },
+    {
+      "code": "RO",
+      "name": "Romania",
+      "region": "European Union",
+      "working_holiday_available": false
+    },
+    {
+      "code": "SI",
+      "name": "Slovenia",
+      "region": "European Union",
+      "working_holiday_available": false
+    }
+  ]
+}
