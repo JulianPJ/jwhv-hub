@@ -10,6 +10,7 @@ execFileSync(process.execPath,["scripts/validate.mjs"],{stdio:"inherit"});
 const read=p=>JSON.parse(fs.readFileSync(p,"utf8"));
 const write=(p,v)=>fs.writeFileSync(p,JSON.stringify(v,null,2)+"\n");
 const health=read("data/source-health.json");
+let promoted=0;
 
 function ensureHealthy(items,label){
   for(const item of items){
@@ -19,23 +20,36 @@ function ensureHealthy(items,label){
     }
   }
 }
+
 function promoteFeed(name){
   const live=read(`data/live/${name}.json`);
   const candidate=read(`data/candidate/${name}.json`);
+  if(candidate.change_control?.status!=="approved"){
+    console.log(`- skipped ${name}: candidate status is ${candidate.change_control?.status||"missing"}`);
+    return;
+  }
   const liveCount=live.items.length,candidateCount=candidate.items.length;
   if(liveCount>=10&&candidateCount<Math.ceil(liveCount*0.7)){
     throw new Error(`${name}: candidate count ${candidateCount} is a >30% drop from live count ${liveCount}; quarantine instead of promoting`);
   }
   ensureHealthy(candidate.items,name);
   write(`data/live/${name}.json`,candidate);
+  promoted++;
   console.log(`✓ promoted ${name}: ${candidateCount} records`);
 }
+
 function promoteVisa(){
   const candidate=read("data/candidate/visa-uk.json");
-  if(candidate.change_control?.status!=="approved") throw new Error("visa: candidate change_control.status must be approved");
+  if(candidate.change_control?.status!=="approved"){
+    console.log(`- skipped visa: candidate status is ${candidate.change_control?.status||"missing"}`);
+    return;
+  }
   write("data/live/visa-uk.json",candidate);
+  promoted++;
   console.log("✓ promoted visa ruleset");
 }
+
 for(const scope of requested){
   if(scope==="visa") promoteVisa(); else promoteFeed(scope);
 }
+console.log(promoted?`✓ ${promoted} scope(s) promoted`:"- no approved candidate changes to promote");
