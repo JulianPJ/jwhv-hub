@@ -16,7 +16,10 @@
     "IT": "visa-it.json",
     "ES": "visa-es.json",
     "PT": "visa-pt.json",
-    "SE": "visa-se.json"
+    "SE": "visa-se.json",
+    "FI": "visa-fi.json",
+    "AT": "visa-at.json",
+    "PL": "visa-pl.json"
   },
   "partner_countries": [
     {
@@ -101,7 +104,7 @@
       "code": "PL",
       "name": "Poland",
       "region": "Europe",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "SK",
@@ -113,7 +116,7 @@
       "code": "AT",
       "name": "Austria",
       "region": "Europe",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "HU",
@@ -185,7 +188,7 @@
       "code": "FI",
       "name": "Finland",
       "region": "Europe",
-      "detailed_planner": false
+      "detailed_planner": true
     },
     {
       "code": "LV",
@@ -377,6 +380,6 @@
   "change_control": {
     "status": "approved",
     "reviewed_at": "2026-10-01",
-    "review_note": "Detailed planners now enabled for 12 markets, adding Spain, Portugal and Sweden with current official Japanese diplomatic sources and jurisdiction-specific intake status support."
+    "review_note": "Detailed planners now enabled for 15 markets, adding Finland, Austria and Poland using current official Japanese diplomatic sources."
   }
 }
