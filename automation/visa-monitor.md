@@ -12,7 +12,7 @@ Your assigned files are:
 
 Goal: detect material changes to Japan Working Holiday eligibility and country-specific application rules without writing directly to live data.
 
-Current detailed rulesets are discovered from `data/live/visa-markets.json` rather than a hard-coded list. As of 2026-10-01 the registry includes detailed planners for the United Kingdom, Australia, Germany, Canada, New Zealand and France.
+Current detailed rulesets are discovered from `data/live/visa-markets.json` rather than a hard-coded list. Always read the registry at run time; do not maintain a separate country list in this contract.
 
 Source rules:
 - Use only approved `visa_sources` in `data/sources.json`.
