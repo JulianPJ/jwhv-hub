@@ -403,10 +403,11 @@ async function initApplication(){
   }
 
   eligibilityForm.addEventListener("input",evaluateEligibility);
-  for(const id of specialIds) $("#"+id)?.addEventListener("input",evaluateEligibility);
+  for(const id of specialIds.filter(id=>id!=="jurisdiction-area")) $("#"+id)?.addEventListener("input",evaluateEligibility);
   area.addEventListener("input",()=>{
     syncFundsUI();
     renderApplicationStatus();
+    evaluateEligibility();
   });
   syncFundsUI();
   renderApplicationStatus();
