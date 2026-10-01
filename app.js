@@ -305,10 +305,31 @@ async function initApplication(){
     const route=currentRouteOption();
     return route?.funds_rule?{...visa.funds_rule,...route.funds_rule}:visa.funds_rule;
   }
+  function fundsOptions(rule){
+    if(Array.isArray(rule.ticket_options)&&rule.ticket_options.length) return rule.ticket_options;
+    return [
+      {value:"yes",label:"Yes — return/onward ticket evidence",minimum:rule.with_return_ticket_minimum},
+      {value:"no",label:"No — no return/onward ticket evidence",minimum:rule.no_ticket_minimum,note:rule.no_ticket_note}
+    ];
+  }
   function syncFundsUI(){
     const rule=currentFundsRule();
+    const ticket=$("#return-ticket");
+    const current=ticket.value||eligibilitySaved["return-ticket"]||"";
     $("#funds-label").textContent=rule.input_label||visa.funds_rule.input_label||("Funds shown in your bank statements ("+(visa.currency_symbol||rule.currency||visa.funds_rule.currency)+")");
     $("#bank-funds").placeholder=String(rule.no_ticket_minimum||rule.with_return_ticket_minimum||"");
+    $("#ticket-label").textContent=rule.ticket_label||"Flight / ticket evidence";
+    ticket.innerHTML='<option value="">Choose…</option>'+fundsOptions(rule).map(option=>'<option value="'+esc(option.value)+'">'+esc(option.label)+'</option>').join("");
+    if([...ticket.options].some(option=>option.value===current)) ticket.value=current;
+  }
+  function renderApplicationStatus(){
+    const status=currentRouteOption()?.application_status||visa.application_status;
+    if(status){
+      const noticeClass=status.status==="open"?"route-status open":"route-status warning";
+      routeNotice.innerHTML='<div class="'+noticeClass+'"><strong>'+esc(status.label)+'</strong><p>'+esc(status.detail||"")+'</p></div>';
+    }else{
+      routeNotice.innerHTML="";
+    }
   }
 
   function renderMission(){
@@ -336,22 +357,18 @@ async function initApplication(){
     const ticket=$("#return-ticket").value;
     const fundsRule=currentFundsRule();
     const symbol=fundsRule.currency_symbol||(fundsRule.currency==="GBP"?"£":(fundsRule.currency||visa.funds_rule.currency)+" ");
+    const ticketOptions=fundsOptions(fundsRule);
+    const selectedTicket=ticketOptions.find(option=>option.value===ticket);
     if(fundsRaw==="") pending.push("Proof-of-funds amount");
-    else{
+    if(ticket==="") pending.push("Flight / ticket evidence");
+    if(fundsRaw!==""&&ticket!==""){
       const funds=Number(fundsRaw);
-      const withTicket=fundsRule.with_return_ticket_minimum;
-      const withoutTicket=fundsRule.no_ticket_minimum;
-      if(ticket==="") pending.push("Return/onward ticket evidence");
-      else if(ticket==="yes"&&Number.isFinite(withTicket)&&funds<withTicket){
-        issues.push("The entered funds are below the current baseline of "+symbol+withTicket+" when return/onward-ticket evidence is provided.");
-      }else if(ticket==="no"){
-        if(Number.isFinite(withoutTicket)&&funds<withoutTicket){
-          issues.push("The entered funds are below the current baseline of "+symbol+withoutTicket+" without return/onward-ticket evidence.");
-        }else if(!Number.isFinite(withoutTicket)){
-          if(Number.isFinite(withTicket)&&funds<withTicket) issues.push("The entered funds are below the current baseline of "+symbol+withTicket+".");
-        }
-      }
-      if(!Number.isFinite(withTicket)&&!Number.isFinite(withoutTicket)&&fundsRule.guidance_note){
+      const minimum=selectedTicket?.minimum;
+      if(Number.isFinite(minimum)&&funds<minimum){
+        issues.push("The entered funds are below the current baseline of "+symbol+minimum+" for the selected flight/ticket evidence.");
+      }else if(!Number.isFinite(minimum)&&selectedTicket?.guidance_note){
+        pending.push(selectedTicket.guidance_note);
+      }else if(!Number.isFinite(minimum)&&fundsRule.guidance_note){
         pending.push(fundsRule.guidance_note);
       }
     }
@@ -387,8 +404,12 @@ async function initApplication(){
 
   eligibilityForm.addEventListener("input",evaluateEligibility);
   for(const id of specialIds) $("#"+id)?.addEventListener("input",evaluateEligibility);
-  area.addEventListener("input",syncFundsUI);
+  area.addEventListener("input",()=>{
+    syncFundsUI();
+    renderApplicationStatus();
+  });
   syncFundsUI();
+  renderApplicationStatus();
   evaluateEligibility();
 
   const progressKey=VISA_PROGRESS_KEY+":"+selected;
