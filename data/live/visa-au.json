@@ -137,7 +137,8 @@
     "bank_statement_months": 3,
     "source_ids": [
       "au-embassy-working-holiday"
-    ]
+    ],
+    "input_label": "Funds shown in your Australian bank statements (A$)"
   },
   "participation_rule": {
     "max_total_participations": 1,
@@ -155,6 +156,23 @@
     "source_ids": [
       "mofa-working-holiday",
       "au-embassy-working-holiday"
+    ],
+    "ui_label": "Australian residence",
+    "ui_help": "Australian Working Holiday applicants must currently live in Australia and should follow the Japanese mission responsible for their residence.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I currently live in Australia",
+        "mission_label": "Japanese Embassy/Consulate responsible for your Australian residence",
+        "mission_detail": "Working Holiday applicants must apply in Australia. Use the Japanese diplomatic mission responsible for where you live and follow that mission's current lodgement instructions."
+      },
+      {
+        "value": "outside_country",
+        "label": "I currently live outside Australia",
+        "mission_label": "Australian application route may not apply",
+        "mission_detail": "Australian Working Holiday applicants must currently live in Australia and apply through the appropriate Japanese mission there.",
+        "issue": "The Australian Working Holiday route requires the applicant to be currently living in Australia."
+      }
     ]
   },
   "document_checklist": [
