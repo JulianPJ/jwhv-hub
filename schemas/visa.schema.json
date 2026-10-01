@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "JWHV visa ruleset",
+  "type": "object",
+  "required": [
+    "market",
+    "destination",
+    "visa_type",
+    "verified_at",
+    "summary_facts",
+    "preparation_checklist",
+    "official_sources"
+  ],
+  "properties": {
+    "market": {
+      "type": "string"
+    },
+    "destination": {
+      "type": "string"
+    },
+    "visa_type": {
+      "const": "working_holiday"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "summary_facts": {
+      "type": "array"
+    },
+    "preparation_checklist": {
+      "type": "array"
+    },
+    "official_sources": {
+      "type": "array",
+      "minItems": 1
+    }
+  }
+}
