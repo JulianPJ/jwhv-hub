@@ -87,6 +87,116 @@
       "allowed_for": [
         "visa"
       ]
+    },
+    {
+      "id": "ca-embassy-working-holiday",
+      "name": "Embassy of Japan in Canada — Working Holiday Visa for Canadian Citizens",
+      "url": "https://www.ca.emb-japan.go.jp/itpr_en/working_holiday_visa.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "ca-ottawa-working-holiday",
+      "name": "Embassy of Japan in Canada — Ottawa Working Holiday application",
+      "url": "https://www.ca.emb-japan.go.jp/itpr_en/working_holiday_visa_Ottawa.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "ca-toronto-working-holiday",
+      "name": "Consulate-General of Japan in Toronto — Working Holiday Visa",
+      "url": "https://www.toronto.ca.emb-japan.go.jp/itpr_en/b_000044.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "ca-vancouver-working-holiday",
+      "name": "Consulate-General of Japan in Vancouver — Working Holiday Visa",
+      "url": "https://www.vancouver.ca.emb-japan.go.jp/itpr_en/working_holiday_en.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "nz-embassy-working-holiday",
+      "name": "Embassy of Japan in New Zealand — Working Holiday Visa",
+      "url": "https://www.nz.emb-japan.go.jp/itpr_en/working_hoiday_visa.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "nz-auckland-visa",
+      "name": "Consulate-General of Japan in Auckland — Visa applications",
+      "url": "https://www.auckland.nz.emb-japan.go.jp/itpr_en/visa.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "fr-embassy-working-holiday",
+      "name": "Embassy of Japan in France — Working Holiday",
+      "url": "https://www.fr.emb-japan.go.jp/itpr_fr/v0002b.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "fr-strasbourg-visa",
+      "name": "Consulate-General of Japan in Strasbourg — Visa information",
+      "url": "https://www.strasbourg.fr.emb-japan.go.jp/itpr_fr/b_000003.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "fr-lyon-visa",
+      "name": "Consular Office of Japan in Lyon — Visa information",
+      "url": "https://www.lyon.fr.emb-japan.go.jp/itpr_fr/info_visa.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
+    },
+    {
+      "id": "fr-marseille-visa",
+      "name": "Consulate-General of Japan in Marseille — Visa information",
+      "url": "https://www.marseille.fr.emb-japan.go.jp/itpr_fr/infovisa.html",
+      "type": "official",
+      "status": "approved",
+      "access_method": "public_web",
+      "allowed_for": [
+        "visa"
+      ]
     }
   ],
   "job_sources": [
