@@ -893,3 +893,49 @@ input::placeholder,textarea::placeholder{color:#667169}
   .shortlist-controls .button{grid-column:1/-1}
   .missing-item{align-items:flex-start;flex-direction:column}
 }
+
+.shortlist-summary{
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr))
+}
+.primary-choice-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:27px;
+  padding:4px 7px;
+  border:1px solid var(--line-strong);
+  border-radius:7px;
+  background:transparent;
+  color:var(--muted);
+  font-size:.68rem;
+  font-weight:800;
+  cursor:pointer
+}
+.primary-choice-button:hover{
+  color:var(--ink);
+  background:var(--surface-2)
+}
+.primary-choice-button.active{
+  color:#f4cbc5;
+  background:var(--accent-soft);
+  border-color:#704039
+}
+.primary-listing{
+  border-color:#5a3733!important;
+  box-shadow:inset 3px 0 0 var(--accent)
+}
+.plan-option-card.primary-option{
+  border-color:#5a3733;
+  background:linear-gradient(180deg,var(--surface-2),var(--surface))
+}
+.plan-option-card.primary-option>span{
+  color:#e79a90
+}
+.plan-option-card .listing-meta{margin-top:8px}
+.plan-option-card .card-link{
+  display:inline-block;
+  margin-top:9px
+}
+@media(max-width:650px){
+  .primary-choice-button{width:auto}
+}

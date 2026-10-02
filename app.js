@@ -17,6 +17,7 @@ const VISA_MARKET_KEY="jwhv-hub:visa-market:v1";
 const LIST_DENSITY_KEY="jwhv-hub:list-density:v1";
 const LIST_PAGE_SIZE_KEY="jwhv-hub:list-page-size:v1";
 const SHORTLIST_VIEW_KEY="jwhv-hub:shortlist-view:v1";
+const PRIMARY_CHOICES_KEY="jwhv-hub:primary-choices:v1";
 function getVisaMarket(){return readLocal(VISA_MARKET_KEY,{market:"GB"}).market||"GB"}
 function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
 function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
@@ -41,13 +42,31 @@ function getShortlist(){
     housing:Array.isArray(value.housing)?value.housing:[]
   };
 }
+function getPrimaryChoices(){
+  const value=readLocal(PRIMARY_CHOICES_KEY,{jobs:"",housing:""});
+  return {jobs:String(value.jobs||""),housing:String(value.housing||"")};
+}
+function togglePrimaryChoice(type,id){
+  const state=getPrimaryChoices();
+  state[type]=state[type]===id?"":id;
+  writeLocal(PRIMARY_CHOICES_KEY,state);
+  return state[type];
+}
 function isSaved(type,id){return getShortlist()[type]?.includes(id)}
 function toggleSaved(type,id){
   const state=getShortlist();
   const set=new Set(state[type]||[]);
-  if(set.has(id)) set.delete(id); else set.add(id);
+  const wasSaved=set.has(id);
+  if(wasSaved) set.delete(id); else set.add(id);
   state[type]=[...set];
   writeLocal(SHORTLIST_KEY,state);
+  if(wasSaved){
+    const primary=getPrimaryChoices();
+    if(primary[type]===id){
+      primary[type]="";
+      writeLocal(PRIMARY_CHOICES_KEY,primary);
+    }
+  }
   return set.has(id);
 }
 function saveButton(type,id){
@@ -656,8 +675,13 @@ async function initPlan(){
   const marketName=marketEntry?.name||market;
   const plan=getMovePlan();
   const shortlist=getShortlist();
+  const primary=getPrimaryChoices();
   const savedJobs=jobsFeed.items.filter(item=>shortlist.jobs.includes(item.id));
   const savedHousing=housingFeed.items.filter(item=>shortlist.housing.includes(item.id));
+  const primaryJob=savedJobs.find(item=>item.id===primary.jobs)||null;
+  const primaryHousing=savedHousing.find(item=>item.id===primary.housing)||null;
+  const primaryJobMissing=Boolean(primary.jobs&&shortlist.jobs.includes(primary.jobs)&&!primaryJob);
+  const primaryHousingMissing=Boolean(primary.housing&&shortlist.housing.includes(primary.housing)&&!primaryHousing);
   const visaState=visa?visaProgressSummary(visa,market):{complete:0,total:0,pct:0};
   const arrival=$("#target-arrival");
   arrival.value=plan.targetArrival||"";
@@ -683,8 +707,8 @@ async function initPlan(){
       :["Visa route","Status only",marketName+" does not currently have a detailed JWHV Hub planner"];
     $("#plan-metrics").innerHTML=[
       visaMetric,
-      ["Saved jobs",savedJobs.length,savedJobs.length?"Options worth revisiting":"Save roles from the Jobs page"],
-      ["Saved housing",savedHousing.length,savedHousing.length?"Options worth revisiting":"Save places from the Housing page"]
+      ["Saved jobs",savedJobs.length,primaryJob?("Primary: "+primaryJob.title):(primaryJobMissing?"Primary choice needs attention":savedJobs.length?"Choose a primary role":"Save roles from the Jobs page")],
+      ["Saved housing",savedHousing.length,primaryHousing?("Primary: "+primaryHousing.name):(primaryHousingMissing?"Primary choice needs attention":savedHousing.length?"Choose a primary property":"Save places from the Housing page")]
     ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
 
     const actions=[];
@@ -692,8 +716,12 @@ async function initPlan(){
     if(visa&&visaState.pct<100) actions.push({title:"Continue visa preparation",body:visaState.complete+" of "+visaState.total+" local checklist items are complete for "+marketName+".",href:"application.html"});
     if(!visa) actions.push({title:"Review your passport-market guidance",body:"JWHV Hub has status information for "+marketName+" but not a detailed country-specific checklist. Do not use another country's visa rules.",href:"application.html"});
     if(!savedJobs.length) actions.push({title:"Save some job options",body:"Use direct-employer listings to build a shortlist before comparing dates and locations.",href:"jobs.html"});
+    else if(primaryJobMissing) actions.push({title:"Review your primary job",body:"Your pinned job is no longer in the active feed. Check the Shortlist before relying on it.",href:"shortlist.html"});
+    else if(!primaryJob) actions.push({title:"Choose a primary job",body:"Pin the role you are most likely to pursue so My Plan can keep it visible.",href:"shortlist.html"});
     if(!savedHousing.length) actions.push({title:"Save some housing options",body:"Add furnished monthly options so you can compare cost and availability.",href:"housing.html"});
-    if(savedJobs.length&&savedHousing.length) actions.push({title:"Review your shortlist together",body:"Compare start dates, locations, rent and staff-housing options before narrowing down.",href:"shortlist.html"});
+    else if(primaryHousingMissing) actions.push({title:"Review your primary housing",body:"Your pinned housing option is no longer in the active feed. Check the Shortlist before relying on it.",href:"shortlist.html"});
+    else if(!primaryHousing) actions.push({title:"Choose primary housing",body:"Pin the property you are most likely to use so My Plan can keep it visible.",href:"shortlist.html"});
+    if(savedJobs.length&&savedHousing.length&&primaryJob&&primaryHousing) actions.push({title:"Re-check your primary choices",body:"Open the original employer and provider pages before committing to travel or money.",href:"shortlist.html"});
     if(visa&&targetDate&&daysBetween(today,targetDate)<=45&&visaState.pct<100) actions.unshift({title:"Prioritise unfinished application preparation",body:"Your target arrival is relatively close and your local checklist is not complete. Check the official application instructions before relying on this date.",href:"application.html"});
     if(!actions.length) actions.push({title:"Re-check your sources",body:"Your local plan is well populated. Re-open the official visa guidance and each saved employer/provider page before committing.",href:"shortlist.html"});
 
@@ -719,11 +747,17 @@ async function initPlan(){
     const jobMax=savedJobs.map(item=>item.salary_max_jpy).filter(Number.isFinite);
     const rents=savedHousing.map(item=>item.monthly_rent_jpy).filter(Number.isFinite);
     const optionCards=[];
-    if(savedJobs.length){
-      optionCards.push('<article class="plan-option-card"><span>Saved work</span><strong>'+savedJobs.length+' role'+(savedJobs.length===1?"":"s")+'</strong><p>'+(jobMin.length&&jobMax.length?esc(formatJPY(Math.min(...jobMin))+"–"+formatJPY(Math.max(...jobMax))+" / hour across saved roles"):"Pay varies by source")+'</p></article>');
+    if(primaryJob){
+      const jobDetail=[primaryJob.employer,[primaryJob.city,primaryJob.prefecture].filter(Boolean).join(", "),primaryJob.salary_display].filter(Boolean).join(" · ");
+      optionCards.push('<article class="plan-option-card primary-option"><span>Primary job</span><strong>'+esc(primaryJob.title)+'</strong><p>'+esc(jobDetail)+'</p><div class="listing-meta">'+tag(primaryJob._feedStatus==="live"?"Verified live":"Pending review")+'</div><a class="card-link" href="'+esc(primaryJob.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></article>');
+    }else if(savedJobs.length){
+      optionCards.push('<article class="plan-option-card"><span>Saved work</span><strong>'+savedJobs.length+' role'+(savedJobs.length===1?"":"s")+'</strong><p>'+(jobMin.length&&jobMax.length?esc(formatJPY(Math.min(...jobMin))+"–"+formatJPY(Math.max(...jobMax))+" / hour across saved roles"):"Pay varies by source")+'</p><a class="card-link" href="shortlist.html">Choose primary job →</a></article>');
     }
-    if(savedHousing.length){
-      optionCards.push('<article class="plan-option-card"><span>Saved housing</span><strong>'+savedHousing.length+' option'+(savedHousing.length===1?"":"s")+'</strong><p>'+(rents.length?esc("Lowest saved monthly total: "+formatJPY(Math.min(...rents))):"Check provider pages for current rent")+'</p></article>');
+    if(primaryHousing){
+      const housingDetail=[[primaryHousing.city,primaryHousing.prefecture,primaryHousing.nearest_station].filter(Boolean).join(" · "),primaryHousing.monthly_rent_display,primaryHousing.available_from?("Available "+primaryHousing.available_from):""].filter(Boolean).join(" · ");
+      optionCards.push('<article class="plan-option-card primary-option"><span>Primary housing</span><strong>'+esc(primaryHousing.name)+'</strong><p>'+esc(housingDetail)+'</p><div class="listing-meta">'+tag(primaryHousing._feedStatus==="live"?"Verified live":"Pending review")+'</div><a class="card-link" href="'+esc(primaryHousing.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></article>');
+    }else if(savedHousing.length){
+      optionCards.push('<article class="plan-option-card"><span>Saved housing</span><strong>'+savedHousing.length+' option'+(savedHousing.length===1?"":"s")+'</strong><p>'+(rents.length?esc("Lowest saved monthly total: "+formatJPY(Math.min(...rents))):"Check provider pages for current rent")+'</p><a class="card-link" href="shortlist.html">Choose primary housing →</a></article>');
     }
     $("#plan-options").innerHTML=optionCards.length?optionCards.join(""):empty("No saved options yet","Save jobs and housing to build a snapshot here.");
   }
@@ -755,7 +789,9 @@ async function initPlan(){
       "Passport market: "+marketName,
       "Visa preparation: "+(visa?(visaState.pct+"% ("+visaState.complete+"/"+visaState.total+")"):"No detailed planner available"),
       "Saved jobs: "+savedJobs.length,
+      "Primary job: "+(primaryJob?(primaryJob.title+" — "+primaryJob.employer):(primaryJobMissing?"Saved primary is no longer in the active feed":"(not selected)")),
       "Saved housing: "+savedHousing.length,
+      "Primary housing: "+(primaryHousing?primaryHousing.name:(primaryHousingMissing?"Saved primary is no longer in the active feed":"(not selected)")),
       "",
       "Planning milestones",
       "-------------------"
@@ -793,6 +829,7 @@ async function initShortlist(){
     loadVisibleFeed("housing")
   ]);
   const state=getShortlist();
+  const primary=getPrimaryChoices();
   const activeJobs=new Map(jobsFeed.items.map(item=>[item.id,item]));
   const activeHousing=new Map(housingFeed.items.map(item=>[item.id,item]));
 
@@ -811,9 +848,11 @@ async function initShortlist(){
   ];
   const verified=jobs.filter(item=>item._feedStatus==="live").length+housing.filter(item=>item._feedStatus==="live").length;
 
+  const primaryCount=[primary.jobs,primary.housing].filter(Boolean).length;
   $("#shortlist-summary").innerHTML=[
     ["Saved jobs",state.jobs.length,jobs.length+" currently active"],
     ["Saved housing",state.housing.length,housing.length+" currently active"],
+    ["Primary choices",primaryCount+" / 2",primaryCount===2?"Job and housing selected":"Choose a lead job and housing option"],
     ["Verified live",verified,"Across active saved options"],
     ["Needs attention",missing.length,missing.length?"Saved IDs outside the active feed":"No missing saved items"]
   ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
@@ -861,7 +900,8 @@ async function initShortlist(){
         item.start_date?tag("Starts "+item.start_date):"",
         accommodation&&accommodation!=="not_stated"?tag(accommodation==="provided"?"Housing provided":"Housing "+accommodation):""
       ].join("");
-      return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
+      const isPrimary=primary.jobs===item.id;
+      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+details+'</div></div><div class="listing-actions"><button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="jobs" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
     }).join(""):empty(jobs.length?"No saved jobs match this status":"No active saved jobs",jobs.length?"Change the status filter to see the other saved roles.":"Save jobs from the Jobs page and they will appear here.");
   }
 
@@ -879,7 +919,8 @@ async function initShortlist(){
         item.available_from?tag("Available "+item.available_from):"",
         item.furnished===true?tag("Furnished"):""
       ].join("");
-      return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
+      const isPrimary=primary.housing===item.id;
+      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+details+'</div></div><div class="listing-actions"><button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="housing" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
     }).join(""):empty(housing.length?"No saved housing matches this status":"No active saved housing",housing.length?"Change the status filter to see the other saved properties.":"Save housing from the Housing page and it will appear here.");
   }
 
@@ -893,7 +934,8 @@ async function initShortlist(){
     const detail=record
       ?("Repository record found in "+entry.record._rawFeed+" data · current status: "+status)
       :"Saved ID is not present in the current live or candidate feed.";
-    return '<article class="missing-item"><div><span class="tag">'+esc(entry.type==="jobs"?"Job":"Housing")+'</span><strong>'+esc(name||entry.id)+'</strong><p>'+esc(detail)+'</p><code>'+esc(entry.id)+'</code></div><button class="button secondary compact" type="button" data-remove-type="'+esc(entry.type)+'" data-remove-id="'+esc(entry.id)+'">Remove saved ID</button></article>';
+    const isPrimary=primary[entry.type]===entry.id;
+    return '<article class="missing-item'+(isPrimary?" primary-listing":"")+'"><div><span class="tag">'+esc(entry.type==="jobs"?"Job":"Housing")+'</span>'+(isPrimary?tag("Primary choice"):"")+'<strong>'+esc(name||entry.id)+'</strong><p>'+esc(detail)+'</p><code>'+esc(entry.id)+'</code></div><button class="button secondary compact" type="button" data-remove-type="'+esc(entry.type)+'" data-remove-id="'+esc(entry.id)+'">Remove saved ID</button></article>';
   }).join("");
 
   const renderAll=()=>{
@@ -912,6 +954,12 @@ async function initShortlist(){
   housingSort.oninput=renderAll;
 
   document.querySelector("main").onclick=event=>{
+    const primaryButton=event.target.closest("[data-primary-type]");
+    if(primaryButton){
+      togglePrimaryChoice(primaryButton.dataset.primaryType,primaryButton.dataset.primaryId);
+      location.reload();
+      return;
+    }
     const remove=event.target.closest("[data-remove-type]");
     if(remove){
       toggleSaved(remove.dataset.removeType,remove.dataset.removeId);
@@ -925,6 +973,10 @@ async function initShortlist(){
       next.jobs=next.jobs.filter(id=>!missingJobs.has(id));
       next.housing=next.housing.filter(id=>!missingHousing.has(id));
       writeLocal(SHORTLIST_KEY,next);
+      const primaryState=getPrimaryChoices();
+      if(missingJobs.has(primaryState.jobs)) primaryState.jobs="";
+      if(missingHousing.has(primaryState.housing)) primaryState.housing="";
+      writeLocal(PRIMARY_CHOICES_KEY,primaryState);
       location.reload();
     }
   };
