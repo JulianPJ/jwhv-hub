@@ -9,8 +9,41 @@
 <section class="page-intro"><p class="eyebrow">Your shortlist</p><h1>Keep the options worth revisiting.</h1>
 <p>Saved jobs and housing stay only in this browser. No account, email address or server-side profile is required.</p></section>
 <section class="shortlist-summary" id="shortlist-summary"></section>
-<section class="section shortlist-section"><div class="section-heading"><p class="eyebrow">Work</p><h2>Saved jobs</h2></div><div id="shortlist-jobs" class="listing-grid"></div></section>
-<section class="section shortlist-section"><div class="section-heading"><p class="eyebrow">Housing</p><h2>Saved housing</h2></div><div id="shortlist-housing" class="listing-grid"></div></section>
+
+<section class="section shortlist-section">
+  <div class="section-heading shortlist-heading">
+    <div><p class="eyebrow">Work</p><h2>Saved jobs</h2></div>
+    <div class="shortlist-controls">
+      <label>Status<select id="shortlist-job-status"><option value="">Live + pending</option><option value="live">Verified live</option><option value="pending">Pending review</option></select></label>
+      <label>Sort<select id="shortlist-job-sort"><option value="start">Start date</option><option value="pay_desc">Pay: high to low</option><option value="pay_asc">Pay: low to high</option><option value="region">Region</option><option value="title">Role</option></select></label>
+      <a class="button secondary compact" href="jobs.html">Browse jobs</a>
+    </div>
+  </div>
+  <div id="shortlist-jobs-meta" class="results-meta"></div>
+  <div id="shortlist-jobs" class="listing-grid dense"></div>
+</section>
+
+<section class="section shortlist-section">
+  <div class="section-heading shortlist-heading">
+    <div><p class="eyebrow">Housing</p><h2>Saved housing</h2></div>
+    <div class="shortlist-controls">
+      <label>Status<select id="shortlist-housing-status"><option value="">Live + pending</option><option value="live">Verified live</option><option value="pending">Pending review</option></select></label>
+      <label>Sort<select id="shortlist-housing-sort"><option value="available">Available soonest</option><option value="rent_asc">Cost: low to high</option><option value="rent_desc">Cost: high to low</option><option value="region">Region</option><option value="name">Property</option></select></label>
+      <a class="button secondary compact" href="housing.html">Browse housing</a>
+    </div>
+  </div>
+  <div id="shortlist-housing-meta" class="results-meta"></div>
+  <div id="shortlist-housing" class="listing-grid dense"></div>
+</section>
+
+<section id="shortlist-missing-section" class="section shortlist-section" hidden>
+  <div class="section-heading shortlist-heading">
+    <div><p class="eyebrow">Needs attention</p><h2>No longer in the active feed</h2></div>
+    <button id="shortlist-clear-missing" class="button secondary compact" type="button">Remove all missing</button>
+  </div>
+  <p class="muted shortlist-help">These saved IDs are no longer present in the current active live/pending feed. That does not prove the original listing expired; the source may have changed or the record may simply be temporarily unavailable.</p>
+  <div id="shortlist-missing" class="missing-list"></div>
+</section>
 <section class="notice"><strong>Stored locally</strong><p>Clearing this browser's site data will remove your shortlist. JWHV Hub does not upload or sync these saved items.</p></section>
 </main>
 <footer><p>Always re-check the original employer or provider page before acting on a saved listing.</p></footer>
