@@ -947,7 +947,8 @@ async function initShortlist(){
         accommodation&&accommodation!=="not_stated"?tag(accommodation==="provided"?"Housing provided":"Housing "+accommodation):""
       ].join("");
       const isPrimary=primary.jobs===item.id;
-      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+details+'</div></div><div class="listing-actions"><button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="jobs" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
+      const stage=listingStage("jobs",item.id);
+      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+tag("Stage: "+listingStageLabel("jobs",stage))+details+'</div></div><div class="listing-actions">'+listingStageSelect("jobs",item.id)+'<button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="jobs" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
     }).join(""):empty(jobs.length?"No saved jobs match this status":"No active saved jobs",jobs.length?"Change the status filter to see the other saved roles.":"Save jobs from the Jobs page and they will appear here.");
   }
 
@@ -966,7 +967,8 @@ async function initShortlist(){
         item.furnished===true?tag("Furnished"):""
       ].join("");
       const isPrimary=primary.housing===item.id;
-      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+details+'</div></div><div class="listing-actions"><button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="housing" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
+      const stage=listingStage("housing",item.id);
+      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+tag("Stage: "+listingStageLabel("housing",stage))+details+'</div></div><div class="listing-actions">'+listingStageSelect("housing",item.id)+'<button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="housing" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
     }).join(""):empty(housing.length?"No saved housing matches this status":"No active saved housing",housing.length?"Change the status filter to see the other saved properties.":"Save housing from the Housing page and it will appear here.");
   }
 
@@ -999,6 +1001,13 @@ async function initShortlist(){
   housingStatus.oninput=renderAll;
   housingSort.oninput=renderAll;
 
+  document.querySelector("main").onchange=event=>{
+    const stageControl=event.target.closest("[data-stage-type]");
+    if(!stageControl) return;
+    setListingStage(stageControl.dataset.stageType,stageControl.dataset.stageId,stageControl.value);
+    renderAll();
+  };
+
   document.querySelector("main").onclick=event=>{
     const primaryButton=event.target.closest("[data-primary-type]");
     if(primaryButton){
@@ -1023,6 +1032,10 @@ async function initShortlist(){
       if(missingJobs.has(primaryState.jobs)) primaryState.jobs="";
       if(missingHousing.has(primaryState.housing)) primaryState.housing="";
       writeLocal(PRIMARY_CHOICES_KEY,primaryState);
+      const progressState=getListingProgress();
+      for(const id of missingJobs) delete progressState.jobs[id];
+      for(const id of missingHousing) delete progressState.housing[id];
+      writeLocal(LISTING_PROGRESS_KEY,progressState);
       location.reload();
     }
   };
