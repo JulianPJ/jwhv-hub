@@ -289,3 +289,17 @@ Jobs and Housing now support two presentation densities:
 - **Cards** — the fuller readable card view with all supporting notes visible.
 
 The preference is stored locally per listing type and does not alter shareable filter URLs or shortlist data.
+
+
+## Phase 17 listing pagination
+
+Jobs and Housing now paginate large client-side result sets rather than rendering every visible record at once.
+
+- default page size is 25 records;
+- users can switch to 50 or All;
+- page-size preference is stored locally per listing type;
+- filtering and sorting reset to page 1;
+- save/unsave actions preserve the current page;
+- previous/next controls show the current visible range.
+
+Pagination is presentation-only and does not alter listing evidence, feed ordering rules, filter URLs or shortlist state.
