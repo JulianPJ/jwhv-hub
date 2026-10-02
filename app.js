@@ -18,6 +18,7 @@ const LIST_DENSITY_KEY="jwhv-hub:list-density:v1";
 const LIST_PAGE_SIZE_KEY="jwhv-hub:list-page-size:v1";
 const SHORTLIST_VIEW_KEY="jwhv-hub:shortlist-view:v1";
 const PRIMARY_CHOICES_KEY="jwhv-hub:primary-choices:v1";
+const LISTING_PROGRESS_KEY="jwhv-hub:listing-progress:v1";
 function getVisaMarket(){return readLocal(VISA_MARKET_KEY,{market:"GB"}).market||"GB"}
 function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
 function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
@@ -52,6 +53,48 @@ function togglePrimaryChoice(type,id){
   writeLocal(PRIMARY_CHOICES_KEY,state);
   return state[type];
 }
+const LISTING_STAGES={
+  jobs:[
+    {value:"saved",label:"Saved"},
+    {value:"planning",label:"Planning to apply"},
+    {value:"applied",label:"Applied"},
+    {value:"interview",label:"Interview"},
+    {value:"offer",label:"Offer"},
+    {value:"not_pursuing",label:"Not pursuing"}
+  ],
+  housing:[
+    {value:"saved",label:"Saved"},
+    {value:"planning",label:"Planning to enquire"},
+    {value:"enquired",label:"Enquired"},
+    {value:"applied",label:"Application sent"},
+    {value:"booked",label:"Booked"},
+    {value:"not_pursuing",label:"Not pursuing"}
+  ]
+};
+function getListingProgress(){
+  const state=readLocal(LISTING_PROGRESS_KEY,{jobs:{},housing:{}});
+  return {
+    jobs:state.jobs&&typeof state.jobs==="object"?state.jobs:{},
+    housing:state.housing&&typeof state.housing==="object"?state.housing:{}
+  };
+}
+function listingStage(type,id){
+  return getListingProgress()[type]?.[id]||"saved";
+}
+function listingStageLabel(type,value){
+  return LISTING_STAGES[type]?.find(stage=>stage.value===value)?.label||value||"Saved";
+}
+function setListingStage(type,id,value){
+  const allowed=new Set((LISTING_STAGES[type]||[]).map(stage=>stage.value));
+  const state=getListingProgress();
+  if(!allowed.has(value)||value==="saved") delete state[type][id];
+  else state[type][id]=value;
+  writeLocal(LISTING_PROGRESS_KEY,state);
+}
+function listingStageSelect(type,id){
+  const current=listingStage(type,id);
+  return '<label class="stage-control">Stage<select data-stage-type="'+esc(type)+'" data-stage-id="'+esc(id)+'">'+(LISTING_STAGES[type]||[]).map(stage=>'<option value="'+esc(stage.value)+'" '+(stage.value===current?"selected":"")+'>'+esc(stage.label)+'</option>').join("")+'</select></label>';
+}
 function isSaved(type,id){return getShortlist()[type]?.includes(id)}
 function toggleSaved(type,id){
   const state=getShortlist();
@@ -66,6 +109,9 @@ function toggleSaved(type,id){
       primary[type]="";
       writeLocal(PRIMARY_CHOICES_KEY,primary);
     }
+    const progress=getListingProgress();
+    delete progress[type][id];
+    writeLocal(LISTING_PROGRESS_KEY,progress);
   }
   return set.has(id);
 }
@@ -682,6 +728,8 @@ async function initPlan(){
   const primaryHousing=savedHousing.find(item=>item.id===primary.housing)||null;
   const primaryJobMissing=Boolean(primary.jobs&&shortlist.jobs.includes(primary.jobs)&&!primaryJob);
   const primaryHousingMissing=Boolean(primary.housing&&shortlist.housing.includes(primary.housing)&&!primaryHousing);
+  const primaryJobStage=primaryJob?listingStage("jobs",primaryJob.id):"";
+  const primaryHousingStage=primaryHousing?listingStage("housing",primaryHousing.id):"";
   const visaState=visa?visaProgressSummary(visa,market):{complete:0,total:0,pct:0};
   const arrival=$("#target-arrival");
   arrival.value=plan.targetArrival||"";
@@ -707,8 +755,8 @@ async function initPlan(){
       :["Visa route","Status only",marketName+" does not currently have a detailed JWHV Hub planner"];
     $("#plan-metrics").innerHTML=[
       visaMetric,
-      ["Saved jobs",savedJobs.length,primaryJob?("Primary: "+primaryJob.title):(primaryJobMissing?"Primary choice needs attention":savedJobs.length?"Choose a primary role":"Save roles from the Jobs page")],
-      ["Saved housing",savedHousing.length,primaryHousing?("Primary: "+primaryHousing.name):(primaryHousingMissing?"Primary choice needs attention":savedHousing.length?"Choose a primary property":"Save places from the Housing page")]
+      ["Saved jobs",savedJobs.length,primaryJob?("Primary: "+primaryJob.title+" · "+listingStageLabel("jobs",primaryJobStage)):(primaryJobMissing?"Primary choice needs attention":savedJobs.length?"Choose a primary role":"Save roles from the Jobs page")],
+      ["Saved housing",savedHousing.length,primaryHousing?("Primary: "+primaryHousing.name+" · "+listingStageLabel("housing",primaryHousingStage)):(primaryHousingMissing?"Primary choice needs attention":savedHousing.length?"Choose a primary property":"Save places from the Housing page")]
     ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
 
     const actions=[];
@@ -718,10 +766,20 @@ async function initPlan(){
     if(!savedJobs.length) actions.push({title:"Save some job options",body:"Use direct-employer listings to build a shortlist before comparing dates and locations.",href:"jobs.html"});
     else if(primaryJobMissing) actions.push({title:"Review your primary job",body:"Your pinned job is no longer in the active feed. Check the Shortlist before relying on it.",href:"shortlist.html"});
     else if(!primaryJob) actions.push({title:"Choose a primary job",body:"Pin the role you are most likely to pursue so My Plan can keep it visible.",href:"shortlist.html"});
+    else if(["saved","planning"].includes(primaryJobStage)) actions.push({title:"Apply to your primary job",body:"Your primary role is still at "+listingStageLabel("jobs",primaryJobStage).toLowerCase()+". Re-open the employer source and move the application forward.",href:"shortlist.html"});
+    else if(primaryJobStage==="applied") actions.push({title:"Track your job application",body:"Your primary role is marked Applied. Watch for an employer response and update the stage when it changes.",href:"shortlist.html"});
+    else if(primaryJobStage==="interview") actions.push({title:"Prepare for your interview",body:"Your primary role is at Interview stage. Re-check the role, employer and location before the conversation.",href:"shortlist.html"});
+    else if(primaryJobStage==="offer") actions.push({title:"Review your job offer carefully",body:"Your primary role is marked Offer. Confirm pay, dates, visa/work status and accommodation directly with the employer.",href:"shortlist.html"});
+    else if(primaryJobStage==="not_pursuing") actions.push({title:"Choose a new primary job",body:"Your current primary role is marked Not pursuing. Pin another saved job if you still need employment.",href:"shortlist.html"});
+
     if(!savedHousing.length) actions.push({title:"Save some housing options",body:"Add furnished monthly options so you can compare cost and availability.",href:"housing.html"});
     else if(primaryHousingMissing) actions.push({title:"Review your primary housing",body:"Your pinned housing option is no longer in the active feed. Check the Shortlist before relying on it.",href:"shortlist.html"});
     else if(!primaryHousing) actions.push({title:"Choose primary housing",body:"Pin the property you are most likely to use so My Plan can keep it visible.",href:"shortlist.html"});
-    if(savedJobs.length&&savedHousing.length&&primaryJob&&primaryHousing) actions.push({title:"Re-check your primary choices",body:"Open the original employer and provider pages before committing to travel or money.",href:"shortlist.html"});
+    else if(["saved","planning"].includes(primaryHousingStage)) actions.push({title:"Enquire about primary housing",body:"Your primary property is still at "+listingStageLabel("housing",primaryHousingStage).toLowerCase()+". Re-open the provider source and confirm availability/fees.",href:"shortlist.html"});
+    else if(primaryHousingStage==="enquired") actions.push({title:"Follow up on your housing enquiry",body:"Your primary property is marked Enquired. Confirm availability, total fees and next steps with the provider.",href:"shortlist.html"});
+    else if(primaryHousingStage==="applied") actions.push({title:"Track your housing application",body:"Your primary property is marked Application sent. Keep the provider response and payment conditions in view.",href:"shortlist.html"});
+    else if(primaryHousingStage==="booked") actions.push({title:"Re-confirm your booked housing",body:"Your primary property is marked Booked. Re-check arrival instructions, payments and cancellation terms before travel.",href:"shortlist.html"});
+    else if(primaryHousingStage==="not_pursuing") actions.push({title:"Choose new primary housing",body:"Your current primary property is marked Not pursuing. Pin another saved option if you still need accommodation.",href:"shortlist.html"});
     if(visa&&targetDate&&daysBetween(today,targetDate)<=45&&visaState.pct<100) actions.unshift({title:"Prioritise unfinished application preparation",body:"Your target arrival is relatively close and your local checklist is not complete. Check the official application instructions before relying on this date.",href:"application.html"});
     if(!actions.length) actions.push({title:"Re-check your sources",body:"Your local plan is well populated. Re-open the official visa guidance and each saved employer/provider page before committing.",href:"shortlist.html"});
 
@@ -749,13 +807,13 @@ async function initPlan(){
     const optionCards=[];
     if(primaryJob){
       const jobDetail=[primaryJob.employer,[primaryJob.city,primaryJob.prefecture].filter(Boolean).join(", "),primaryJob.salary_display].filter(Boolean).join(" · ");
-      optionCards.push('<article class="plan-option-card primary-option"><span>Primary job</span><strong>'+esc(primaryJob.title)+'</strong><p>'+esc(jobDetail)+'</p><div class="listing-meta">'+tag(primaryJob._feedStatus==="live"?"Verified live":"Pending review")+'</div><a class="card-link" href="'+esc(primaryJob.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></article>');
+      optionCards.push('<article class="plan-option-card primary-option"><span>Primary job</span><strong>'+esc(primaryJob.title)+'</strong><p>'+esc(jobDetail)+'</p><div class="listing-meta">'+tag("Stage: "+listingStageLabel("jobs",primaryJobStage))+tag(primaryJob._feedStatus==="live"?"Verified live":"Pending review")+'</div><a class="card-link" href="'+esc(primaryJob.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></article>');
     }else if(savedJobs.length){
       optionCards.push('<article class="plan-option-card"><span>Saved work</span><strong>'+savedJobs.length+' role'+(savedJobs.length===1?"":"s")+'</strong><p>'+(jobMin.length&&jobMax.length?esc(formatJPY(Math.min(...jobMin))+"–"+formatJPY(Math.max(...jobMax))+" / hour across saved roles"):"Pay varies by source")+'</p><a class="card-link" href="shortlist.html">Choose primary job →</a></article>');
     }
     if(primaryHousing){
       const housingDetail=[[primaryHousing.city,primaryHousing.prefecture,primaryHousing.nearest_station].filter(Boolean).join(" · "),primaryHousing.monthly_rent_display,primaryHousing.available_from?("Available "+primaryHousing.available_from):""].filter(Boolean).join(" · ");
-      optionCards.push('<article class="plan-option-card primary-option"><span>Primary housing</span><strong>'+esc(primaryHousing.name)+'</strong><p>'+esc(housingDetail)+'</p><div class="listing-meta">'+tag(primaryHousing._feedStatus==="live"?"Verified live":"Pending review")+'</div><a class="card-link" href="'+esc(primaryHousing.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></article>');
+      optionCards.push('<article class="plan-option-card primary-option"><span>Primary housing</span><strong>'+esc(primaryHousing.name)+'</strong><p>'+esc(housingDetail)+'</p><div class="listing-meta">'+tag("Stage: "+listingStageLabel("housing",primaryHousingStage))+tag(primaryHousing._feedStatus==="live"?"Verified live":"Pending review")+'</div><a class="card-link" href="'+esc(primaryHousing.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></article>');
     }else if(savedHousing.length){
       optionCards.push('<article class="plan-option-card"><span>Saved housing</span><strong>'+savedHousing.length+' option'+(savedHousing.length===1?"":"s")+'</strong><p>'+(rents.length?esc("Lowest saved monthly total: "+formatJPY(Math.min(...rents))):"Check provider pages for current rent")+'</p><a class="card-link" href="shortlist.html">Choose primary housing →</a></article>');
     }
@@ -790,8 +848,10 @@ async function initPlan(){
       "Visa preparation: "+(visa?(visaState.pct+"% ("+visaState.complete+"/"+visaState.total+")"):"No detailed planner available"),
       "Saved jobs: "+savedJobs.length,
       "Primary job: "+(primaryJob?(primaryJob.title+" — "+primaryJob.employer):(primaryJobMissing?"Saved primary is no longer in the active feed":"(not selected)")),
+      "Primary job stage: "+(primaryJob?listingStageLabel("jobs",primaryJobStage):"(n/a)"),
       "Saved housing: "+savedHousing.length,
       "Primary housing: "+(primaryHousing?primaryHousing.name:(primaryHousingMissing?"Saved primary is no longer in the active feed":"(not selected)")),
+      "Primary housing stage: "+(primaryHousing?listingStageLabel("housing",primaryHousingStage):"(n/a)"),
       "",
       "Planning milestones",
       "-------------------"
@@ -901,7 +961,8 @@ async function initShortlist(){
         accommodation&&accommodation!=="not_stated"?tag(accommodation==="provided"?"Housing provided":"Housing "+accommodation):""
       ].join("");
       const isPrimary=primary.jobs===item.id;
-      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+details+'</div></div><div class="listing-actions"><button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="jobs" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
+      const stage=listingStage("jobs",item.id);
+      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+tag("Stage: "+listingStageLabel("jobs",stage))+details+'</div></div><div class="listing-actions">'+listingStageSelect("jobs",item.id)+'<button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="jobs" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
     }).join(""):empty(jobs.length?"No saved jobs match this status":"No active saved jobs",jobs.length?"Change the status filter to see the other saved roles.":"Save jobs from the Jobs page and they will appear here.");
   }
 
@@ -920,7 +981,8 @@ async function initShortlist(){
         item.furnished===true?tag("Furnished"):""
       ].join("");
       const isPrimary=primary.housing===item.id;
-      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+details+'</div></div><div class="listing-actions"><button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="housing" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
+      const stage=listingStage("housing",item.id);
+      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+tag("Stage: "+listingStageLabel("housing",stage))+details+'</div></div><div class="listing-actions">'+listingStageSelect("housing",item.id)+'<button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="housing" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
     }).join(""):empty(housing.length?"No saved housing matches this status":"No active saved housing",housing.length?"Change the status filter to see the other saved properties.":"Save housing from the Housing page and it will appear here.");
   }
 
@@ -953,6 +1015,13 @@ async function initShortlist(){
   housingStatus.oninput=renderAll;
   housingSort.oninput=renderAll;
 
+  document.querySelector("main").onchange=event=>{
+    const stageControl=event.target.closest("[data-stage-type]");
+    if(!stageControl) return;
+    setListingStage(stageControl.dataset.stageType,stageControl.dataset.stageId,stageControl.value);
+    renderAll();
+  };
+
   document.querySelector("main").onclick=event=>{
     const primaryButton=event.target.closest("[data-primary-type]");
     if(primaryButton){
@@ -977,6 +1046,10 @@ async function initShortlist(){
       if(missingJobs.has(primaryState.jobs)) primaryState.jobs="";
       if(missingHousing.has(primaryState.housing)) primaryState.housing="";
       writeLocal(PRIMARY_CHOICES_KEY,primaryState);
+      const progressState=getListingProgress();
+      for(const id of missingJobs) delete progressState.jobs[id];
+      for(const id of missingHousing) delete progressState.housing[id];
+      writeLocal(LISTING_PROGRESS_KEY,progressState);
       location.reload();
     }
   };

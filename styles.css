@@ -939,3 +939,34 @@ input::placeholder,textarea::placeholder{color:#667169}
 @media(max-width:650px){
   .primary-choice-button{width:auto}
 }
+
+.stage-control{
+  display:grid;
+  gap:3px;
+  width:100%;
+  color:var(--muted);
+  font-size:.58rem;
+  font-weight:850;
+  letter-spacing:.04em;
+  text-transform:uppercase
+}
+.stage-control select{
+  width:100%;
+  min-width:118px;
+  height:28px;
+  margin:0;
+  padding:4px 24px 4px 7px;
+  border-radius:6px;
+  font-size:.67rem;
+  text-transform:none;
+  letter-spacing:0
+}
+.listing-grid.dense .stage-control select{
+  min-width:108px;
+  height:26px;
+  font-size:.64rem
+}
+@media(max-width:650px){
+  .stage-control{width:auto}
+  .stage-control select{min-width:142px}
+}
