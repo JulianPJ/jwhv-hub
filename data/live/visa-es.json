@@ -1,0 +1,349 @@
+{
+  "market": "ES",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Spain → Japan",
+  "currency_symbol": "€",
+  "application_status": {
+    "status": "warning",
+    "label": "2026 availability varies by consular jurisdiction",
+    "detail": "Madrid reports its 2026 Working Holiday quota exhausted. Barcelona's latest Working Holiday notice dated 16 September 2026 reported availability. Check the office responsible for your residence immediately before applying."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Spain ruleset verified against current Embassy of Japan in Spain, Barcelona Consulate and Las Palmas consular guidance, including jurisdiction-specific 2026 availability."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "es-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Spanish citizen resident in Spain at application",
+      "source_ids": [
+        "es-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Working Holiday visa, except narrowly defined unused-visa reissue cases",
+      "source_ids": [
+        "es-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds tiers",
+      "value": "€2,000 with round trip; €3,000 with one-way; €4,000 with no flight reservation",
+      "source_ids": [
+        "es-embassy-working-holiday",
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "label": "Application route",
+      "value": "Madrid, Barcelona or Las Palmas according to Spanish residence",
+      "source_ids": [
+        "es-embassy-working-holiday",
+        "es-las-palmas-visa"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "spanish_citizen",
+      "label": "Are you a Spanish citizen?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Working Holiday route is for Spanish citizens.",
+      "source_ids": [
+        "es-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "spain_resident",
+      "label": "Are you resident in Spain at the time of application?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Spanish Working Holiday applicants must be resident in Spain when applying.",
+      "source_ids": [
+        "es-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Spanish Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "es-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose a holiday and cultural stay in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Spanish programme is not designed for applicants whose main purpose is employment.",
+      "source_ids": [
+        "es-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health",
+      "label": "Can you obtain the required recent medical evidence of good health?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The current Spanish checklist requires medical evidence that you are fit to travel and free of serious/contagious illness preventing travel.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "no_criminal_record",
+      "label": "Can you truthfully declare that you have no criminal record?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The current Spanish application requires a declaration regarding criminal history.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "input_label": "Current bank balance available for the Spanish application (€)",
+    "ticket_label": "Flight booking submitted with the application",
+    "ticket_options": [
+      {
+        "value": "round_trip",
+        "label": "Round-trip flight booking",
+        "minimum": 2000
+      },
+      {
+        "value": "one_way",
+        "label": "One-way flight booking",
+        "minimum": 3000
+      },
+      {
+        "value": "none",
+        "label": "No flight reservation",
+        "minimum": 4000
+      }
+    ],
+    "with_return_ticket_minimum": 2000,
+    "no_ticket_minimum": 4000,
+    "bank_statement_months": null,
+    "source_ids": [
+      "es-embassy-working-holiday",
+      "es-working-holiday-checklist"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "es-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "residential_jurisdiction",
+    "country": "Spain",
+    "label": "Japanese mission responsible for your Spanish residence",
+    "description": "The responsible office is Madrid, Barcelona or Las Palmas according to residence. Working Holiday quota availability can differ by jurisdiction.",
+    "source_ids": [
+      "es-embassy-working-holiday",
+      "es-barcelona-working-holiday",
+      "es-las-palmas-visa"
+    ],
+    "ui_label": "Spanish residential jurisdiction",
+    "ui_help": "Choose the office responsible for where you live; the current 2026 intake status differs by jurisdiction.",
+    "options": [
+      {
+        "value": "madrid",
+        "label": "Spain except Catalonia, Balearic Islands, Canary Islands and Valencian Community",
+        "mission_label": "Embassy of Japan in Spain — Madrid",
+        "mission_detail": "Madrid handles residents outside the Barcelona and Canary jurisdictions. Applications are in person by appointment.",
+        "application_status": {
+          "status": "closed",
+          "label": "Madrid 2026 Working Holiday quota exhausted",
+          "detail": "The Embassy's 28 August 2026 Working Holiday notice says its 2026 quota is exhausted and that 2027 applications can be submitted from 1 December 2026."
+        }
+      },
+      {
+        "value": "barcelona",
+        "label": "Catalonia, Balearic Islands or Valencian Community",
+        "mission_label": "Consulate-General of Japan in Barcelona",
+        "mission_detail": "Barcelona handles Catalonia, the Balearic Islands and the Valencian Community.",
+        "application_status": {
+          "status": "limited",
+          "label": "Barcelona reported 2026 quota available on 16 September",
+          "detail": "The latest Barcelona Working Holiday page found during verification, dated 16 September 2026, reported its 2026 quota available. Recheck immediately before applying because its allocated quota can close."
+        }
+      },
+      {
+        "value": "las_palmas",
+        "label": "Canary Islands",
+        "mission_label": "Consulate of Japan in Las Palmas de Gran Canaria",
+        "mission_detail": "Las Palmas handles residents of the Canary Islands; an appointment is required for consular visits.",
+        "application_status": {
+          "status": "warning",
+          "label": "Confirm Canary Islands quota before applying",
+          "detail": "The current Las Palmas consular page confirms a separate Working Holiday service and Canary Islands jurisdiction, but this verification did not find a current 2026 quota-status notice. Confirm directly before applying."
+        }
+      },
+      {
+        "value": "outside_country",
+        "label": "I am not resident in Spain",
+        "mission_label": "Spanish Working Holiday route may not apply",
+        "mission_detail": "The current Spanish Working Holiday route requires Spanish citizenship and residence in Spain when applying.",
+        "issue": "The Spain Working Holiday route requires the applicant to be a Spanish citizen resident in Spain at the time of application."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Spanish passport",
+      "description": "Original Spanish passport with at least two blank pages and at least one year validity from arrival in Japan.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed visa application form",
+      "description": "Complete the current application form and sign it by hand as instructed.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "photo",
+      "title": "Recent visa photograph",
+      "description": "35mm × 45mm photo taken within the previous six months, following the current photo specification.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Current CV",
+      "description": "Prepare the current CV format covering personal, education and employment history.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Detailed monthly activity plan",
+      "description": "Prepare a realistic monthly itinerary explaining the locations and activities planned in Japan.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "Working Holiday motivation statement",
+      "description": "Write at least one A4 page explaining why you chose Japan and what you expect from the experience.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "medical",
+      "title": "Recent medical certificate",
+      "description": "Provide the current required medical evidence issued within the specified recent period.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "criminal-declaration",
+      "title": "Criminal-record declaration",
+      "description": "Complete the current sworn declaration regarding criminal history.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Recent bank balance certificate",
+      "description": "Use the applicable €2,000 / €3,000 / €4,000 threshold according to the flight booking you submit.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "flight",
+      "title": "Flight booking evidence where applicable",
+      "description": "Provide the flight evidence corresponding to the funds tier used in your application.",
+      "source_ids": [
+        "es-working-holiday-checklist"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "jurisdiction",
+      "title": "Confirm Madrid, Barcelona or Las Palmas jurisdiction",
+      "description": "Your place of residence determines the Japanese office that can accept the application."
+    },
+    {
+      "id": "availability",
+      "title": "Check your office's current quota status",
+      "description": "2026 availability is jurisdiction-specific and can change as each allocated quota fills."
+    },
+    {
+      "id": "appointment",
+      "title": "Follow your office's current appointment procedure",
+      "description": "Madrid and Las Palmas require appointments; verify Barcelona's current submission instructions before attending."
+    },
+    {
+      "id": "funds-tier",
+      "title": "Match bank balance to your flight evidence",
+      "description": "The current funds threshold changes between round-trip, one-way and no-flight-reservation applications."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final official-source check",
+      "description": "Recheck quota, documents and submission instructions immediately before applying."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "es-embassy-working-holiday",
+      "name": "Embassy of Japan in Spain — Working Holiday 2026",
+      "url": "https://www.es.emb-japan.go.jp/itpr_es/00_000378.html"
+    },
+    {
+      "id": "es-working-holiday-checklist",
+      "name": "Embassy of Japan in Spain — Working Holiday 2026 document checklist",
+      "url": "https://www.es.emb-japan.go.jp/files/100950584.pdf"
+    },
+    {
+      "id": "es-barcelona-working-holiday",
+      "name": "Consulate-General of Japan in Barcelona — Working Holiday",
+      "url": "https://www.barcelona.es.emb-japan.go.jp/itpr_ja/workingholiday.html"
+    },
+    {
+      "id": "es-las-palmas-visa",
+      "name": "Consulate of Japan in Las Palmas — Visa information",
+      "url": "https://www.es.emb-japan.go.jp/itpr_es/00_000246.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}

@@ -1,0 +1,286 @@
+{
+  "market": "NL",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Netherlands → Japan",
+  "currency_symbol": "€",
+  "application_status": {
+    "status": "closed",
+    "label": "2026 Working Holiday applications are closed",
+    "detail": "The Embassy of Japan in the Netherlands posted on 24 September 2026 that Working Holiday visa applications for 2026 are closed."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Netherlands baseline verified against the current Embassy Working Holiday page, current 2026 visa-status notice and official document checklist."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Dutch national resident in the Netherlands at application",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Japanese Working Holiday visa",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "€1,800 with return flight; €3,800 with one-way flight",
+      "source_ids": [
+        "nl-embassy-working-holiday",
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "label": "Annual quota",
+      "value": "Up to 200 visas per calendar year",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "dutch_citizen",
+      "label": "Are you a Dutch national?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Netherlands Working Holiday route is for Dutch nationals.",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "netherlands_resident",
+      "label": "Are you resident in the Netherlands at the time of application?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Dutch Working Holiday applicants must live in the Netherlands when applying.",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Dutch Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The programme is not intended for full-time employment, internships or academic enrolment.",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependants without their own eligible status accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "Dependants may only accompany the applicant if independently entitled to enter Japan.",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_character",
+      "label": "Can you truthfully meet the good-health, insurance and no-criminal-record requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The programme requires good health, adequate medical insurance, a sound background and no criminal record.",
+      "source_ids": [
+        "nl-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "input_label": "Funds shown on your Dutch bank statement (€)",
+    "with_return_ticket_minimum": 1800,
+    "no_ticket_minimum": 3800,
+    "no_ticket_note": "The €3,800 figure applies with a confirmed one-way flight. The Embassy's checklist requires a one-way or round-trip flight booking confirmation.",
+    "bank_statement_months": null,
+    "source_ids": [
+      "nl-embassy-working-holiday",
+      "nl-working-holiday-checklist"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "nl-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_residence",
+    "country": "Netherlands",
+    "label": "Embassy of Japan in the Netherlands",
+    "description": "Dutch Working Holiday applicants must live in the Netherlands. Applications are handled by the Embassy; the current general visa page allows in-person or proxy submission, not post or email, and does not require an appointment.",
+    "source_ids": [
+      "nl-embassy-working-holiday",
+      "nl-embassy-visa-current",
+      "nl-working-holiday-checklist"
+    ],
+    "ui_label": "Dutch residence",
+    "ui_help": "You must be a Dutch national living in the Netherlands to use this route.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I am a Dutch national living in the Netherlands",
+        "mission_label": "Embassy of Japan in the Netherlands",
+        "mission_detail": "Use the Embassy's current visa counter procedure. Current guidance says no appointment is required and applications are not accepted by post or email."
+      },
+      {
+        "value": "outside_country",
+        "label": "I am not currently living in the Netherlands",
+        "mission_label": "Dutch Working Holiday route may not apply",
+        "mission_detail": "The Working Holiday rules require Dutch nationals to reside in the Netherlands when applying.",
+        "issue": "The Netherlands Working Holiday route requires the applicant to be a Dutch national resident in the Netherlands at the time of application."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Dutch passport",
+      "description": "Provide a valid Dutch passport with at least one blank visa page.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed visa application form",
+      "description": "Complete and sign one current visa application form.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "photo",
+      "title": "Recent passport photograph",
+      "description": "Provide a passport-type photograph of about 45mm × 35mm, taken within the previous six months.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Curriculum Vitae",
+      "description": "Prepare the current Working Holiday CV / resume.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Outline of stay and activities",
+      "description": "Prepare a detailed intended-stay/activity outline without placeholder entries such as 'unknown'.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "One-page motivation letter",
+      "description": "Provide at least one full A4 page explaining the reason for applying.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "flight",
+      "title": "Confirmed flight booking",
+      "description": "Provide a confirmed one-way or round-trip flight booking from an airline or travel agency.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Recent bank statement",
+      "description": "Show at least €3,800 with a one-way flight or €1,800 with a return flight.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    },
+    {
+      "id": "health-pledge",
+      "title": "National Health Insurance pledge",
+      "description": "Provide the current Kokumin Kenko Hoken pledge form.",
+      "source_ids": [
+        "nl-working-holiday-checklist"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "availability",
+      "title": "Wait for the next application intake",
+      "description": "The Embassy's current 24 September 2026 notice says 2026 Working Holiday applications are closed."
+    },
+    {
+      "id": "residence",
+      "title": "Confirm Netherlands residence",
+      "description": "Dutch nationals must live in the Netherlands when applying."
+    },
+    {
+      "id": "flight-funds",
+      "title": "Align funds with your flight booking",
+      "description": "The financial threshold differs between a return booking and a one-way booking."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final Embassy check",
+      "description": "Check the current visa page for reopening/quota information before preparing a future application."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "nl-embassy-working-holiday",
+      "name": "Embassy of Japan in the Netherlands — Working Holiday Visa",
+      "url": "https://www.nl.emb-japan.go.jp/itpr_en/r_workingholidayvisa.html"
+    },
+    {
+      "id": "nl-embassy-visa-current",
+      "name": "Embassy of Japan in the Netherlands — Current Visa and Travel Information",
+      "url": "https://www.nl.emb-japan.go.jp/itpr_en/e_consulate.html"
+    },
+    {
+      "id": "nl-working-holiday-checklist",
+      "name": "Embassy of Japan in the Netherlands — Working Holiday document checklist",
+      "url": "https://www.nl.emb-japan.go.jp/files/100409984.pdf"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}

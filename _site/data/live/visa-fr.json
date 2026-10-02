@@ -1,0 +1,275 @@
+{
+  "market": "FR",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "France → Japan",
+  "currency_symbol": "€",
+  "application_status": {
+    "status": "closed",
+    "label": "2026 Working Holiday intake is closed at the main metropolitan French missions checked",
+    "detail": "Paris states its 2026 calendar is definitively closed and expects 2027 appointments to open during December 2026. Strasbourg, Lyon and Marseille also report 2026 Working Holiday intake closed/quota reached. Check your responsible mission for 2027 reopening details."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "French Working Holiday baseline verified against the Embassy of Japan in France plus current Strasbourg, Lyon and Marseille consular notices."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Passport",
+      "value": "French passport required",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Japanese Working Holiday visa only",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "€4,950 without return ticket; €3,100 with paid return ticket",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "2026 intake",
+      "value": "Closed at Paris and other major metropolitan missions checked",
+      "source_ids": [
+        "fr-embassy-working-holiday",
+        "fr-strasbourg-visa",
+        "fr-lyon-visa",
+        "fr-marseille-visa"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "french_citizen",
+      "label": "Do you hold a French passport?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The France Working Holiday route is only for French passport holders.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The France Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose a personal holiday and discovery trip in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The French Working Holiday route is for a personal holiday in Japan; work may only supplement travel funds.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will a dependent child accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "The French Working Holiday route does not permit accompanying children under this visa.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health",
+      "label": "Can you truthfully meet the good-health requirement?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The French route requires applicants to be in good health and submit a recent medical certificate.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "EUR",
+    "currency_symbol": "€",
+    "input_label": "Funds shown on your bank proof (€)",
+    "with_return_ticket_minimum": 3100,
+    "no_ticket_minimum": 4950,
+    "bank_statement_months": null,
+    "source_ids": [
+      "fr-embassy-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "fr-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "consular_jurisdiction",
+    "country": "France",
+    "label": "Japanese mission responsible for your French consular area",
+    "description": "French applicants use the Japanese mission responsible for their consular area. French nationals living abroad and most DROM-COM fall under Paris; New Caledonia, French Polynesia and Wallis & Futuna are exceptions handled through Nouméa.",
+    "source_ids": [
+      "fr-embassy-working-holiday"
+    ],
+    "ui_label": "French consular area",
+    "ui_help": "Choose the mission that covers your place of residence. Appointment availability and reopening dates vary by office.",
+    "options": [
+      {
+        "value": "paris",
+        "label": "Paris / green zone / abroad / most DROM-COM",
+        "mission_label": "Embassy of Japan in France — Paris",
+        "mission_detail": "Paris handles its green-zone jurisdiction plus French nationals living abroad and most DROM-COM. The 2026 Working Holiday calendar is closed; 2027 reopening is expected during December 2026."
+      },
+      {
+        "value": "strasbourg",
+        "label": "Strasbourg jurisdiction",
+        "mission_label": "Consulate-General of Japan in Strasbourg",
+        "mission_detail": "The Strasbourg consulate reports the 2026 Working Holiday quota reached and reopening from January 2027."
+      },
+      {
+        "value": "lyon",
+        "label": "Lyon jurisdiction",
+        "mission_label": "Consular Office of Japan in Lyon",
+        "mission_detail": "Lyon reports 2026 Working Holiday appointments closed until further notice; check the office for reopening."
+      },
+      {
+        "value": "marseille",
+        "label": "Marseille jurisdiction",
+        "mission_label": "Consulate-General of Japan in Marseille",
+        "mission_detail": "Marseille reports its 2026 Working Holiday registration calendar closed; 2027 information will be published on its website."
+      },
+      {
+        "value": "noumea",
+        "label": "New Caledonia / French Polynesia / Wallis & Futuna",
+        "mission_label": "Consular Office of Japan in Nouméa",
+        "mission_detail": "The Embassy guidance identifies these territories as depending on the Japanese consular office in Nouméa; check that office's current Working Holiday instructions."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "application-form",
+      "title": "Visa application form and photo",
+      "description": "Use the current visa application form and attach a recent 45×35mm identity photo following mission instructions.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "passport",
+      "title": "Valid French passport",
+      "description": "Original passport plus photo-page copy; Paris requires at least two blank pages.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Financial proof",
+      "description": "Paris currently requires €4,950 without a return ticket, or €3,100 plus a paid round-trip ticket and proof of the ticket debit; bank proof must be recent.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "medical",
+      "title": "Recent medical certificate",
+      "description": "Original medical certificate stating that you are in good health; Paris requires it to be no more than one month old.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "Typed motivation letter",
+      "description": "Explain your interest in Japan and why you are requesting the Working Holiday visa.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Typed detailed stay project",
+      "description": "Use the required project format and describe concrete visits/activities showing the need for a long stay.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Typed CV",
+      "description": "Prepare a typed CV; a personal format is accepted.",
+      "source_ids": [
+        "fr-embassy-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "availability",
+      "title": "Check whether your mission is accepting Working Holiday applications",
+      "description": "2026 intake is currently closed at the major metropolitan missions verified; reopening timing for 2027 varies."
+    },
+    {
+      "id": "jurisdiction",
+      "title": "Confirm your consular jurisdiction",
+      "description": "Paris, Strasbourg, Lyon, Marseille and Nouméa have different jurisdiction and appointment arrangements."
+    },
+    {
+      "id": "official-guidance",
+      "title": "Read your mission's current Working Holiday instructions",
+      "description": "Document handling and appointment procedures can differ from the Paris baseline."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final source check",
+      "description": "Re-check quota/calendar status and all required documents immediately before booking or lodging."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "fr-embassy-working-holiday",
+      "name": "Embassy of Japan in France — Working Holiday",
+      "url": "https://www.fr.emb-japan.go.jp/itpr_fr/v0002b.html"
+    },
+    {
+      "id": "fr-strasbourg-visa",
+      "name": "Consulate-General of Japan in Strasbourg — Visa information",
+      "url": "https://www.strasbourg.fr.emb-japan.go.jp/itpr_fr/b_000003.html"
+    },
+    {
+      "id": "fr-lyon-visa",
+      "name": "Consular Office of Japan in Lyon — Visa information",
+      "url": "https://www.lyon.fr.emb-japan.go.jp/itpr_fr/info_visa.html"
+    },
+    {
+      "id": "fr-marseille-visa",
+      "name": "Consulate-General of Japan in Marseille — Visa information",
+      "url": "https://www.marseille.fr.emb-japan.go.jp/itpr_fr/infovisa.html"
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "market": "AU",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Australia → Japan",
+  "currency_symbol": "A$",
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Australian Working Holiday baseline verified against the current Embassy of Japan in Australia guidance and MOFA programme page."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "mofa-working-holiday",
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Australian citizen currently living in Australia",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Main purpose",
+      "value": "Holiday in Japan; work is incidental",
+      "source_ids": [
+        "mofa-working-holiday",
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "One Japanese Working Holiday visa",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "A$2,500 single applicant; additional return-flight funds if no paid return ticket",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "australian_citizen",
+      "label": "Are you an Australian citizen?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Australian route is for Australian citizens.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "australia_resident",
+      "label": "Are you currently living in Australia?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Australian applicants must currently live in Australia to use this Working Holiday route.",
+      "source_ids": [
+        "mofa-working-holiday",
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The current Australian Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "mofa-working-holiday",
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Employment must be incidental to the holiday rather than the primary purpose.",
+      "source_ids": [
+        "mofa-working-holiday",
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependent children accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "The Australian Working Holiday route does not permit accompanying children.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "valid_passport",
+      "label": "Do you hold a valid Australian passport?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "A valid Australian passport is required.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_character",
+      "label": "Can you truthfully meet the programme's good-health and good-character requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The programme includes good-health and good-character requirements.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "AUD",
+    "currency_symbol": "A$",
+    "with_return_ticket_minimum": 2500,
+    "no_ticket_minimum": null,
+    "no_ticket_requires_additional_funds": true,
+    "no_ticket_note": "If you only have a one-way ticket or no flights purchased, the Embassy requires additional funds sufficient to purchase the return flight but does not publish one fixed extra amount.",
+    "couple_minimum_with_return_ticket": 3500,
+    "bank_statement_months": 3,
+    "source_ids": [
+      "au-embassy-working-holiday"
+    ],
+    "input_label": "Funds shown in your Australian bank statements (A$)"
+  },
+  "participation_rule": {
+    "max_total_participations": 1,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "mofa-working-holiday",
+      "au-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "country_residence",
+    "country": "Australia",
+    "label": "Japanese Embassy/Consulate responsible for your Australian residence",
+    "description": "Working Holiday applicants must apply in Australia. Use the Japanese diplomatic mission responsible for where you live and follow that mission's current lodgement instructions.",
+    "source_ids": [
+      "mofa-working-holiday",
+      "au-embassy-working-holiday"
+    ],
+    "ui_label": "Australian residence",
+    "ui_help": "Australian Working Holiday applicants must currently live in Australia and should follow the Japanese mission responsible for their residence.",
+    "options": [
+      {
+        "value": "in_country",
+        "label": "I currently live in Australia",
+        "mission_label": "Japanese Embassy/Consulate responsible for your Australian residence",
+        "mission_detail": "Working Holiday applicants must apply in Australia. Use the Japanese diplomatic mission responsible for where you live and follow that mission's current lodgement instructions."
+      },
+      {
+        "value": "outside_country",
+        "label": "I currently live outside Australia",
+        "mission_label": "Australian application route may not apply",
+        "mission_detail": "Australian Working Holiday applicants must currently live in Australia and apply through the appropriate Japanese mission there.",
+        "issue": "The Australian Working Holiday route requires the applicant to be currently living in Australia."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Australian passport",
+      "description": "Original valid Australian passport plus the passport photo-page copy requested by the current guidance.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed visa application form and photo",
+      "description": "Complete the current visa form and attach a recent passport photograph following the mission's current instructions.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "flight-details",
+      "title": "Flight details",
+      "description": "Provide flight details to Japan and back to Australia. A one-way ticket is acceptable only with sufficient additional funds for the return flight.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "resume",
+      "title": "Resume",
+      "description": "Resume covering personal, educational and employment history.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "schedule",
+      "title": "Proposed schedule",
+      "description": "Use the official proposed-schedule format and complete the first six months with concrete travel activities.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "statement",
+      "title": "Statement of Purpose",
+      "description": "A signed and dated statement explaining why you want to visit Japan as a Working Holiday maker.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Proof of funds",
+      "description": "Recent three-month Australian bank statement meeting the current funds guidance and showing your name.",
+      "source_ids": [
+        "au-embassy-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "official-guidance",
+      "title": "Read the current Australian official guidance",
+      "description": "Re-open the Embassy/Consulate guidance immediately before preparing your application."
+    },
+    {
+      "id": "mission",
+      "title": "Confirm the Japanese mission responsible for your residence",
+      "description": "Application instructions and appointments can differ by mission within Australia."
+    },
+    {
+      "id": "schedule-detail",
+      "title": "Build a travel-focused proposed schedule",
+      "description": "The programme is for a holiday in Japan; work is incidental rather than the main purpose."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final source check",
+      "description": "Requirements and appointment arrangements can change; compare your pack with the responsible mission's current instructions."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "au-embassy-working-holiday",
+      "name": "Embassy of Japan in Australia — Working Holiday Visa",
+      "url": "https://www.au.emb-japan.go.jp/itpr_en/visa_workingholiday_en.html"
+    },
+    {
+      "id": "mofa-working-holiday",
+      "name": "Ministry of Foreign Affairs of Japan — Working Holiday Programmes",
+      "url": "https://www.mofa.go.jp/j_info/visit/w_holiday/"
+    }
+  ]
+}

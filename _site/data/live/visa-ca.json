@@ -1,0 +1,326 @@
+{
+  "market": "CA",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "Canada → Japan",
+  "currency_symbol": "C$",
+  "application_status": {
+    "status": "open",
+    "label": "Applications available by residential jurisdiction",
+    "detail": "Canadian applicants must currently reside in Canada. Application method and exact document handling vary by the Japanese mission responsible for the applicant's residential address."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "Canadian baseline verified against the Embassy of Japan in Canada plus current Ottawa, Toronto and Vancouver Working Holiday guidance."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "ca-embassy-working-holiday",
+        "ca-ottawa-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "Canadian citizen currently residing in Canada",
+      "source_ids": [
+        "ca-embassy-working-holiday",
+        "ca-ottawa-working-holiday"
+      ]
+    },
+    {
+      "label": "Main purpose",
+      "value": "Holiday in Japan; work is incidental",
+      "source_ids": [
+        "ca-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "Up to two one-year periods in total",
+      "source_ids": [
+        "ca-embassy-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    },
+    {
+      "label": "Application route",
+      "value": "Japanese mission responsible for your Canadian residential address",
+      "source_ids": [
+        "ca-embassy-working-holiday"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "canadian_citizen",
+      "label": "Are you a Canadian citizen?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This Canadian Working Holiday route is for Canadian citizens.",
+      "source_ids": [
+        "ca-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "canada_resident",
+      "label": "Are you currently residing in Canada?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "Canadian applicants must currently reside in Canada.",
+      "source_ids": [
+        "ca-embassy-working-holiday",
+        "ca-ottawa-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The Canadian Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "ca-embassy-working-holiday",
+        "ca-ottawa-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Working Holiday programme is not intended for applicants whose main purpose is employment.",
+      "source_ids": [
+        "ca-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "valid_passport",
+      "label": "Do you hold a valid Canadian passport?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "A valid Canadian passport is required.",
+      "source_ids": [
+        "ca-ottawa-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_character",
+      "label": "Can you truthfully meet the programme's good-health and no-criminal-record requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The Canadian programme requires good health and no criminal record.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "CAD",
+    "currency_symbol": "C$",
+    "input_label": "Funds shown in your Canadian bank statement (C$)",
+    "with_return_ticket_minimum": null,
+    "no_ticket_minimum": null,
+    "guidance_note": "Exact proof-of-funds handling is mission-specific. Ottawa and Toronto currently state a C$3,500 minimum for a single applicant plus additional reasonable travel funds when tickets are not provided.",
+    "bank_statement_months": null,
+    "source_ids": [
+      "ca-ottawa-working-holiday",
+      "ca-toronto-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 2,
+    "extension_counts_toward_total_years": true,
+    "source_ids": [
+      "ca-embassy-working-holiday",
+      "ca-toronto-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "residential_jurisdiction",
+    "country": "Canada",
+    "label": "Japanese mission responsible for your Canadian residence",
+    "description": "Visa matters are handled locally according to Canadian residential address.",
+    "source_ids": [
+      "ca-embassy-working-holiday"
+    ],
+    "ui_label": "Canadian residential jurisdiction",
+    "ui_help": "Choose the region matching your Canadian residence. Some missions have different submission methods or financial-document details.",
+    "options": [
+      {
+        "value": "ottawa",
+        "label": "Ottawa region",
+        "mission_label": "Embassy of Japan in Canada — Ottawa",
+        "mission_detail": "Ottawa-region Working Holiday applications are handled by the Embassy. Current Ottawa guidance allows in-person applications and says mail may be considered after consultation.",
+        "funds_rule": {
+          "with_return_ticket_minimum": 3500,
+          "no_ticket_minimum": null,
+          "no_ticket_note": "Ottawa requires at least C$3,500 for a single applicant; if tickets are not provided, add reasonable travel expenses above that amount.",
+          "guidance_note": null
+        }
+      },
+      {
+        "value": "toronto",
+        "label": "Ontario (except Ottawa region)",
+        "mission_label": "Consulate-General of Japan in Toronto",
+        "mission_detail": "Toronto handles Ontario residents outside the Ottawa region. Current guidance requires advance contact/appointment and allows mail only in some circumstances after consultation.",
+        "funds_rule": {
+          "with_return_ticket_minimum": 3500,
+          "no_ticket_minimum": null,
+          "no_ticket_note": "Toronto requires at least C$3,500 for a single applicant; if tickets are not provided, add reasonable travel expenses above that amount.",
+          "guidance_note": null
+        }
+      },
+      {
+        "value": "vancouver",
+        "label": "British Columbia or Yukon",
+        "mission_label": "Consulate-General of Japan in Vancouver",
+        "mission_detail": "Vancouver handles British Columbia and Yukon residents. Check its current Working Holiday checklist for the exact financial-document amount and submission method."
+      },
+      {
+        "value": "calgary",
+        "label": "Alberta, Saskatchewan, Manitoba, NWT or Nunavut",
+        "mission_label": "Consulate-General of Japan in Calgary",
+        "mission_detail": "Calgary handles Alberta, Saskatchewan, Manitoba, Northwest Territories and Nunavut. Confirm its current checklist before applying."
+      },
+      {
+        "value": "montreal",
+        "label": "Quebec, New Brunswick, PEI, Nova Scotia, Newfoundland & Labrador",
+        "mission_label": "Consulate-General of Japan in Montreal",
+        "mission_detail": "Montreal handles Quebec, New Brunswick, Prince Edward Island, Nova Scotia, Newfoundland and Labrador. Confirm its current local submission instructions."
+      },
+      {
+        "value": "outside_country",
+        "label": "I currently reside outside Canada",
+        "mission_label": "Canadian Working Holiday route may not apply",
+        "mission_detail": "Current Canadian Working Holiday guidance requires applicants to reside in Canada.",
+        "issue": "The Canadian Working Holiday route requires the applicant to be currently residing in Canada."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid Canadian passport",
+      "description": "Provide a valid Canadian passport following the responsible mission's original/copy instructions.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Completed visa application form and recent photo",
+      "description": "Complete the current visa form and provide the photograph required by your mission.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    },
+    {
+      "id": "resume",
+      "title": "Resume / CV",
+      "description": "Prepare the current personal resume/CV requested for the Working Holiday application.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Detailed itinerary",
+      "description": "Prepare a detailed intended-activities plan covering your proposed stay.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    },
+    {
+      "id": "motivation",
+      "title": "Reason-for-application letter",
+      "description": "Explain your reason for applying for a Working Holiday visa.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Bank statement / proof of funds",
+      "description": "Use the amount and document format required by the mission handling your residential jurisdiction.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    },
+    {
+      "id": "travel",
+      "title": "Travel ticket or itinerary",
+      "description": "Provide the travel evidence requested by your mission; extra funds may be required when tickets are not provided.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    },
+    {
+      "id": "doctor",
+      "title": "Doctor's note",
+      "description": "Current Ottawa and Toronto guidance requests a physician's note stating you are in good health to travel abroad.",
+      "source_ids": [
+        "ca-ottawa-working-holiday",
+        "ca-toronto-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "official-guidance",
+      "title": "Read the current Canadian official guidance",
+      "description": "Re-open the Embassy Working Holiday overview and your local Japanese mission's current checklist."
+    },
+    {
+      "id": "jurisdiction",
+      "title": "Confirm your residential jurisdiction",
+      "description": "Visa handling differs by Canadian region; use the mission responsible for where you live."
+    },
+    {
+      "id": "funds-route",
+      "title": "Confirm your mission's exact funds rule",
+      "description": "Do not assume Ottawa/Toronto amounts apply unchanged at every Canadian mission."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final source check",
+      "description": "Application methods and appointments can change; verify immediately before lodging."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "ca-embassy-working-holiday",
+      "name": "Embassy of Japan in Canada — Working Holiday Visa for Canadian Citizens",
+      "url": "https://www.ca.emb-japan.go.jp/itpr_en/working_holiday_visa.html"
+    },
+    {
+      "id": "ca-ottawa-working-holiday",
+      "name": "Embassy of Japan in Canada — Ottawa Working Holiday application",
+      "url": "https://www.ca.emb-japan.go.jp/itpr_en/working_holiday_visa_Ottawa.html"
+    },
+    {
+      "id": "ca-toronto-working-holiday",
+      "name": "Consulate-General of Japan in Toronto — Working Holiday Visa",
+      "url": "https://www.toronto.ca.emb-japan.go.jp/itpr_en/b_000044.html"
+    },
+    {
+      "id": "ca-vancouver-working-holiday",
+      "name": "Consulate-General of Japan in Vancouver — Working Holiday Visa",
+      "url": "https://www.vancouver.ca.emb-japan.go.jp/itpr_en/working_holiday_en.html"
+    }
+  ]
+}

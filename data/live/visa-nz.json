@@ -1,0 +1,273 @@
+{
+  "market": "NZ",
+  "destination": "JP",
+  "visa_type": "working_holiday",
+  "verified_at": "2026-10-01",
+  "status": "verified",
+  "market_label": "New Zealand → Japan",
+  "currency_symbol": "NZ$",
+  "application_status": {
+    "status": "open",
+    "label": "Applications open with no quota or designated season",
+    "detail": "Current Embassy guidance says eligible New Zealand applicants may apply at any time. Applications must be made in person at the consular office responsible for the applicant's New Zealand residence."
+  },
+  "change_control": {
+    "status": "approved",
+    "reviewed_at": "2026-10-01",
+    "review_note": "New Zealand baseline verified against the Embassy of Japan in New Zealand Working Holiday page and current Auckland consular guidance."
+  },
+  "summary_facts": [
+    {
+      "label": "Age",
+      "value": "18–30 inclusive at application",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Residence",
+      "value": "New Zealand passport holder residing in New Zealand",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Participation",
+      "value": "Up to two Working Holiday visas; second application must be made in New Zealand",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Funds baseline",
+      "value": "NZ$3,000 with paid return ticket; NZ$4,000 without",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "label": "Application route",
+      "value": "In person at the Japanese office responsible for your New Zealand region",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    }
+  ],
+  "eligibility_rules": [
+    {
+      "id": "nz_citizen",
+      "label": "Do you hold a New Zealand passport?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "This route is for New Zealand passport holders.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "nz_resident",
+      "label": "Are you currently residing in New Zealand?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "New Zealand applicants must currently reside in New Zealand.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "age",
+      "label": "Your age at the time you expect to apply",
+      "type": "number",
+      "min": 18,
+      "max": 30,
+      "fail_message": "The New Zealand Working Holiday age range is 18–30 inclusive at application.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "holiday_primary",
+      "label": "Is your primary purpose to holiday and travel in Japan?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The New Zealand programme is for a long-term holiday; work should be casual/temporary and incidental.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "dependants",
+      "label": "Will dependent children accompany you?",
+      "type": "boolean",
+      "expected": false,
+      "fail_message": "The New Zealand Working Holiday route does not permit accompanying dependent children.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "good_health_character",
+      "label": "Can you truthfully meet the good-health and no-criminal-record requirements?",
+      "type": "boolean",
+      "expected": true,
+      "fail_message": "The programme requires good health and no criminal record.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    }
+  ],
+  "funds_rule": {
+    "currency": "NZD",
+    "currency_symbol": "NZ$",
+    "input_label": "Funds shown in your New Zealand bank statement (NZ$)",
+    "with_return_ticket_minimum": 3000,
+    "no_ticket_minimum": 4000,
+    "bank_statement_months": 3,
+    "source_ids": [
+      "nz-embassy-working-holiday"
+    ]
+  },
+  "participation_rule": {
+    "max_total_participations": 2,
+    "extension_counts_toward_total_years": false,
+    "source_ids": [
+      "nz-embassy-working-holiday"
+    ]
+  },
+  "jurisdiction": {
+    "mode": "residential_jurisdiction",
+    "country": "New Zealand",
+    "label": "Japanese consular office responsible for your New Zealand residence",
+    "description": "Applicants must reside in New Zealand and lodge in person with the office responsible for their region.",
+    "source_ids": [
+      "nz-embassy-working-holiday",
+      "nz-auckland-visa"
+    ],
+    "ui_label": "New Zealand residential jurisdiction",
+    "ui_help": "Choose the office responsible for your region. Auckland requires an appointment; Wellington and Christchurch currently do not.",
+    "options": [
+      {
+        "value": "auckland",
+        "label": "Auckland and upper North Island",
+        "mission_label": "Consulate-General of Japan in Auckland",
+        "mission_detail": "Auckland and upper North Island residents apply through the Consulate-General in Auckland. Current guidance says an online appointment is required."
+      },
+      {
+        "value": "christchurch",
+        "label": "Christchurch / Canterbury",
+        "mission_label": "Consular Office of Japan in Christchurch",
+        "mission_detail": "Christchurch and Canterbury residents apply through the Christchurch consular office; current guidance says booking is not required."
+      },
+      {
+        "value": "wellington",
+        "label": "Wellington / lower North Island / South Island excluding Canterbury",
+        "mission_label": "Embassy of Japan in New Zealand — Wellington",
+        "mission_detail": "Wellington, lower North Island and South Island residents outside Canterbury use the Embassy in Wellington; current guidance says booking is not required."
+      },
+      {
+        "value": "outside_country",
+        "label": "I currently reside outside New Zealand",
+        "mission_label": "New Zealand Working Holiday route may not apply",
+        "mission_detail": "Current guidance requires New Zealand passport holders to reside in New Zealand when applying.",
+        "issue": "The New Zealand Working Holiday route requires the applicant to be currently residing in New Zealand."
+      }
+    ]
+  },
+  "document_checklist": [
+    {
+      "id": "passport",
+      "title": "Valid New Zealand passport",
+      "description": "Passport must remain valid through your departure from Japan and have space for the visa label.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "application-form",
+      "title": "Visa application form and photo",
+      "description": "Complete and sign the current visa application form and provide a recent 45×35mm photo.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cover-letter",
+      "title": "One-page signed cover letter",
+      "description": "Explain why you are applying, what interests you and what you want to achieve.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "cv",
+      "title": "Current CV",
+      "description": "Prepare an up-to-date CV covering personal, educational and employment history.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "itinerary",
+      "title": "Detailed Stay Programme",
+      "description": "Use the official template and show specific locations and activities for the proposed stay.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "funds",
+      "title": "Three months of bank transactions",
+      "description": "Provide an official statement showing at least NZ$3,000 with a paid return ticket, or NZ$4,000 without one.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    },
+    {
+      "id": "flight",
+      "title": "Flight details",
+      "description": "If a return ticket has not been purchased, the funds baseline increases by NZ$1,000.",
+      "source_ids": [
+        "nz-embassy-working-holiday"
+      ]
+    }
+  ],
+  "preparation_checklist": [
+    {
+      "id": "official-guidance",
+      "title": "Read the current New Zealand official guidance",
+      "description": "Check the Embassy page and your regional office instructions immediately before applying."
+    },
+    {
+      "id": "jurisdiction",
+      "title": "Confirm the correct regional office",
+      "description": "Auckland, Wellington and Christchurch have different appointment arrangements."
+    },
+    {
+      "id": "in-person",
+      "title": "Plan for in-person lodgement",
+      "description": "Current guidance requires the applicant to submit the Working Holiday application in person."
+    },
+    {
+      "id": "insurance",
+      "title": "Consider travel insurance",
+      "description": "Insurance is optional in the checklist but may be requested for high-risk activities such as skiing/snowboarding."
+    },
+    {
+      "id": "final-check",
+      "title": "Run a final source check",
+      "description": "Confirm current processing times, appointments and required documents before lodging."
+    }
+  ],
+  "official_sources": [
+    {
+      "id": "nz-embassy-working-holiday",
+      "name": "Embassy of Japan in New Zealand — Working Holiday Visa",
+      "url": "https://www.nz.emb-japan.go.jp/itpr_en/working_hoiday_visa.html"
+    },
+    {
+      "id": "nz-auckland-visa",
+      "name": "Consulate-General of Japan in Auckland — Visa applications",
+      "url": "https://www.auckland.nz.emb-japan.go.jp/itpr_en/visa.html"
+    }
+  ]
+}

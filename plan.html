@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Your private Japan Working Holiday move dashboard with next actions, planning milestones and saved options.">
+<title>My plan · JWHV Hub</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="plan">
+<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">日</span><span>JWHV Hub</span></a>
+<nav><a href="jobs.html">Jobs</a><a href="housing.html">Housing</a><a href="application.html">Visa planner</a><a class="active" href="plan.html">My plan</a><a href="shortlist.html">Shortlist</a><a href="status.html">Status</a></nav></header>
+<main>
+<section class="page-intro"><p class="eyebrow">Your move dashboard</p><h1>Turn the pieces into a plan.</h1>
+<p>Set a target arrival date and this dashboard combines your local visa progress, saved jobs and saved housing into suggested next actions. Nothing here is uploaded or synced.</p></section>
+
+<section class="plan-hero panel">
+  <div>
+    <p class="eyebrow">Target arrival</p>
+    <h2 id="plan-countdown">Choose a date</h2>
+    <p id="plan-countdown-copy" class="muted">Your planning milestones will be calculated relative to the date you choose.</p>
+  </div>
+  <label class="arrival-input">Target arrival in Japan
+    <input id="target-arrival" type="date">
+  </label>
+</section>
+
+<section class="plan-metrics" id="plan-metrics" aria-live="polite"></section>
+
+<section class="section">
+  <div class="section-heading"><p class="eyebrow">What to do next</p><h2>Your next actions</h2></div>
+  <div id="next-actions" class="action-grid"></div>
+</section>
+
+<section class="section">
+  <div class="section-heading"><p class="eyebrow">Planning milestones</p><h2>Work backwards from arrival</h2></div>
+  <p class="muted plan-disclaimer">These are organisational suggestions, not official visa deadlines or guarantees. Always use the current Japanese mission guidance for application timing and requirements.</p>
+  <div id="move-timeline" class="timeline-list"></div>
+</section>
+
+<section class="section">
+  <div class="section-heading"><p class="eyebrow">Saved options</p><h2>Your current picture</h2></div>
+  <div id="plan-options" class="plan-options"></div>
+  <div class="actions"><a class="button secondary" href="shortlist.html">Open shortlist</a><button id="download-move-plan" class="button secondary" type="button">Download plan summary</button></div>
+</section>
+
+<section class="notice"><strong>Private by design</strong><p>Your target date, milestone completion, visa checklist progress and shortlist remain in this browser. Clearing this site's browser data will remove them.</p></section>
+</main>
+<footer><p>Independent planning tool. Re-check official visa guidance and original listing sources before acting.</p></footer>
+<script src="app.js" defer></script></body></html>

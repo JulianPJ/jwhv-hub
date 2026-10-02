@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="System status and data freshness for the Japan Working Holiday Hub.">
+<title>System status · JWHV Hub</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="status">
+<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">日</span><span>JWHV Hub</span></a>
+<nav><a href="jobs.html">Jobs</a><a href="housing.html">Housing</a><a href="application.html">Visa planner</a><a href="plan.html">My plan</a><a href="shortlist.html">Shortlist</a><a class="active" href="status.html">Status</a></nav></header>
+<main>
+<section class="page-intro"><p class="eyebrow">System status</p><h1>Freshness and automation health.</h1>
+<p>This page shows visible inventory split between verified live records and direct-source records still pending review, plus the state reported by each unattended worker.</p></section>
+<section class="status-summary" id="status-summary" aria-live="polite"></section>
+<section class="section">
+  <div class="section-heading"><p class="eyebrow">Visa markets</p><h2>Passport-market coverage</h2></div>
+  <div id="visa-coverage-metrics" class="status-grid"></div>
+  <div id="visa-detailed-markets" class="visa-market-grid"></div>
+  <div class="visa-coverage-lists">
+    <section class="mini-panel"><h3>Partner markets still awaiting a detailed planner</h3><div id="visa-expansion-queue" class="listing-meta"></div></section>
+    <section class="mini-panel"><h3>Reference non-partner markets</h3><div id="visa-reference-markets" class="listing-meta"></div></section>
+  </div>
+</section>
+<section class="section">
+  <div class="section-heading"><p class="eyebrow">Workers</p><h2>Automation state</h2></div>
+  <div id="worker-status" class="status-grid"></div>
+</section>
+<section class="notice"><strong>What “healthy” means</strong><p>A healthy worker completed its most recent run without a material anomaly. It does not mean every third-party source is guaranteed available or every listing is still open; use the original source links for final confirmation.</p></section>
+</main>
+<footer><p><a href="index.html">Back to JWHV Hub</a></p></footer>
+<script src="app.js" defer></script></body></html>
