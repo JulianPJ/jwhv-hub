@@ -18,6 +18,7 @@ const LIST_DENSITY_KEY="jwhv-hub:list-density:v1";
 const LIST_PAGE_SIZE_KEY="jwhv-hub:list-page-size:v1";
 const SHORTLIST_VIEW_KEY="jwhv-hub:shortlist-view:v1";
 const PRIMARY_CHOICES_KEY="jwhv-hub:primary-choices:v1";
+const LISTING_PROGRESS_KEY="jwhv-hub:listing-progress:v1";
 function getVisaMarket(){return readLocal(VISA_MARKET_KEY,{market:"GB"}).market||"GB"}
 function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
 function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
@@ -52,6 +53,48 @@ function togglePrimaryChoice(type,id){
   writeLocal(PRIMARY_CHOICES_KEY,state);
   return state[type];
 }
+const LISTING_STAGES={
+  jobs:[
+    {value:"saved",label:"Saved"},
+    {value:"planning",label:"Planning to apply"},
+    {value:"applied",label:"Applied"},
+    {value:"interview",label:"Interview"},
+    {value:"offer",label:"Offer"},
+    {value:"not_pursuing",label:"Not pursuing"}
+  ],
+  housing:[
+    {value:"saved",label:"Saved"},
+    {value:"planning",label:"Planning to enquire"},
+    {value:"enquired",label:"Enquired"},
+    {value:"applied",label:"Application sent"},
+    {value:"booked",label:"Booked"},
+    {value:"not_pursuing",label:"Not pursuing"}
+  ]
+};
+function getListingProgress(){
+  const state=readLocal(LISTING_PROGRESS_KEY,{jobs:{},housing:{}});
+  return {
+    jobs:state.jobs&&typeof state.jobs==="object"?state.jobs:{},
+    housing:state.housing&&typeof state.housing==="object"?state.housing:{}
+  };
+}
+function listingStage(type,id){
+  return getListingProgress()[type]?.[id]||"saved";
+}
+function listingStageLabel(type,value){
+  return LISTING_STAGES[type]?.find(stage=>stage.value===value)?.label||value||"Saved";
+}
+function setListingStage(type,id,value){
+  const allowed=new Set((LISTING_STAGES[type]||[]).map(stage=>stage.value));
+  const state=getListingProgress();
+  if(!allowed.has(value)||value==="saved") delete state[type][id];
+  else state[type][id]=value;
+  writeLocal(LISTING_PROGRESS_KEY,state);
+}
+function listingStageSelect(type,id){
+  const current=listingStage(type,id);
+  return '<label class="stage-control">Stage<select data-stage-type="'+esc(type)+'" data-stage-id="'+esc(id)+'">'+(LISTING_STAGES[type]||[]).map(stage=>'<option value="'+esc(stage.value)+'" '+(stage.value===current?"selected":"")+'>'+esc(stage.label)+'</option>').join("")+'</select></label>';
+}
 function isSaved(type,id){return getShortlist()[type]?.includes(id)}
 function toggleSaved(type,id){
   const state=getShortlist();
@@ -66,6 +109,9 @@ function toggleSaved(type,id){
       primary[type]="";
       writeLocal(PRIMARY_CHOICES_KEY,primary);
     }
+    const progress=getListingProgress();
+    delete progress[type][id];
+    writeLocal(LISTING_PROGRESS_KEY,progress);
   }
   return set.has(id);
 }
