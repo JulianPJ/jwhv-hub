@@ -333,3 +333,28 @@ Users can now promote one saved job and one saved housing option from the Shortl
 - shortlist cards visually distinguish the current primary choices.
 
 Primary choices are organisational preferences only. They do not change listing status, source verification, or any visa decision.
+
+
+## Phase 20 shortlist workflow stages
+
+Saved listings now carry an optional browser-local workflow stage so the dashboard can distinguish passive saving from active application/enquiry progress.
+
+Job stages:
+- Saved
+- Planning to apply
+- Applied
+- Interview
+- Offer
+- Not pursuing
+
+Housing stages:
+- Saved
+- Planning to enquire
+- Enquired
+- Application sent
+- Booked
+- Not pursuing
+
+The Shortlist shows and edits these stages inline. My Plan uses the primary job/housing stages to produce more specific next actions, and downloaded move-plan summaries include the current primary-choice stages.
+
+Stage state is organisational metadata only. It does not change repository listing status, source verification, employer/provider availability, or visa eligibility. Removing a saved item also removes its local stage state.
