@@ -303,3 +303,18 @@ Jobs and Housing now paginate large client-side result sets rather than renderin
 - previous/next controls show the current visible range.
 
 Pagination is presentation-only and does not alter listing evidence, feed ordering rules, filter URLs or shortlist state.
+
+
+## Phase 18 shortlist comparison workspace
+
+The Shortlist page now behaves like a compact decision workspace rather than a passive saved-items list.
+
+- saved jobs can be filtered by verified/pending status and sorted by start date, pay, region or role;
+- saved housing can be filtered by verified/pending status and sorted by availability, rent, region or property;
+- shortlist summary cards distinguish saved totals, currently active options, verified-live options and items needing attention;
+- saved IDs that disappear from the current active feed are surfaced explicitly instead of silently vanishing;
+- when a missing saved ID still exists in raw live/candidate data, the page shows its current repository status;
+- missing saved IDs can be removed individually or cleared in one action;
+- shortlist sort/status preferences are stored locally per browser.
+
+The missing-item warning is deliberately conservative: absence from the active feed does not itself prove that the original employer/provider listing expired.
