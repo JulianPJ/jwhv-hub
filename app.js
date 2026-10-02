@@ -16,6 +16,7 @@ const VISA_PROGRESS_KEY="jwhv-hub:visa-progress:v2";
 const VISA_MARKET_KEY="jwhv-hub:visa-market:v1";
 const LIST_DENSITY_KEY="jwhv-hub:list-density:v1";
 const LIST_PAGE_SIZE_KEY="jwhv-hub:list-page-size:v1";
+const SHORTLIST_VIEW_KEY="jwhv-hub:shortlist-view:v1";
 function getVisaMarket(){return readLocal(VISA_MARKET_KEY,{market:"GB"}).market||"GB"}
 function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
 function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
@@ -821,6 +822,11 @@ async function initShortlist(){
   const jobSort=$("#shortlist-job-sort");
   const housingStatus=$("#shortlist-housing-status");
   const housingSort=$("#shortlist-housing-sort");
+  const view=readLocal(SHORTLIST_VIEW_KEY,{jobStatus:"",jobSort:"start",housingStatus:"",housingSort:"available"});
+  jobStatus.value=view.jobStatus||"";
+  jobSort.value=view.jobSort||"start";
+  housingStatus.value=view.housingStatus||"";
+  housingSort.value=view.housingSort||"available";
   const jobsList=$("#shortlist-jobs");
   const housingList=$("#shortlist-housing");
 
@@ -890,7 +896,16 @@ async function initShortlist(){
     return '<article class="missing-item"><div><span class="tag">'+esc(entry.type==="jobs"?"Job":"Housing")+'</span><strong>'+esc(name||entry.id)+'</strong><p>'+esc(detail)+'</p><code>'+esc(entry.id)+'</code></div><button class="button secondary compact" type="button" data-remove-type="'+esc(entry.type)+'" data-remove-id="'+esc(entry.id)+'">Remove saved ID</button></article>';
   }).join("");
 
-  const renderAll=()=>{renderJobs();renderHousing()};
+  const renderAll=()=>{
+    writeLocal(SHORTLIST_VIEW_KEY,{
+      jobStatus:jobStatus.value,
+      jobSort:jobSort.value,
+      housingStatus:housingStatus.value,
+      housingSort:housingSort.value
+    });
+    renderJobs();
+    renderHousing();
+  };
   jobStatus.oninput=renderAll;
   jobSort.oninput=renderAll;
   housingStatus.oninput=renderAll;
