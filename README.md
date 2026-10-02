@@ -279,3 +279,13 @@ Jobs and Housing now behave more like compact discovery workspaces as inventory 
 - a single Clear filters control resets the view without losing saved shortlist data.
 
 No listing evidence or feed semantics are changed by this phase; it is a navigation/discovery layer over the existing live + pending data model.
+
+
+## Phase 16 dense listing mode
+
+Jobs and Housing now support two presentation densities:
+
+- **Dense** — the default scan-first view, aligning title/location/metadata into compact desktop columns and hiding lower-priority provenance/notes from the main scan surface.
+- **Cards** — the fuller readable card view with all supporting notes visible.
+
+The preference is stored locally per listing type and does not alter shareable filter URLs or shortlist data.
