@@ -15,6 +15,7 @@ const MOVE_PLAN_KEY="jwhv-hub:move-plan:v1";
 const VISA_PROGRESS_KEY="jwhv-hub:visa-progress:v2";
 const VISA_MARKET_KEY="jwhv-hub:visa-market:v1";
 const LIST_DENSITY_KEY="jwhv-hub:list-density:v1";
+const LIST_PAGE_SIZE_KEY="jwhv-hub:list-page-size:v1";
 function getVisaMarket(){return readLocal(VISA_MARKET_KEY,{market:"GB"}).market||"GB"}
 function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
 function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
@@ -124,12 +125,42 @@ function initListDensity(kind,list){
   for(const button of buttons) button.addEventListener("click",()=>apply(button.dataset.densityValue));
   apply(getListDensity(kind));
 }
+function getListPageSize(kind){
+  const state=readLocal(LIST_PAGE_SIZE_KEY,{jobs:"25",housing:"25"});
+  const value=String(state[kind]||"25");
+  return ["25","50","all"].includes(value)?value:"25";
+}
+function setListPageSize(kind,value){
+  const state=readLocal(LIST_PAGE_SIZE_KEY,{jobs:"25",housing:"25"});
+  state[kind]=["25","50","all"].includes(String(value))?String(value):"25";
+  writeLocal(LIST_PAGE_SIZE_KEY,state);
+}
+function paginateItems(items,page,pageSize){
+  const size=pageSize==="all"?Math.max(items.length,1):Number(pageSize);
+  const pageCount=Math.max(1,Math.ceil(items.length/size));
+  const current=Math.min(Math.max(1,page),pageCount);
+  const start=items.length?(current-1)*size:0;
+  const end=pageSize==="all"?items.length:Math.min(start+size,items.length);
+  return {items:items.slice(start,end),page:current,pageCount,start,end};
+}
+function renderPagination(container,{total,page,pageCount,start,end,pageSize}){
+  const range=total?(start+1)+"–"+end:"0";
+  container.innerHTML=
+    '<span class="pagination-range">Showing '+esc(range)+' of '+esc(total)+'</span>'+
+    '<div class="pagination-controls">'+
+      '<button class="button secondary compact" type="button" data-page-action="prev" '+(page<=1?"disabled":"")+'>Previous</button>'+
+      '<span class="pagination-page">Page '+esc(page)+' / '+esc(pageCount)+'</span>'+
+      '<button class="button secondary compact" type="button" data-page-action="next" '+(page>=pageCount?"disabled":"")+'>Next</button>'+
+      '<label>Per page<select data-page-size><option value="25" '+(pageSize==="25"?"selected":"")+'>25</option><option value="50" '+(pageSize==="50"?"selected":"")+'>50</option><option value="all" '+(pageSize==="all"?"selected":"")+'>All</option></select></label>'+
+    '</div>';
+}
 
 async function initJobs(){
   const feed=await loadVisibleFeed("jobs"),items=feed.items;
-  const search=$("#job-search"),region=$("#job-region"),status=$("#job-status"),language=$("#job-language"),wh=$("#job-wh"),housing=$("#job-housing"),sort=$("#job-sort"),clear=$("#job-clear"),filterCount=$("#job-filter-count"),list=$("#job-list"),count=$("#job-count");
+  const search=$("#job-search"),region=$("#job-region"),status=$("#job-status"),language=$("#job-language"),wh=$("#job-wh"),housing=$("#job-housing"),sort=$("#job-sort"),clear=$("#job-clear"),filterCount=$("#job-filter-count"),list=$("#job-list"),count=$("#job-count"),pagination=$("#job-pagination");
   const controls={q:search,region,status,language,wh,housing,sort};
   const defaults={sort:"recent"};
+  let page=1,pageSize=getListPageSize("jobs");
   populateRegionSelect(region,items);
   restoreQueryControls(controls);
   initListDensity("jobs",list);
@@ -137,7 +168,8 @@ async function initJobs(){
   const whLabel={explicitly_accepted:"Working Holiday explicitly accepted",likely_compatible:"Working Holiday likely compatible",unknown:"Working Holiday not stated"};
   const accommodationLabel={provided:"Staff housing provided",subsidized:"Subsidised staff housing",not_stated:"Staff housing not stated"};
 
-  function render(){
+  function render({resetPage=false}={}){
+    if(resetPage) page=1;
     const q=search.value.trim().toLowerCase();
     let filtered=items.filter(item=>{
       const haystack=[item.title,item.employer,item.city,item.prefecture].join(" ").toLowerCase();
@@ -160,10 +192,12 @@ async function initJobs(){
     const active=syncQueryControls(controls,defaults);
     const visibleLive=filtered.filter(item=>item._feedStatus==="live").length;
     const visiblePending=filtered.length-visibleLive;
+    const paged=paginateItems(filtered,page,pageSize);
+    page=paged.page;
     filterCount.textContent=active?(active+" active filter"+(active===1?"":"s")):"No filters";
     clear.disabled=active===0&&sort.value===defaults.sort;
     count.textContent=filtered.length+(active?" of "+items.length:"")+" "+(filtered.length===1?"listing":"listings")+" · "+visibleLive+" verified · "+visiblePending+" pending";
-    list.innerHTML=filtered.length?filtered.map(item=>{
+    list.innerHTML=paged.items.length?paged.items.map(item=>{
       const accommodation=item.accommodation_status||(item.accommodation_provided===true?"provided":"not_stated");
       const details=[
         tag(item._feedStatus==="live"?"Live":"Pending review"),
@@ -178,12 +212,13 @@ async function initJobs(){
         :"Pending review · direct employer source observed "+item.last_seen;
       return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div>'+(item.accommodation_note?'<p class="listing-note">'+esc(item.accommodation_note)+'</p>':"")+'<p class="listing-verified">'+esc(provenance)+'</p></div><div class="listing-actions">'+saveButton("jobs",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
     }).join(""):empty(items.length?"No matching jobs":"No direct-source jobs yet",items.length?"Try changing or clearing the filters.":"No current direct-employer listing is available yet.");
+    renderPagination(pagination,{total:filtered.length,page:paged.page,pageCount:paged.pageCount,start:paged.start,end:paged.end,pageSize});
   }
 
-  Object.values(controls).forEach(el=>el.addEventListener("input",render));
+  Object.values(controls).forEach(el=>el.addEventListener("input",()=>render({resetPage:true})));
   clear.addEventListener("click",()=>{
     clearQueryControls(controls,defaults);
-    render();
+    render({resetPage:true});
     search.focus();
   });
   list.addEventListener("click",event=>{
@@ -192,19 +227,35 @@ async function initJobs(){
     toggleSaved(button.dataset.saveType,button.dataset.saveId);
     render();
   });
+  pagination.addEventListener("click",event=>{
+    const action=event.target.closest("[data-page-action]")?.dataset.pageAction;
+    if(!action) return;
+    page+=action==="next"?1:-1;
+    render();
+    list.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  pagination.addEventListener("change",event=>{
+    const select=event.target.closest("[data-page-size]");
+    if(!select) return;
+    pageSize=select.value;
+    setListPageSize("jobs",pageSize);
+    render({resetPage:true});
+  });
   render();
 }
 
 async function initHousing(){
   const feed=await loadVisibleFeed("housing"),items=feed.items;
-  const search=$("#housing-search"),region=$("#housing-region"),status=$("#housing-status"),maxRent=$("#housing-max-rent"),furnished=$("#housing-furnished"),foreigner=$("#housing-foreigner"),sort=$("#housing-sort"),clear=$("#housing-clear"),filterCount=$("#housing-filter-count"),list=$("#housing-list"),count=$("#housing-count");
+  const search=$("#housing-search"),region=$("#housing-region"),status=$("#housing-status"),maxRent=$("#housing-max-rent"),furnished=$("#housing-furnished"),foreigner=$("#housing-foreigner"),sort=$("#housing-sort"),clear=$("#housing-clear"),filterCount=$("#housing-filter-count"),list=$("#housing-list"),count=$("#housing-count"),pagination=$("#housing-pagination");
   const controls={q:search,region,status,max:maxRent,furnished,foreigner,sort};
   const defaults={sort:"available"};
+  let page=1,pageSize=getListPageSize("housing");
   populateRegionSelect(region,items);
   restoreQueryControls(controls);
   initListDensity("housing",list);
 
-  function render(){
+  function render({resetPage=false}={}){
+    if(resetPage) page=1;
     const q=search.value.trim().toLowerCase();
     let filtered=items.filter(item=>{
       const haystack=[item.name,item.city,item.prefecture,item.nearest_station,item.source_name].join(" ").toLowerCase();
@@ -227,10 +278,12 @@ async function initHousing(){
     const active=syncQueryControls(controls,defaults);
     const visibleLive=filtered.filter(item=>item._feedStatus==="live").length;
     const visiblePending=filtered.length-visibleLive;
+    const paged=paginateItems(filtered,page,pageSize);
+    page=paged.page;
     filterCount.textContent=active?(active+" active filter"+(active===1?"":"s")):"No filters";
     clear.disabled=active===0&&sort.value===defaults.sort;
     count.textContent=filtered.length+(active?" of "+items.length:"")+" "+(filtered.length===1?"option":"options")+" · "+visibleLive+" verified · "+visiblePending+" pending";
-    list.innerHTML=filtered.length?filtered.map(item=>{
+    list.innerHTML=paged.items.length?paged.items.map(item=>{
       const details=[
         tag(item._feedStatus==="live"?"Live":"Pending review"),
         item.monthly_rent_display?tag(item.monthly_rent_display):"",
@@ -244,12 +297,13 @@ async function initHousing(){
         :"Pending review · direct provider source observed "+item.last_seen;
       return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div>'+(item.upfront_fee_display?'<p class="listing-note">'+esc(item.upfront_fee_display)+'</p>':"")+'<p class="listing-verified">'+esc(provenance)+'</p></div><div class="listing-actions">'+saveButton("housing",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
     }).join(""):empty(items.length?"No matching housing":"No direct-source housing yet",items.length?"Try changing or clearing the filters.":"No current direct-provider option is available yet.");
+    renderPagination(pagination,{total:filtered.length,page:paged.page,pageCount:paged.pageCount,start:paged.start,end:paged.end,pageSize});
   }
 
-  Object.values(controls).forEach(el=>el.addEventListener("input",render));
+  Object.values(controls).forEach(el=>el.addEventListener("input",()=>render({resetPage:true})));
   clear.addEventListener("click",()=>{
     clearQueryControls(controls,defaults);
-    render();
+    render({resetPage:true});
     search.focus();
   });
   list.addEventListener("click",event=>{
@@ -257,6 +311,20 @@ async function initHousing(){
     if(!button) return;
     toggleSaved(button.dataset.saveType,button.dataset.saveId);
     render();
+  });
+  pagination.addEventListener("click",event=>{
+    const action=event.target.closest("[data-page-action]")?.dataset.pageAction;
+    if(!action) return;
+    page+=action==="next"?1:-1;
+    render();
+    list.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  pagination.addEventListener("change",event=>{
+    const select=event.target.closest("[data-page-size]");
+    if(!select) return;
+    pageSize=select.value;
+    setListPageSize("housing",pageSize);
+    render({resetPage:true});
   });
   render();
 }
