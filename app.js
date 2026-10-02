@@ -792,29 +792,126 @@ async function initShortlist(){
     loadVisibleFeed("housing")
   ]);
   const state=getShortlist();
-  const jobs=jobsFeed.items.filter(item=>state.jobs.includes(item.id));
-  const housing=housingFeed.items.filter(item=>state.housing.includes(item.id));
+  const activeJobs=new Map(jobsFeed.items.map(item=>[item.id,item]));
+  const activeHousing=new Map(housingFeed.items.map(item=>[item.id,item]));
 
-  $("#shortlist-summary").innerHTML=
-    '<article class="status-card"><span>Saved jobs</span><strong>'+jobs.length+'</strong><small>Stored in this browser</small></article>'+
-    '<article class="status-card"><span>Saved housing</span><strong>'+housing.length+'</strong><small>Stored in this browser</small></article>';
+  const rawRecord=(feed,id)=>{
+    const live=(feed.live.items||[]).find(item=>item.id===id);
+    if(live) return {...live,_rawFeed:"live"};
+    const candidate=(feed.candidate.items||[]).find(item=>item.id===id);
+    return candidate?{...candidate,_rawFeed:"candidate"}:null;
+  };
 
+  const jobs=state.jobs.map(id=>activeJobs.get(id)).filter(Boolean);
+  const housing=state.housing.map(id=>activeHousing.get(id)).filter(Boolean);
+  const missing=[
+    ...state.jobs.filter(id=>!activeJobs.has(id)).map(id=>({type:"jobs",id,record:rawRecord(jobsFeed,id)})),
+    ...state.housing.filter(id=>!activeHousing.has(id)).map(id=>({type:"housing",id,record:rawRecord(housingFeed,id)}))
+  ];
+  const verified=jobs.filter(item=>item._feedStatus==="live").length+housing.filter(item=>item._feedStatus==="live").length;
+
+  $("#shortlist-summary").innerHTML=[
+    ["Saved jobs",state.jobs.length,jobs.length+" currently active"],
+    ["Saved housing",state.housing.length,housing.length+" currently active"],
+    ["Verified live",verified,"Across active saved options"],
+    ["Needs attention",missing.length,missing.length?"Saved IDs outside the active feed":"No missing saved items"]
+  ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
+
+  const jobStatus=$("#shortlist-job-status");
+  const jobSort=$("#shortlist-job-sort");
+  const housingStatus=$("#shortlist-housing-status");
+  const housingSort=$("#shortlist-housing-sort");
   const jobsList=$("#shortlist-jobs");
-  jobsList.innerHTML=jobs.length?jobs.map(item=>
-    '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+tag(item._feedStatus==="live"?"Live":"Pending review")+(item.salary_display?tag(item.salary_display):"")+(item.start_date?tag("Starts "+item.start_date):"")+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>'
-  ).join(""):empty("No saved jobs","Save jobs from the Jobs page and they will appear here.");
-
   const housingList=$("#shortlist-housing");
-  housingList.innerHTML=housing.length?housing.map(item=>
-    '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+tag(item._feedStatus==="live"?"Live":"Pending review")+(item.monthly_rent_display?tag(item.monthly_rent_display):"")+(item.available_from?tag("Available "+item.available_from):"")+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>'
-  ).join(""):empty("No saved housing","Save housing from the Housing page and it will appear here.");
+
+  const sortText=(a,b,key)=>String(a[key]||"").localeCompare(String(b[key]||""),"en",{sensitivity:"base"});
+  const sortJobs=(items,mode)=>[...items].sort((a,b)=>{
+    if(mode==="pay_desc") return (b.salary_max_jpy??b.salary_min_jpy??-1)-(a.salary_max_jpy??a.salary_min_jpy??-1);
+    if(mode==="pay_asc") return (a.salary_min_jpy??a.salary_max_jpy??Number.MAX_SAFE_INTEGER)-(b.salary_min_jpy??b.salary_max_jpy??Number.MAX_SAFE_INTEGER);
+    if(mode==="region") return sortText(a,b,"prefecture")||sortText(a,b,"city")||sortText(a,b,"title");
+    if(mode==="title") return sortText(a,b,"title");
+    return String(a.start_date||"9999-12-31").localeCompare(String(b.start_date||"9999-12-31"))||sortText(a,b,"title");
+  });
+  const sortHousing=(items,mode)=>[...items].sort((a,b)=>{
+    if(mode==="rent_asc") return (a.monthly_rent_jpy??Number.MAX_SAFE_INTEGER)-(b.monthly_rent_jpy??Number.MAX_SAFE_INTEGER);
+    if(mode==="rent_desc") return (b.monthly_rent_jpy??-1)-(a.monthly_rent_jpy??-1);
+    if(mode==="region") return sortText(a,b,"prefecture")||sortText(a,b,"city")||sortText(a,b,"name");
+    if(mode==="name") return sortText(a,b,"name");
+    return String(a.available_from||"9999-12-31").localeCompare(String(b.available_from||"9999-12-31"))||sortText(a,b,"name");
+  });
+
+  function renderJobs(){
+    const filtered=sortJobs(
+      jobs.filter(item=>!jobStatus.value||item._feedStatus===jobStatus.value),
+      jobSort.value
+    );
+    const live=filtered.filter(item=>item._feedStatus==="live").length;
+    $("#shortlist-jobs-meta").innerHTML='<span>'+esc(filtered.length)+" shown · "+esc(live)+" verified · "+esc(filtered.length-live)+' pending</span><span class="muted">'+esc(state.jobs.length)+" saved job ID"+(state.jobs.length===1?"":"s")+'</span>';
+    jobsList.innerHTML=filtered.length?filtered.map(item=>{
+      const accommodation=item.accommodation_status||(item.accommodation_provided===true?"provided":"not_stated");
+      const details=[
+        tag(item._feedStatus==="live"?"Live":"Pending review"),
+        item.salary_display?tag(item.salary_display):"",
+        item.start_date?tag("Starts "+item.start_date):"",
+        accommodation&&accommodation!=="not_stated"?tag(accommodation==="provided"?"Housing provided":"Housing "+accommodation):""
+      ].join("");
+      return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
+    }).join(""):empty(jobs.length?"No saved jobs match this status":"No active saved jobs",jobs.length?"Change the status filter to see the other saved roles.":"Save jobs from the Jobs page and they will appear here.");
+  }
+
+  function renderHousing(){
+    const filtered=sortHousing(
+      housing.filter(item=>!housingStatus.value||item._feedStatus===housingStatus.value),
+      housingSort.value
+    );
+    const live=filtered.filter(item=>item._feedStatus==="live").length;
+    $("#shortlist-housing-meta").innerHTML='<span>'+esc(filtered.length)+" shown · "+esc(live)+" verified · "+esc(filtered.length-live)+' pending</span><span class="muted">'+esc(state.housing.length)+" saved housing ID"+(state.housing.length===1?"":"s")+'</span>';
+    housingList.innerHTML=filtered.length?filtered.map(item=>{
+      const details=[
+        tag(item._feedStatus==="live"?"Live":"Pending review"),
+        item.monthly_rent_display?tag(item.monthly_rent_display):"",
+        item.available_from?tag("Available "+item.available_from):"",
+        item.furnished===true?tag("Furnished"):""
+      ].join("");
+      return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
+    }).join(""):empty(housing.length?"No saved housing matches this status":"No active saved housing",housing.length?"Change the status filter to see the other saved properties.":"Save housing from the Housing page and it will appear here.");
+  }
+
+  const missingSection=$("#shortlist-missing-section");
+  const missingList=$("#shortlist-missing");
+  missingSection.hidden=!missing.length;
+  missingList.innerHTML=missing.map(entry=>{
+    const record=entry.record;
+    const name=record?(entry.type==="jobs"?record.title:record.name):entry.id;
+    const status=record?.status||"not found";
+    const detail=record
+      ?("Repository record found in "+entry.record._rawFeed+" data · current status: "+status)
+      :"Saved ID is not present in the current live or candidate feed.";
+    return '<article class="missing-item"><div><span class="tag">'+esc(entry.type==="jobs"?"Job":"Housing")+'</span><strong>'+esc(name||entry.id)+'</strong><p>'+esc(detail)+'</p><code>'+esc(entry.id)+'</code></div><button class="button secondary compact" type="button" data-remove-type="'+esc(entry.type)+'" data-remove-id="'+esc(entry.id)+'">Remove saved ID</button></article>';
+  }).join("");
+
+  const renderAll=()=>{renderJobs();renderHousing()};
+  [jobStatus,jobSort,housingStatus,housingSort].forEach(control=>control.addEventListener("input",renderAll));
 
   document.querySelector("main").addEventListener("click",event=>{
-    const button=event.target.closest("[data-remove-type]");
-    if(!button) return;
-    toggleSaved(button.dataset.removeType,button.dataset.removeId);
-    initShortlist();
+    const remove=event.target.closest("[data-remove-type]");
+    if(remove){
+      toggleSaved(remove.dataset.removeType,remove.dataset.removeId);
+      initShortlist();
+      return;
+    }
+    if(event.target.closest("#shortlist-clear-missing")){
+      const next=getShortlist();
+      const missingJobs=new Set(missing.filter(item=>item.type==="jobs").map(item=>item.id));
+      const missingHousing=new Set(missing.filter(item=>item.type==="housing").map(item=>item.id));
+      next.jobs=next.jobs.filter(id=>!missingJobs.has(id));
+      next.housing=next.housing.filter(id=>!missingHousing.has(id));
+      writeLocal(SHORTLIST_KEY,next);
+      initShortlist();
+    }
   },{once:true});
+
+  renderAll();
 }
 
 async function initStatus(){
