@@ -5,10 +5,13 @@
 <section class="page-intro"><p class="eyebrow">Opportunities</p><h1>Jobs for a working-holiday year.</h1><p>Direct-employer listings from both the verified live feed and current pending research. Pending records are clearly labelled; a Working Holiday label is shown only when the employer explicitly states it.</p></section>
 <section class="toolbar">
 <label class="filter-search">Search<input id="job-search" type="search" placeholder="Role, employer, city…"></label>
+<label>Region<select id="job-region"><option value="">All regions</option></select></label>
+<label>Review status<select id="job-status"><option value="">Live + pending</option><option value="live">Verified live</option><option value="pending">Pending review</option></select></label>
 <label>Japanese level<select id="job-language"><option value="">Any</option><option value="none">Not required</option><option value="basic">Basic</option><option value="conversational">Conversational</option><option value="business">Business</option><option value="native">Native</option><option value="unknown">Not stated</option></select></label>
 <label>Working Holiday<select id="job-wh"><option value="">Any</option><option value="explicitly_accepted">Explicitly accepted</option><option value="unknown">Not stated</option></select></label>
 <label>Staff housing<select id="job-housing"><option value="">Any</option><option value="provided">Provided</option><option value="subsidized">Subsidised</option><option value="not_stated">Not stated</option></select></label>
 <label>Sort<select id="job-sort"><option value="recent">Recently observed</option><option value="pay_desc">Pay: high to low</option><option value="pay_asc">Pay: low to high</option><option value="start">Starting soon</option></select></label>
+<div class="toolbar-actions"><button id="job-clear" class="button secondary compact" type="button">Clear filters</button><span id="job-filter-count" class="filter-state">No filters</span></div>
 </section>
-<section class="results"><div class="results-meta"><span id="job-count">Loading…</span><span class="muted">Always apply through the original employer.</span></div><div id="job-list" class="listing-grid" aria-live="polite"></div></section>
+<section class="results"><div class="results-meta"><span id="job-count">Loading…</span><span class="muted">Filters are saved in the page URL · always apply through the original employer.</span></div><div id="job-list" class="listing-grid" aria-live="polite"></div></section>
 </main><footer><p>Listings are concise factual summaries. Check the original employer page for the full role and current availability.</p></footer><script src="app.js" defer></script></body></html>

@@ -266,3 +266,16 @@ Finland, Austria and Poland now have detailed planners, taking detailed passport
 - **Poland:** 18–30, Polish citizen resident in Poland, one lifetime visa, Warsaw appointment required. The official guide expresses living/return-ticket funds partly as approximate USD-equivalent guidance; the planner preserves those source distinctions instead of converting them into a fabricated PLN threshold.
 
 Where an official source describes sufficient funds without one fixed numeric total, the rules engine deliberately leaves the financial pre-check as an item for manual official-source verification rather than falsely producing a pass/fail number.
+
+
+## Phase 15 listing discovery controls
+
+Jobs and Housing now behave more like compact discovery workspaces as inventory grows:
+
+- prefecture/region filters are generated from the current visible feed;
+- users can explicitly view verified live records, pending-review records, or both;
+- visible result counts show the verified/pending split after filtering;
+- search, region, status, attribute filters and non-default sort order are persisted in the page URL;
+- a single Clear filters control resets the view without losing saved shortlist data.
+
+No listing evidence or feed semantics are changed by this phase; it is a navigation/discovery layer over the existing live + pending data model.

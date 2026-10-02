@@ -73,9 +73,42 @@ async function loadVisibleFeed(kind){
   };
 }
 
+function populateRegionSelect(select,items){
+  const regions=[...new Set(items.map(item=>item.prefecture).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"en"));
+  select.insertAdjacentHTML("beforeend",regions.map(region=>'<option value="'+esc(region)+'">'+esc(region)+'</option>').join(""));
+}
+function restoreQueryControls(controls){
+  const params=new URLSearchParams(location.search);
+  for(const [key,control] of Object.entries(controls)){
+    if(params.has(key)) control.value=params.get(key);
+  }
+}
+function syncQueryControls(controls,defaults={}){
+  const params=new URLSearchParams();
+  let active=0;
+  for(const [key,control] of Object.entries(controls)){
+    const value=control.value;
+    const defaultValue=defaults[key]??"";
+    if(value!==defaultValue){
+      if(value) params.set(key,value);
+      if(key!=="sort"&&value) active++;
+    }
+  }
+  const query=params.toString();
+  history.replaceState(null,"",location.pathname+(query?"?"+query:"")+location.hash);
+  return active;
+}
+function clearQueryControls(controls,defaults={}){
+  for(const [key,control] of Object.entries(controls)) control.value=defaults[key]??"";
+}
+
 async function initJobs(){
   const feed=await loadVisibleFeed("jobs"),items=feed.items;
-  const search=$("#job-search"),language=$("#job-language"),wh=$("#job-wh"),housing=$("#job-housing"),sort=$("#job-sort"),list=$("#job-list"),count=$("#job-count");
+  const search=$("#job-search"),region=$("#job-region"),status=$("#job-status"),language=$("#job-language"),wh=$("#job-wh"),housing=$("#job-housing"),sort=$("#job-sort"),clear=$("#job-clear"),filterCount=$("#job-filter-count"),list=$("#job-list"),count=$("#job-count");
+  const controls={q:search,region,status,language,wh,housing,sort};
+  const defaults={sort:"recent"};
+  populateRegionSelect(region,items);
+  restoreQueryControls(controls);
   const japaneseLabel={none:"Japanese not required",basic:"Japanese: basic",conversational:"Japanese: conversational",business:"Japanese: business",native:"Japanese: native",unknown:"Japanese not stated"};
   const whLabel={explicitly_accepted:"Working Holiday explicitly accepted",likely_compatible:"Working Holiday likely compatible",unknown:"Working Holiday not stated"};
   const accommodationLabel={provided:"Staff housing provided",subsidized:"Subsidised staff housing",not_stated:"Staff housing not stated"};
@@ -86,6 +119,8 @@ async function initJobs(){
       const haystack=[item.title,item.employer,item.city,item.prefecture].join(" ").toLowerCase();
       const accommodation=item.accommodation_status||(item.accommodation_provided===true?"provided":"not_stated");
       return (!q||haystack.includes(q))
+        &&(!region.value||item.prefecture===region.value)
+        &&(!status.value||item._feedStatus===status.value)
         &&(!language.value||item.japanese_level===language.value)
         &&(!wh.value||item.working_holiday===wh.value)
         &&(!housing.value||accommodation===housing.value);
@@ -98,7 +133,12 @@ async function initJobs(){
       return String(b.last_seen||"").localeCompare(String(a.last_seen||""));
     });
 
-    count.textContent=filtered.length+" "+(filtered.length===1?"listing":"listings")+" · "+feed.liveCount+" live · "+feed.pendingCount+" pending review";
+    const active=syncQueryControls(controls,defaults);
+    const visibleLive=filtered.filter(item=>item._feedStatus==="live").length;
+    const visiblePending=filtered.length-visibleLive;
+    filterCount.textContent=active?(active+" active filter"+(active===1?"":"s")):"No filters";
+    clear.disabled=active===0&&sort.value===defaults.sort;
+    count.textContent=filtered.length+(active?" of "+items.length:"")+" "+(filtered.length===1?"listing":"listings")+" · "+visibleLive+" verified · "+visiblePending+" pending";
     list.innerHTML=filtered.length?filtered.map(item=>{
       const accommodation=item.accommodation_status||(item.accommodation_provided===true?"provided":"not_stated");
       const details=[
@@ -113,9 +153,15 @@ async function initJobs(){
         ?"Live · verified from employer source "+item.last_seen
         :"Pending review · direct employer source observed "+item.last_seen;
       return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div>'+(item.accommodation_note?'<p class="listing-note">'+esc(item.accommodation_note)+'</p>':"")+'<p class="listing-verified">'+esc(provenance)+'</p></div><div class="listing-actions">'+saveButton("jobs",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
-    }).join(""):empty(items.length?"No matching jobs":"No direct-source jobs yet",items.length?"Try changing the filters.":"No current direct-employer listing is available yet.");
+    }).join(""):empty(items.length?"No matching jobs":"No direct-source jobs yet",items.length?"Try changing or clearing the filters.":"No current direct-employer listing is available yet.");
   }
-  [search,language,wh,housing,sort].forEach(el=>el.addEventListener("input",render));
+
+  Object.values(controls).forEach(el=>el.addEventListener("input",render));
+  clear.addEventListener("click",()=>{
+    clearQueryControls(controls,defaults);
+    render();
+    search.focus();
+  });
   list.addEventListener("click",event=>{
     const button=event.target.closest("[data-save-type]");
     if(!button) return;
@@ -127,13 +173,20 @@ async function initJobs(){
 
 async function initHousing(){
   const feed=await loadVisibleFeed("housing"),items=feed.items;
-  const search=$("#housing-search"),maxRent=$("#housing-max-rent"),furnished=$("#housing-furnished"),foreigner=$("#housing-foreigner"),sort=$("#housing-sort"),list=$("#housing-list"),count=$("#housing-count");
+  const search=$("#housing-search"),region=$("#housing-region"),status=$("#housing-status"),maxRent=$("#housing-max-rent"),furnished=$("#housing-furnished"),foreigner=$("#housing-foreigner"),sort=$("#housing-sort"),clear=$("#housing-clear"),filterCount=$("#housing-filter-count"),list=$("#housing-list"),count=$("#housing-count");
+  const controls={q:search,region,status,max:maxRent,furnished,foreigner,sort};
+  const defaults={sort:"available"};
+  populateRegionSelect(region,items);
+  restoreQueryControls(controls);
+
   function render(){
     const q=search.value.trim().toLowerCase();
     let filtered=items.filter(item=>{
       const haystack=[item.name,item.city,item.prefecture,item.nearest_station,item.source_name].join(" ").toLowerCase();
       const withinBudget=!maxRent.value||Number(item.monthly_rent_jpy||Infinity)<=Number(maxRent.value);
       return (!q||haystack.includes(q))
+        &&(!region.value||item.prefecture===region.value)
+        &&(!status.value||item._feedStatus===status.value)
         &&withinBudget
         &&(!furnished.value||String(item.furnished)===furnished.value)
         &&(!foreigner.value||item.foreigner_eligibility===foreigner.value);
@@ -146,7 +199,12 @@ async function initHousing(){
       return String(a.available_from||"9999-12-31").localeCompare(String(b.available_from||"9999-12-31"));
     });
 
-    count.textContent=filtered.length+" "+(filtered.length===1?"option":"options")+" · "+feed.liveCount+" live · "+feed.pendingCount+" pending review";
+    const active=syncQueryControls(controls,defaults);
+    const visibleLive=filtered.filter(item=>item._feedStatus==="live").length;
+    const visiblePending=filtered.length-visibleLive;
+    filterCount.textContent=active?(active+" active filter"+(active===1?"":"s")):"No filters";
+    clear.disabled=active===0&&sort.value===defaults.sort;
+    count.textContent=filtered.length+(active?" of "+items.length:"")+" "+(filtered.length===1?"option":"options")+" · "+visibleLive+" verified · "+visiblePending+" pending";
     list.innerHTML=filtered.length?filtered.map(item=>{
       const details=[
         tag(item._feedStatus==="live"?"Live":"Pending review"),
@@ -160,9 +218,15 @@ async function initHousing(){
         ?"Live · verified from "+item.source_name+" "+item.last_seen
         :"Pending review · direct provider source observed "+item.last_seen;
       return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div>'+(item.upfront_fee_display?'<p class="listing-note">'+esc(item.upfront_fee_display)+'</p>':"")+'<p class="listing-verified">'+esc(provenance)+'</p></div><div class="listing-actions">'+saveButton("housing",item.id)+'<a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
-    }).join(""):empty(items.length?"No matching housing":"No direct-source housing yet",items.length?"Try changing the filters.":"No current direct-provider option is available yet.");
+    }).join(""):empty(items.length?"No matching housing":"No direct-source housing yet",items.length?"Try changing or clearing the filters.":"No current direct-provider option is available yet.");
   }
-  [search,maxRent,furnished,foreigner,sort].forEach(el=>el.addEventListener("input",render));
+
+  Object.values(controls).forEach(el=>el.addEventListener("input",render));
+  clear.addEventListener("click",()=>{
+    clearQueryControls(controls,defaults);
+    render();
+    search.focus();
+  });
   list.addEventListener("click",event=>{
     const button=event.target.closest("[data-save-type]");
     if(!button) return;
