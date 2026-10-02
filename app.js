@@ -14,6 +14,7 @@ const SHORTLIST_KEY="jwhv-hub:shortlist:v1";
 const MOVE_PLAN_KEY="jwhv-hub:move-plan:v1";
 const VISA_PROGRESS_KEY="jwhv-hub:visa-progress:v2";
 const VISA_MARKET_KEY="jwhv-hub:visa-market:v1";
+const LIST_DENSITY_KEY="jwhv-hub:list-density:v1";
 function getVisaMarket(){return readLocal(VISA_MARKET_KEY,{market:"GB"}).market||"GB"}
 function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
 function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
@@ -101,6 +102,28 @@ function syncQueryControls(controls,defaults={}){
 function clearQueryControls(controls,defaults={}){
   for(const [key,control] of Object.entries(controls)) control.value=defaults[key]??"";
 }
+function getListDensity(kind){
+  const state=readLocal(LIST_DENSITY_KEY,{jobs:"dense",housing:"dense"});
+  return ["dense","cards"].includes(state[kind])?state[kind]:"dense";
+}
+function initListDensity(kind,list){
+  const buttons=[...document.querySelectorAll('[data-density-kind="'+kind+'"]')];
+  const apply=value=>{
+    const density=["dense","cards"].includes(value)?value:"dense";
+    list.classList.toggle("dense",density==="dense");
+    list.classList.toggle("cards",density==="cards");
+    for(const button of buttons){
+      const active=button.dataset.densityValue===density;
+      button.classList.toggle("active",active);
+      button.setAttribute("aria-pressed",String(active));
+    }
+    const state=readLocal(LIST_DENSITY_KEY,{jobs:"dense",housing:"dense"});
+    state[kind]=density;
+    writeLocal(LIST_DENSITY_KEY,state);
+  };
+  for(const button of buttons) button.addEventListener("click",()=>apply(button.dataset.densityValue));
+  apply(getListDensity(kind));
+}
 
 async function initJobs(){
   const feed=await loadVisibleFeed("jobs"),items=feed.items;
@@ -109,6 +132,7 @@ async function initJobs(){
   const defaults={sort:"recent"};
   populateRegionSelect(region,items);
   restoreQueryControls(controls);
+  initListDensity("jobs",list);
   const japaneseLabel={none:"Japanese not required",basic:"Japanese: basic",conversational:"Japanese: conversational",business:"Japanese: business",native:"Japanese: native",unknown:"Japanese not stated"};
   const whLabel={explicitly_accepted:"Working Holiday explicitly accepted",likely_compatible:"Working Holiday likely compatible",unknown:"Working Holiday not stated"};
   const accommodationLabel={provided:"Staff housing provided",subsidized:"Subsidised staff housing",not_stated:"Staff housing not stated"};
@@ -178,6 +202,7 @@ async function initHousing(){
   const defaults={sort:"available"};
   populateRegionSelect(region,items);
   restoreQueryControls(controls);
+  initListDensity("housing",list);
 
   function render(){
     const q=search.value.trim().toLowerCase();
