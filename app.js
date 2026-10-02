@@ -891,13 +891,16 @@ async function initShortlist(){
   }).join("");
 
   const renderAll=()=>{renderJobs();renderHousing()};
-  [jobStatus,jobSort,housingStatus,housingSort].forEach(control=>control.addEventListener("input",renderAll));
+  jobStatus.oninput=renderAll;
+  jobSort.oninput=renderAll;
+  housingStatus.oninput=renderAll;
+  housingSort.oninput=renderAll;
 
-  document.querySelector("main").addEventListener("click",event=>{
+  document.querySelector("main").onclick=event=>{
     const remove=event.target.closest("[data-remove-type]");
     if(remove){
       toggleSaved(remove.dataset.removeType,remove.dataset.removeId);
-      initShortlist();
+      location.reload();
       return;
     }
     if(event.target.closest("#shortlist-clear-missing")){
@@ -907,9 +910,9 @@ async function initShortlist(){
       next.jobs=next.jobs.filter(id=>!missingJobs.has(id));
       next.housing=next.housing.filter(id=>!missingHousing.has(id));
       writeLocal(SHORTLIST_KEY,next);
-      initShortlist();
+      location.reload();
     }
-  },{once:true});
+  };
 
   renderAll();
 }
