@@ -17,6 +17,7 @@ const VISA_MARKET_KEY="jwhv-hub:visa-market:v1";
 const LIST_DENSITY_KEY="jwhv-hub:list-density:v1";
 const LIST_PAGE_SIZE_KEY="jwhv-hub:list-page-size:v1";
 const SHORTLIST_VIEW_KEY="jwhv-hub:shortlist-view:v1";
+const PRIMARY_CHOICES_KEY="jwhv-hub:primary-choices:v1";
 function getVisaMarket(){return readLocal(VISA_MARKET_KEY,{market:"GB"}).market||"GB"}
 function getMovePlan(){return readLocal(MOVE_PLAN_KEY,{targetArrival:"",timelineDone:{}})}
 function formatJPY(value){return new Intl.NumberFormat("en-GB",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(value||0)}
@@ -41,13 +42,31 @@ function getShortlist(){
     housing:Array.isArray(value.housing)?value.housing:[]
   };
 }
+function getPrimaryChoices(){
+  const value=readLocal(PRIMARY_CHOICES_KEY,{jobs:"",housing:""});
+  return {jobs:String(value.jobs||""),housing:String(value.housing||"")};
+}
+function togglePrimaryChoice(type,id){
+  const state=getPrimaryChoices();
+  state[type]=state[type]===id?"":id;
+  writeLocal(PRIMARY_CHOICES_KEY,state);
+  return state[type];
+}
 function isSaved(type,id){return getShortlist()[type]?.includes(id)}
 function toggleSaved(type,id){
   const state=getShortlist();
   const set=new Set(state[type]||[]);
-  if(set.has(id)) set.delete(id); else set.add(id);
+  const wasSaved=set.has(id);
+  if(wasSaved) set.delete(id); else set.add(id);
   state[type]=[...set];
   writeLocal(SHORTLIST_KEY,state);
+  if(wasSaved){
+    const primary=getPrimaryChoices();
+    if(primary[type]===id){
+      primary[type]="";
+      writeLocal(PRIMARY_CHOICES_KEY,primary);
+    }
+  }
   return set.has(id);
 }
 function saveButton(type,id){
