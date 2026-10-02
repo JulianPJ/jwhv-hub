@@ -318,3 +318,18 @@ The Shortlist page now behaves like a compact decision workspace rather than a p
 - shortlist sort/status preferences are stored locally per browser.
 
 The missing-item warning is deliberately conservative: absence from the active feed does not itself prove that the original employer/provider listing expired.
+
+
+## Phase 19 primary choices
+
+Users can now promote one saved job and one saved housing option from the Shortlist into **primary choices**.
+
+- primary selections remain local to the browser;
+- removing a saved item automatically clears its primary pin;
+- bulk cleanup of missing shortlist IDs also clears affected primary pins;
+- My Plan surfaces the selected employer/property rather than only aggregate shortlist counts;
+- if a primary saved item later leaves the active feed, My Plan warns the user instead of silently substituting another option;
+- downloaded move-plan summaries include the selected primary job and housing;
+- shortlist cards visually distinguish the current primary choices.
+
+Primary choices are organisational preferences only. They do not change listing status, source verification, or any visa decision.
