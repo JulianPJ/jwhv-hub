@@ -973,6 +973,10 @@ async function initShortlist(){
       next.jobs=next.jobs.filter(id=>!missingJobs.has(id));
       next.housing=next.housing.filter(id=>!missingHousing.has(id));
       writeLocal(SHORTLIST_KEY,next);
+      const primaryState=getPrimaryChoices();
+      if(missingJobs.has(primaryState.jobs)) primaryState.jobs="";
+      if(missingHousing.has(primaryState.housing)) primaryState.housing="";
+      writeLocal(PRIMARY_CHOICES_KEY,primaryState);
       location.reload();
     }
   };
