@@ -812,6 +812,7 @@ async function initShortlist(){
     loadVisibleFeed("housing")
   ]);
   const state=getShortlist();
+  const primary=getPrimaryChoices();
   const activeJobs=new Map(jobsFeed.items.map(item=>[item.id,item]));
   const activeHousing=new Map(housingFeed.items.map(item=>[item.id,item]));
 
@@ -830,9 +831,11 @@ async function initShortlist(){
   ];
   const verified=jobs.filter(item=>item._feedStatus==="live").length+housing.filter(item=>item._feedStatus==="live").length;
 
+  const primaryCount=[primary.jobs,primary.housing].filter(Boolean).length;
   $("#shortlist-summary").innerHTML=[
     ["Saved jobs",state.jobs.length,jobs.length+" currently active"],
     ["Saved housing",state.housing.length,housing.length+" currently active"],
+    ["Primary choices",primaryCount+" / 2",primaryCount===2?"Job and housing selected":"Choose a lead job and housing option"],
     ["Verified live",verified,"Across active saved options"],
     ["Needs attention",missing.length,missing.length?"Saved IDs outside the active feed":"No missing saved items"]
   ].map(([label,value,detail])=>'<article class="status-card"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>').join("");
@@ -880,7 +883,8 @@ async function initShortlist(){
         item.start_date?tag("Starts "+item.start_date):"",
         accommodation&&accommodation!=="not_stated"?tag(accommodation==="provided"?"Housing provided":"Housing "+accommodation):""
       ].join("");
-      return '<article class="listing-card"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+details+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
+      const isPrimary=primary.jobs===item.id;
+      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.title)+'</h2><div class="muted">'+esc(item.employer)+" · "+esc([item.city,item.prefecture].filter(Boolean).join(", "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+details+'</div></div><div class="listing-actions"><button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="jobs" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="jobs" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Employer page ↗</a></div></article>';
     }).join(""):empty(jobs.length?"No saved jobs match this status":"No active saved jobs",jobs.length?"Change the status filter to see the other saved roles.":"Save jobs from the Jobs page and they will appear here.");
   }
 
@@ -898,7 +902,8 @@ async function initShortlist(){
         item.available_from?tag("Available "+item.available_from):"",
         item.furnished===true?tag("Furnished"):""
       ].join("");
-      return '<article class="listing-card"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+details+'</div></div><div class="listing-actions"><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
+      const isPrimary=primary.housing===item.id;
+      return '<article class="listing-card'+(isPrimary?" primary-listing":"")+'"><div><h2>'+esc(item.name)+'</h2><div class="muted">'+esc([item.city,item.prefecture,item.nearest_station].filter(Boolean).join(" · "))+'</div><div class="listing-meta">'+(isPrimary?tag("Primary choice"):"")+details+'</div></div><div class="listing-actions"><button class="primary-choice-button'+(isPrimary?" active":"")+'" type="button" data-primary-type="housing" data-primary-id="'+esc(item.id)+'">'+(isPrimary?"Primary ✓":"Set primary")+'</button><button class="save-button saved" type="button" data-remove-type="housing" data-remove-id="'+esc(item.id)+'">Remove</button><a class="source-link" href="'+esc(item.source_url)+'" target="_blank" rel="noopener noreferrer">Provider page ↗</a></div></article>';
     }).join(""):empty(housing.length?"No saved housing matches this status":"No active saved housing",housing.length?"Change the status filter to see the other saved properties.":"Save housing from the Housing page and it will appear here.");
   }
 
@@ -912,7 +917,8 @@ async function initShortlist(){
     const detail=record
       ?("Repository record found in "+entry.record._rawFeed+" data · current status: "+status)
       :"Saved ID is not present in the current live or candidate feed.";
-    return '<article class="missing-item"><div><span class="tag">'+esc(entry.type==="jobs"?"Job":"Housing")+'</span><strong>'+esc(name||entry.id)+'</strong><p>'+esc(detail)+'</p><code>'+esc(entry.id)+'</code></div><button class="button secondary compact" type="button" data-remove-type="'+esc(entry.type)+'" data-remove-id="'+esc(entry.id)+'">Remove saved ID</button></article>';
+    const isPrimary=primary[entry.type]===entry.id;
+    return '<article class="missing-item'+(isPrimary?" primary-listing":"")+'"><div><span class="tag">'+esc(entry.type==="jobs"?"Job":"Housing")+'</span>'+(isPrimary?tag("Primary choice"):"")+'<strong>'+esc(name||entry.id)+'</strong><p>'+esc(detail)+'</p><code>'+esc(entry.id)+'</code></div><button class="button secondary compact" type="button" data-remove-type="'+esc(entry.type)+'" data-remove-id="'+esc(entry.id)+'">Remove saved ID</button></article>';
   }).join("");
 
   const renderAll=()=>{
@@ -931,6 +937,12 @@ async function initShortlist(){
   housingSort.oninput=renderAll;
 
   document.querySelector("main").onclick=event=>{
+    const primaryButton=event.target.closest("[data-primary-type]");
+    if(primaryButton){
+      togglePrimaryChoice(primaryButton.dataset.primaryType,primaryButton.dataset.primaryId);
+      location.reload();
+      return;
+    }
     const remove=event.target.closest("[data-remove-type]");
     if(remove){
       toggleSaved(remove.dataset.removeType,remove.dataset.removeId);
