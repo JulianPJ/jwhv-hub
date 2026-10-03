@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-01",
+  "updated_at": "2026-10-03",
   "change_control": {
     "status": "pending_review",
-    "generated_by": "manual-direct-source-expansion",
-    "review_note": "Expanded current direct/authorised-employer inventory to exceed the 100-job visibility target. Added 23 NISADE seasonal openings across Niseko/Rusutsu/Furano, 16 SkiJapan seasonal openings across Niseko/Hakuba, 2 Hanazono winter openings, and 14 active GETO KOGEN 2026-27 roles. Unsupported pay/dates/language/Working Holiday fields remain null or unknown. GETO snow-groomer was explicitly full and was not added as active."
+    "generated_by": "unified-jwhv-worker",
+    "review_note": "Added Expo House Kyoto Cleaning & Housekeeping from the direct employer recruitment page. Source explicitly states ¥1,200+/hour, 10:00–13:00, 3+ days/week, 4 months–1 year, simple English or Japanese, year-round start, and Working Holiday makers welcome. Start/end dates and accommodation remain unknown because no specific dates or employment housing are promised."
   },
   "items": [
     {
@@ -2889,6 +2889,32 @@
       "source_url": "https://getokogen.com/winter/09form/04recruit/index.html",
       "first_seen": "2026-10-01",
       "last_seen": "2026-10-01",
+      "expires_at": null,
+      "status": "active"
+    },
+    {
+      "id": "expo-house-kyoto-cleaning-housekeeping-2026",
+      "title": "Cleaning & Housekeeping",
+      "employer": "Expo House",
+      "prefecture": "Kyoto",
+      "city": "Kyoto / Nishijin",
+      "salary_display": "¥1,200+/hour",
+      "salary_min_jpy": 1200,
+      "salary_max_jpy": null,
+      "salary_unit": "hour",
+      "start_date": null,
+      "end_date": null,
+      "japanese_level": "none",
+      "working_holiday": "explicit",
+      "accommodation_provided": null,
+      "accommodation_status": "unknown",
+      "accommodation_note": null,
+      "source_id": "direct-employer-public-listing",
+      "source_name": "Expo House staff recruitment",
+      "source_domain": "expohouse.jp",
+      "source_url": "https://expohouse.jp/en/staff-wanted/",
+      "first_seen": "2026-10-03",
+      "last_seen": "2026-10-03",
       "expires_at": null,
       "status": "active"
     }
