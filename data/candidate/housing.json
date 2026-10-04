@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-01",
+  "updated_at": "2026-10-04",
   "change_control": {
     "status": "pending_review",
-    "generated_by": "manual-direct-source-expansion",
-    "review_note": "Added 85 GG House room-level candidates and 17 BORDERLESS HOUSE foreign/any-nationality room-level candidates from direct provider pages. Existing Oakhouse records retained; pending records are intentionally visible in the UI but remain distinct from approved live records."
+    "generated_by": "unified-jwhv-worker",
+    "review_note": "Added Annette Meinohama from the direct provider's current Fukuoka page. The provider explicitly marks the property recruiting, accepts foreign nationals, permits contracts from one month, supports overseas contracting, and lists rent, furnishings and fees. No specific availability date is stated, so available_from remains null."
   },
   "items": [
     {
@@ -2314,6 +2314,28 @@
       "source_url": "https://www.borderless-house.com/jp/sharehouse/?region=jp",
       "first_seen": "2026-10-01",
       "last_seen": "2026-10-01",
+      "status": "active"
+    },
+    {
+      "id": "share180-annette-meinohama",
+      "name": "Annette Meinohama",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka (Nishi Ward)",
+      "nearest_station": "Meinohama Station",
+      "monthly_rent_display": "¥64,000/month rent; utilities self-contracted or ¥15,000/month utilities-included plan; ¥1,500/month support fee",
+      "monthly_rent_jpy": 64000,
+      "upfront_fee_display": "¥30,000 initial fee; no deposit/key money/brokerage; guarantor company fee applies unless all costs through move-out are prepaid",
+      "minimum_stay": "1 month",
+      "available_from": null,
+      "furnished": true,
+      "guarantor_required": false,
+      "foreigner_eligibility": "explicitly_accepted",
+      "source_id": "direct-housing-provider-public-listing",
+      "source_name": "SHARE HOUSE 180°",
+      "source_domain": "sharehouse180.net",
+      "source_url": "https://www.sharehouse180.net/houses/annette-meinohama/",
+      "first_seen": "2026-10-04",
+      "last_seen": "2026-10-04",
       "status": "active"
     }
   ]
