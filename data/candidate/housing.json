@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-01",
+  "updated_at": "2026-10-05",
   "change_control": {
     "status": "pending_review",
-    "generated_by": "manual-direct-source-expansion",
-    "review_note": "Added 85 GG House room-level candidates and 17 BORDERLESS HOUSE foreign/any-nationality room-level candidates from direct provider pages. Existing Oakhouse records retained; pending records are intentionally visible in the UI but remain distinct from approved live records."
+    "generated_by": "jwhv-recurring-worker",
+    "review_note": "Added three currently 入居可 SHARE HOUSE 180° Ichijoji rooms from the direct provider. Property page explicitly permits foreign nationals; unsupported availability dates, guarantor and upfront-fee details remain null. Future 退去予定 rooms were not added as active."
   },
   "items": [
     {
@@ -2314,6 +2314,72 @@
       "source_url": "https://www.borderless-house.com/jp/sharehouse/?region=jp",
       "first_seen": "2026-10-01",
       "last_seen": "2026-10-01",
+      "status": "active"
+    },
+    {
+      "id": "share180-ichijoji-312",
+      "name": "SHARE HOUSE 180° Ichijoji — Room 312",
+      "monthly_rent_display": "¥56,300/month total (¥39,800 rent + ¥5,500 common fee + ¥11,000 utilities)",
+      "monthly_rent_jpy": 56300,
+      "prefecture": "Kyoto",
+      "city": "Kyoto",
+      "nearest_station": "Ichijoji Station",
+      "upfront_fee_display": null,
+      "minimum_stay": null,
+      "available_from": null,
+      "furnished": true,
+      "guarantor_required": null,
+      "foreigner_eligibility": "explicitly_eligible",
+      "source_id": "direct-housing-provider-public-listing",
+      "source_name": "SHARE HOUSE 180°",
+      "source_domain": "sharehouse180.net",
+      "source_url": "https://www.sharehouse180.net/houses/share-house-180-ichijoji/availability/",
+      "first_seen": "2026-10-05",
+      "last_seen": "2026-10-05",
+      "status": "active"
+    },
+    {
+      "id": "share180-ichijoji-310",
+      "name": "SHARE HOUSE 180° Ichijoji — Room 310",
+      "monthly_rent_display": "¥56,300/month total (¥39,800 rent + ¥5,500 common fee + ¥11,000 utilities)",
+      "monthly_rent_jpy": 56300,
+      "prefecture": "Kyoto",
+      "city": "Kyoto",
+      "nearest_station": "Ichijoji Station",
+      "upfront_fee_display": null,
+      "minimum_stay": null,
+      "available_from": null,
+      "furnished": true,
+      "guarantor_required": null,
+      "foreigner_eligibility": "explicitly_eligible",
+      "source_id": "direct-housing-provider-public-listing",
+      "source_name": "SHARE HOUSE 180°",
+      "source_domain": "sharehouse180.net",
+      "source_url": "https://www.sharehouse180.net/houses/share-house-180-ichijoji/availability/",
+      "first_seen": "2026-10-05",
+      "last_seen": "2026-10-05",
+      "status": "active"
+    },
+    {
+      "id": "share180-ichijoji-401",
+      "name": "SHARE HOUSE 180° Ichijoji — Room 401",
+      "monthly_rent_display": "¥58,300/month total (¥41,800 rent + ¥5,500 common fee + ¥11,000 utilities)",
+      "monthly_rent_jpy": 58300,
+      "prefecture": "Kyoto",
+      "city": "Kyoto",
+      "nearest_station": "Ichijoji Station",
+      "upfront_fee_display": null,
+      "minimum_stay": null,
+      "available_from": null,
+      "furnished": true,
+      "guarantor_required": null,
+      "foreigner_eligibility": "explicitly_eligible",
+      "source_id": "direct-housing-provider-public-listing",
+      "source_name": "SHARE HOUSE 180°",
+      "source_domain": "sharehouse180.net",
+      "source_url": "https://www.sharehouse180.net/houses/share-house-180-ichijoji/availability/",
+      "first_seen": "2026-10-05",
+      "last_seen": "2026-10-05",
       "status": "active"
     }
   ]
